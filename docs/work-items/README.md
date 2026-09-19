@@ -20,5 +20,8 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Dependency npm dan TypeScript](npm-audit-typescript/README.md): evaluasi
+  audit/deprecation, pembaruan dependency kompatibel, dan perbaikan compiler.
+
 - [Penyelarasan dokumentasi](penyelarasan-dokumentasi/README.md): Laravel 12,
   MySQL, arsitektur NusaLens, dan kemandirian dokumen aktif dari folder sumber.

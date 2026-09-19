@@ -1,8 +1,7 @@
 # Quality dan Verifikasi
 
-Mulai dari test paling spesifik dan gunakan gate luas sesuai risiko. Source
-aplikasi belum dibuat, sehingga command final akan diisi setelah scaffolding
-Laravel/Inertia tersedia.
+Mulai dari test paling spesifik dan gunakan gate luas sesuai risiko. Baseline
+Laravel/Inertia sudah tersedia; test domain NusaLens ditambahkan per work item.
 
 | Perubahan            | Verifikasi minimum                                      |
 | -------------------- | ------------------------------------------------------- |
@@ -18,14 +17,19 @@ Laravel/Inertia tersedia.
 
 ## Command project
 
-- Backend focused test: belum tersedia.
+- Backend focused test: `php vendor/bin/phpunit --filter NamaTest`.
+- Seluruh test backend: `php vendor/bin/phpunit`.
 - Frontend focused test: belum tersedia.
-- Typecheck/lint/build: belum tersedia.
+- Typecheck: `npm run typecheck` (perlu dependency Composer untuk tipe Ziggy).
+- Lint tanpa mengubah file: `npm run lint:check`.
+- Build client: `npm run build`; client dan SSR: `npm run build:ssr`.
+- Instalasi reproducible: `npm ci`; audit dependency: `npm audit`.
 - Module validation: belum tersedia.
-- Full quality gate: belum tersedia.
+- Gate baseline: typecheck, lint, build client/SSR, dan seluruh test backend.
 
-Setelah source dibuat, ganti bagian ini dengan command executable yang benar.
-Jangan mengarang command yang belum ada.
+`npm run lint` dan `npm run format` mengubah file. Jangan memakai command ini
+untuk pemeriksaan read-only. Audit mencakup advisory yang diketahui saat itu;
+status deprecated/EOL diperiksa terpisah dari jumlah vulnerability.
 
 ## QA penting NusaLens
 
