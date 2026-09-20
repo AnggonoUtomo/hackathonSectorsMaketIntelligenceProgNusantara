@@ -28,3 +28,8 @@ Gunakan nama folder work item `kebab-case`. Module mengikuti source di
 `app/Modules/{Module}`, misalnya `docs/modules/MarketData/`. Gunakan
 [template aktif](../templates/README.md) dan buat dokumentasi module saat work
 item implementasinya dimulai.
+
+## Indeks
+
+- [MarketData](MarketData/README.md): provider Sectors, mapping, cache,
+  freshness, dan ledger/reservasi credit.
