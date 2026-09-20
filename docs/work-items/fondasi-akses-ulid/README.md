@@ -81,6 +81,29 @@ Ini membuktikan aplikasi mengirim notifikasi Laravel, bukan bukti email sampai
 ke inbox nyata. Browser QA manual juga belum dijalankan pada increment ini.
 Pengiriman nyata tetap masuk increment 3.
 
+## Hasil QA end-to-end lokal
+
+QA lokal 2026-09-20 memakai `php artisan serve` di `127.0.0.1:8000`, Vite di
+`127.0.0.1:5173`, Mailpit di `127.0.0.1:1025/8025`, dan HTTP session seperti
+browser. Schema aplikasi diinisialisasi dengan `php artisan migrate --force`
+pada database fresh install yang sebelumnya terverifikasi kosong.
+
+Hasil:
+
+- Register user baru berhasil redirect ke dashboard, lalu middleware verified
+  mengarahkan ke halaman `auth/verify-email`.
+- Mailpit menerima email `Verify Email Address`.
+- Link verifikasi dari Mailpit berhasil membuka dashboard.
+- Setelah email profile diubah, akses dashboard kembali tertahan di
+  `auth/verify-email`.
+- Reset password mengirim `Reset Password Notification` ke Mailpit.
+- User verified dapat reset password dan login memakai password baru hingga
+  dashboard.
+
+Catatan: connector DevTools yang tersedia pada sesi ini hanya expose inspeksi
+page/console/network, belum expose navigasi/click. Karena itu QA visual manual
+di browser tetap belum ditandai selesai.
+
 ## Hasil increment 3
 
 Implementasi dan konfigurasi lokal 2026-09-20:
@@ -152,7 +175,8 @@ atau migration lama memerlukan plan konversi tersendiri dan persetujuan.
 Source dan test berubah untuk ULID dan akses verified. Database aplikasi aktif
 tetap tidak di-migrate dan tidak di-seed; schema write hanya dilakukan pada
 database MySQL disposable saat increment 1. Redis client, cache Redis, queue
-Redis, dan mail sink lokal sudah terverifikasi pada CLI/dev. Tidak menjalankan
-Sectors API dan tidak memakai SMTP publik. Browser QA manual dan restart Apache
-tetap menjadi verifikasi lanjutan bila ingin menguji via web server. Rincian
-ada pada [plan](plan.md).
+Redis, dan mail sink lokal sudah terverifikasi pada CLI/dev. QA HTTP end-to-end
+lokal berhasil setelah schema aplikasi diinisialisasi. Tidak menjalankan Sectors
+API dan tidak memakai SMTP publik. Browser QA visual manual dan restart Apache
+tetap menjadi verifikasi lanjutan bila ingin menguji via web server. Rincian ada
+pada [plan](plan.md).

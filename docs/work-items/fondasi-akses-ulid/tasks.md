@@ -30,9 +30,18 @@
 - [x] Verifikasi pengiriman email nyata ke sink/inbox uji, bukan hanya log.
 - [x] Catat konfigurasi target tanpa secret dan hasil QA/risk yang tersisa.
 
+## QA end-to-end lokal
+
+- [x] Inisialisasi schema aplikasi dengan migrate normal pada database fresh install.
+- [x] Uji register -> verification notice -> Mailpit -> verify -> dashboard.
+- [x] Uji perubahan email menahan kembali akses dashboard sampai reverify.
+- [x] Uji reset password via Mailpit dan login memakai password baru.
+- [ ] Jalankan QA visual manual di browser.
+
 ## Hasil saat increment 2
 
 ULID users, akses dashboard wajib verified, Redis CLI/dev, cache Redis, queue
-Redis, dan mail delivery lokal via Mailpit selesai. Data aplikasi aktif tidak
-di-reset, tidak di-migrate, dan tidak di-seed. Sectors belum dipakai. Browser QA
-manual dan restart Apache/Laragon belum dijalankan.
+Redis, mail delivery lokal via Mailpit, dan QA HTTP end-to-end selesai. Database
+aplikasi aktif sudah diinisialisasi dengan migrate normal setelah terbukti fresh
+install; tidak di-reset dan tidak di-seed. Sectors belum dipakai. Browser QA
+visual manual dan restart Apache/Laragon belum dijalankan.
