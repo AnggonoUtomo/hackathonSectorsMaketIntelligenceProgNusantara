@@ -4,6 +4,7 @@ namespace Tests\Feature\Settings;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
@@ -59,6 +60,34 @@ class ProfileUpdateTest extends TestCase
             ->assertRedirect('/settings/profile');
 
         $this->assertNotNull($user->refresh()->email_verified_at);
+    }
+
+    public function test_old_email_verification_link_cannot_verify_a_changed_email_address()
+    {
+        $user = User::factory()->create([
+            'email' => 'old@example.com',
+        ]);
+
+        $oldVerificationUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $user->id, 'hash' => sha1($user->email)]
+        );
+
+        $this
+            ->actingAs($user)
+            ->patch('/settings/profile', [
+                'name' => $user->name,
+                'email' => 'new@example.com',
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/settings/profile');
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+
+        $this->actingAs($user)->get($oldVerificationUrl)->assertForbidden();
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
 
     public function test_user_can_delete_their_account()

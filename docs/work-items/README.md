@@ -20,6 +20,9 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Fondasi akses dan ULID](fondasi-akses-ulid/README.md): ULID users fresh
+  install dan akses dashboard wajib verified selesai; kesiapan Redis/mail
+  menunggu increment berikutnya.
 - [Penetapan keputusan MVP](penetapan-keputusan-mvp/README.md): hasil wawancara,
   README produk, roadmap, ADR akses/ULID/persistence, dan delivery dokumentasi.
 - [Dependency npm dan TypeScript](npm-audit-typescript/README.md): evaluasi
