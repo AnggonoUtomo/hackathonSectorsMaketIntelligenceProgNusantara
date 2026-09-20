@@ -2,8 +2,9 @@
 
 ## Status
 
-Baseline dokumentasi aktif, diselaraskan dengan rancangan NusaLens dan koreksi
-user tanggal 2026-09-19. Implementasi aplikasi belum dimulai.
+Starter Laravel 12/Inertia React sudah tersedia, termasuk auth/settings dan
+toolchain. Module bisnis NusaLens belum dibuat. Keputusan MVP disetujui user
+pada 2026-09-20; ini target implementasi, bukan klaim fitur sudah berjalan.
 
 ## Masalah
 
@@ -34,21 +35,29 @@ yang terfokus, bukan menggantikan platform trading intelligence yang lebih luas.
 
 ## Scope aktif MVP
 
+- Registrasi terbuka untuk umum. Semua fitur riset memerlukan login dan email
+  terverifikasi; halaman auth/verifikasi tetap dapat digunakan sesuai alurnya.
+- Bank dan nonbank tercakup sesuai kelayakan metrik pada [SCORING.md](SCORING.md).
 - Temukan Saham: screener/filter berdasarkan sektor, ukuran, kesehatan bisnis,
   pertumbuhan, harga saham, utang, dan Nilai Prioritas Riset.
 - Detail Perusahaan: profil, lima komponen nilai, Nilai Prioritas Riset, dan
   penjelasan mengapa nilai terbentuk.
-- Bandingkan: target awal 3 saham berdampingan; scope produk menyebut batas
-  3-5 saham. Batas final ditetapkan pada work item Comparison.
+- Bandingkan: maksimal 3 saham berdampingan.
+- Simpan perbandingan secara manual, beri nama, buka kembali, dan hapus; hanya
+  pemilik yang dapat mengakses. Hasil tersimpan memakai snapshot saat disimpan,
+  bukan diam-diam diganti data terbaru. "Perbarui data" menghasilkan versi baru,
+  tetap mengikuti cache, kuota, dan budget. Tidak otomatis merekam aktivitas.
 - Jelaskan Nilai: rumus, bobot, data, posisi dibanding perusahaan sejenis, dan
   kontribusi komponen.
 - Temukan Kandidat: kelompok kandidat seperti bisnis sehat, pertumbuhan menarik,
   harga relatif menarik, dan aktivitas pasar kuat.
-- Ringkasan AI opsional setelah fase inti stabil.
+- Penjelasan berbasis aturan wajib. Ringkasan AI opsional setelah inti stabil,
+  atas permintaan pengguna, dengan fallback ke penjelasan aturan. Demo tidak
+  bergantung AI; provider/model/budget ditentukan sebelum integrasi.
 
 ## Alur pengguna dan istilah
 
-1. Buka Temukan Saham, pilih sektor/subsektor dan kriteria terstruktur.
+1. Login dengan email terverifikasi, lalu buka Temukan Saham dan pilih kriteria.
 2. Telusuri shortlist dengan pagination; filter tersimpan di URL.
 3. Urutkan berdasarkan Nilai Prioritas Riset setelah scoring tersedia.
 4. Buka Detail Perusahaan untuk profil, nilai, data pendukung, dan peer context.
@@ -73,6 +82,11 @@ konsep awal hanya ilustrasi, bukan ambang kategori atau formula final.
 
 ## Di luar scope MVP
 
+- Watchlist, riwayat screener otomatis, laporan riset tersimpan terpisah, dan
+  tautan berbagi publik. Modul Research tetap menjelaskan skor tanpa harus
+  membuat persistence laporan sendiri.
+- Paket berbayar dan API key milik pengguna (BYOK) adalah arah masa depan,
+  bukan scope saat ini; perlu kajian entitlement, secret, dan sharing data kelak.
 - Integrasi broker, eksekusi order, trading otomatis, dan rekomendasi
   BUY/HOLD/SELL.
 - Akuntansi portofolio lengkap, billing/subscription, dan enterprise
@@ -84,7 +98,9 @@ konsep awal hanya ilustrasi, bukan ambang kategori atau formula final.
 ## Stack dan constraint
 
 - Laravel 12, PHP 8.4+, Inertia.js, React + TypeScript, MySQL, Redis,
-  Tailwind CSS.
+  Tailwind CSS, dan Recharts.
+- ULID untuk entitas termasuk users serta foreign key terkait; migrasi dari
+  starter perlu rencana aman, bukan izin menghapus data.
 - Sectors Financial API v2 adalah sumber data inti.
 - Sectors API key hanya boleh berada di backend.
 - Automated test menggunakan fake HTTP, bukan real Sectors API.
@@ -104,15 +120,12 @@ konsep awal hanya ilustrasi, bukan ambang kategori atau formula final.
 - [ ] Tidak ada rekomendasi investasi atau klaim BUY/HOLD/SELL.
 - [ ] Test penting untuk scoring dan integrasi provider tersedia.
 
-## Pertanyaan terbuka
+## Batas implementasi berikutnya
 
-- Strategi identifier final belum ditetapkan.
-- Pilihan chart library final antara Apache ECharts atau Recharts belum
-  dikunci.
-- Strategi authentication belum ditetapkan untuk MVP awal.
-- Batas final perbandingan, aturan rinci percentile, peer minimum, bobot metrik,
-  dan kategori label belum ditetapkan; lihat [SCORING.md](SCORING.md).
-- Schema, identifier, dan ownership persistence dirinci sebelum migration;
-  konsep awal ada di [DATA-MODEL.md](DATA-MODEL.md).
-- Source Laravel/Inertia belum dibuat, sehingga command project final belum
-  tersedia.
+Keputusan produk di atas sudah ditutup; jangan mewawancarai ulang tanpa konflik
+baru. [DECISIONS.md](DECISIONS.md) mengindeks keputusan dan bukti persetujuan.
+Spesifikasi teknis per increment masih harus memvalidasi kontrak data Sectors,
+kelengkapan aktual, periode/basis rasio, aksi korporasi dan kalender bursa,
+estimasi credit seluruh peer, precision/index/FK, serta migrasi users.
+Pilihan provider/model/budget AI ditunda sampai integrasi opsional diperlukan.
+Ini bukan izin memulai coding, memasang dependency, atau melakukan Git delivery.

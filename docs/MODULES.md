@@ -1,16 +1,16 @@
 # Daftar Module
 
 Module berada langsung di `app/Modules/{Module}`, sesuai rancangan NusaLens.
-Semua masih `Planned` karena source aplikasi belum dibuat. Dokumentasi module
-akan berada di `docs/modules/{Module}/` saat implementasi dimulai.
+Semua module bisnis masih `Planned`; starter Laravel/Inertia sudah tersedia.
+Dokumentasi module berada di `docs/modules/{Module}/` saat implementasi dimulai.
 
 | Module | Tanggung jawab | Kolaborasi yang dibutuhkan |
 | --- | --- | --- |
-| MarketData | Mengambil data eksternal, mapping, cache, freshness, menyembunyikan detail provider. Tidak menghitung nilai. | Sectors API v2 dan Redis melalui Infrastructure. |
-| Company | Identitas, sektor/subsektor, profil, dan gambaran data keuangan internal. | Data internal hasil mapping MarketData. |
+| MarketData | Provider, mapping, cache, freshness, ledger/reservasi credit. Tidak menghitung nilai. | Sectors, Redis, dan ledger MySQL melalui Infrastructure. |
+| Company | Identitas, klasifikasi, profil, snapshot keuangan/pasar internal. | Data internal hasil mapping MarketData. |
 | Screening | Kriteria pencarian, filter, pengurutan, shortlist. UI: Temukan Saham. | Data MarketData/Company; hasil Intelligence saat pengurutan berdasarkan nilai tersedia. |
-| Intelligence | Normalisasi, posisi terhadap peer, lima nilai, Nilai Prioritas Riset, dan alasan pembentukannya. | Data internal perusahaan dan pembanding; tidak mengakses JSON vendor langsung. |
-| Comparison | Data beberapa perusahaan berdampingan, keunggulan relatif, dan penyimpanan bila diperlukan. UI: Bandingkan. | Data Company dan hasil Intelligence. |
+| Intelligence | Normalisasi, posisi peer, lima nilai, total, versi formula dan bukti input/peer immutable. | Data internal perusahaan dan pembanding; tidak mengakses JSON vendor langsung. |
+| Comparison | Maksimal 3 saham, simpan manual privat dan berversi. UI: Bandingkan. | Data Company dan hasil Intelligence. |
 | Research | Bukti penilaian, penjelasan yang mudah dibaca, dan ringkasan AI opsional. | ScoreBreakdown yang sudah dihitung Intelligence. |
 
 Kolaborasi pada tabel adalah kebutuhan use case, bukan izin mengimpor class
@@ -34,8 +34,12 @@ Sectors JSON -> Infrastructure DTO -> Mapper -> model internal NusaLens
 ```
 
 MarketData menangani detail API; module lain bekerja dengan data internal.
-Ownership tabel dan migration belum final. Daftar konsep penyimpanan dari
-blueprint dicatat di [DATA-MODEL.md](DATA-MODEL.md).
+Ownership sudah disetujui pada [DATA-MODEL.md](DATA-MODEL.md): MarketData memiliki
+ledger/reservasi credit, Company memiliki snapshot fakta keuangan/pasar,
+Intelligence memiliki hasil/versi formula/bukti input dan peer, Comparison
+memiliki perbandingan privat berversi maksimal 3 saham. Screening tidak membuat
+riwayat otomatis dan Research tidak menyimpan laporan terpisah pada MVP.
+DDL dan wiring migration masih perlu spesifikasi implementasi.
 
 ## Pembaruan indeks
 

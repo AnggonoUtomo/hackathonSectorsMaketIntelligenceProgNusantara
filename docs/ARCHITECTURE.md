@@ -9,7 +9,7 @@ aturan bisnis dengan detail framework atau provider.
 - Framework reusable: tidak ada pada baseline awal.
 - Module aplikasi: `app/Modules/{Module}`, sesuai rancangan NusaLens.
 - Runtime: Laravel 12, PHP 8.4+, MySQL, dan Redis.
-- Frontend: mengikuti struktur Laravel/Inertia yang akan dibuat.
+- Frontend: starter Inertia React di `resources/js/`; Recharts dipilih, belum dipasang.
 - Struktur canonical: [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md).
 
 ## Hexagon pada setiap module
@@ -68,11 +68,11 @@ Infrastructure ----> Application ------> Domain
 
 | Module       | Tanggung jawab utama |
 | ------------ | -------------------- |
-| MarketData   | Ambil data provider, mapping, cache, freshness, dan detail Sectors. |
-| Company      | Identitas perusahaan, sektor/subsektor, profil, dan snapshot internal. |
+| MarketData   | Provider, mapping, cache/freshness, ledger dan reservasi credit. |
+| Company      | Identitas/klasifikasi/profil dan snapshot keuangan/pasar internal. |
 | Screening    | Kriteria pencarian, shortlist, filter, dan urutan kandidat. |
-| Intelligence | Normalisasi, percentile, lima komponen nilai, dan Nilai Prioritas Riset. |
-| Comparison   | Perbandingan beberapa perusahaan berdampingan. |
+| Intelligence | Normalisasi, percentile, skor, versi formula, dan bukti input/peer immutable. |
+| Comparison   | Maksimal 3 saham, perbandingan tersimpan manual, privat dan berversi. |
 | Research     | Bukti, penjelasan nilai, dan AI explainer opsional. |
 
 Jangan membuat semua module sekaligus tanpa work item nyata. Mulai dari alur
@@ -160,7 +160,8 @@ Lima komponen nilai awal:
 Semua nilai memakai skala `0..100`. Nilai akhir berarti lebih menarik untuk
 diteliti lebih lanjut, bukan rekomendasi membeli atau menjual.
 
-Bobot awal adalah hipotesis produk yang harus dapat dikonfigurasi. Bandingkan
+Bobot v1 adalah hipotesis produk, dikonfigurasi dan diberi versi di kode tanpa
+editor bobot UI. Bandingkan
 metrik pada kelompok perusahaan sejenis, bukan angka mentah lintas sektor.
 Data hilang tidak otomatis bernilai nol. Simpan angka asli, percentile, bobot,
 kontribusi, peer group, dan waktu pengambilan agar alasan nilai dapat ditelusuri.
@@ -173,10 +174,15 @@ kontribusi, peer group, dan waktu pengambilan agar alasan nilai dapat ditelusuri
 - Perubahan arah dependency, modul, atau struktur canonical memerlukan ADR atau
   persetujuan eksplisit.
 
-## Gap conformance
+## Keputusan dan gap conformance
 
-- Source Laravel/Inertia belum dibuat.
-- Command discovery dan validation module belum tersedia.
-- Strategi identifier final belum ditetapkan.
-- Detail rumus percentile, bobot metrik, dan schema belum diputuskan; lihat
-  pertanyaan terbuka di [SCORING.md](SCORING.md) dan [DATA-MODEL.md](DATA-MODEL.md).
+- Starter Laravel/Inertia tersedia; `app/Modules` dan validator module belum ada.
+- ULID termasuk users, login + verifikasi email untuk riset, dan ownership
+  persistence sudah disetujui, tetapi belum diterapkan pada starter.
+- MarketData menyimpan ledger permanen di MySQL; Redis hanya cache/queue.
+- Company menyimpan fakta; Intelligence menyimpan bukti fakta yang dipakai untuk
+  hasil tertentu. Ownership/retensi/reuse ada di [DATA-MODEL.md](DATA-MODEL.md).
+- Formula v1 telah diputuskan di [SCORING.md](SCORING.md); validasi kontrak
+  provider, precision dan DDL tetap gate implementasi, bukan keputusan produk kosong.
+- [ADR-003](decisions/ADR-003-AKSES-ULID-PERSISTENCE-MVP.md) mencatat keputusan
+  mahal ini; jangan menganggap persetujuan dokumentasi sebagai izin coding.

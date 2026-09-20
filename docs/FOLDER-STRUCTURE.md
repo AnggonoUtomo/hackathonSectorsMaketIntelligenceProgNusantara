@@ -1,7 +1,7 @@
 # Struktur Folder Canonical
 
-Struktur mengikuti arsitektur NusaLens. Ini adalah target, karena source
-Laravel/Inertia belum dibuat. Buat folder hanya saat ada concern nyata.
+Struktur module mengikuti target arsitektur NusaLens. Starter Laravel/Inertia
+sudah ada, tetapi `app/Modules` belum dibuat. Buat folder saat ada concern nyata.
 
 ## Module backend
 
@@ -28,9 +28,9 @@ app/Modules/{Module}/
 `-- Presentation/             # controller, request, response, inbound adapter
 ```
 
-Blueprint awal Comparison hanya membutuhkan Domain, Application, dan
-Presentation. Infrastructure ditambahkan jika kelak ada kebutuhan nyata seperti
-menyimpan perbandingan. Jangan membuat layer kosong untuk melengkapi diagram.
+Comparison MVP mencakup perbandingan tersimpan manual sehingga persistence
+Infrastructure diperlukan saat fitur itu diimplementasikan. Jangan membuat layer
+kosong untuk melengkapi diagram; module lain juga dibuat sesuai use case nyata.
 
 Port use case ditempatkan di `Application/Contracts`, DTO internal di
 `Application/DTO`. Port yang memang dimiliki Domain tetap berada di Domain.
@@ -92,9 +92,8 @@ memindahkan class ke Shared hanya karena owner-nya belum diputuskan.
 ## Frontend dan test
 
 Frontend memakai React + TypeScript melalui Inertia pada `resources/js/`.
-Lokasi pages, components, hooks, dan types mengikuti scaffolding Laravel 12
-yang dipilih. Rancangan NusaLens belum menetapkan struktur frontend per module;
-jangan mengunci path atau kapitalisasi sebelum source tersedia.
+Pertahankan lokasi `pages`, `components`, `hooks`, dan `types` pada starter yang
+ada. Jangan menambah struktur frontend per module tanpa kebutuhan/persetujuan.
 
 Target test backend adalah `tests/Unit` untuk kalkulator dan `tests/Feature`
 untuk use case/integrasi. Lokasi test frontend/browser mengikuti runner yang

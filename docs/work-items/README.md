@@ -20,6 +20,8 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Penetapan keputusan MVP](penetapan-keputusan-mvp/README.md): hasil wawancara,
+  README produk, roadmap, ADR akses/ULID/persistence, dan delivery dokumentasi.
 - [Dependency npm dan TypeScript](npm-audit-typescript/README.md): evaluasi
   audit/deprecation, pembaruan dependency kompatibel, dan perbaikan compiler.
 

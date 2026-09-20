@@ -7,6 +7,10 @@
 - [ ] Sectors benar-benar menjadi sumber data inti.
 - [ ] Tidak ada trading otomatis atau rekomendasi BUY/HOLD/SELL.
 - [ ] Disclaimer tersedia.
+- [ ] Registrasi umum, login dan verifikasi email membatasi akses fitur riset.
+- [ ] Compare maksimal 3 saham; simpan manual privat dan versi pembaruan teruji.
+- [ ] Skor 2 desimal, kelengkapan minimal 70%, dan alasan unavailable terlihat.
+- [ ] Penjelasan aturan tersedia tanpa AI; AI bukan syarat demo.
 
 ## Teknis
 
@@ -15,6 +19,7 @@
 - [ ] Test suite dan build yang relevan lulus.
 - [ ] Error Sectors ditangani; cache bekerja dan credit terkendali.
 - [ ] Ticker/cache demo tersedia dan freshness terlihat.
+- [ ] Budget sekali pakai dan kuota harian diuji tanpa memakai cadangan otomatis.
 - [ ] Tampilan 1080p, loading, empty, error, dan fallback diperiksa.
 
 Publikasi repository, commit/tag, push, dan submission dilakukan ketika diminta

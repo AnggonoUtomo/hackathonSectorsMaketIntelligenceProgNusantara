@@ -6,16 +6,15 @@
 - Tujuan: aplikasi market intelligence untuk membantu pengguna menyaring,
   membandingkan, dan memahami saham Indonesia yang layak diteliti lebih lanjut.
 - Stack target: Laravel 12, PHP 8.4+, Inertia.js, React + TypeScript,
-  MySQL, Redis, Tailwind CSS, Sectors Financial API v2, dan chart library
-  berbasis Apache ECharts atau Recharts.
+  MySQL, Redis, Tailwind CSS, Sectors Financial API v2, dan Recharts.
 - Lokasi module backend: `app/Modules/{Module}`, mengikuti arsitektur NusaLens.
-- Lokasi frontend target: mengikuti struktur Laravel/Inertia yang akan dibuat.
+- Lokasi frontend: `resources/js/`, mengikuti starter Laravel/Inertia yang ada.
 - Framework reusable: tidak ada pada baseline awal.
-- Strategi identifier: belum ditetapkan; jangan mengunci pilihan sebelum source
-  Laravel dan migration awal dibuat.
+- Strategi identifier: ULID untuk entitas, termasuk users dan foreign key terkait.
+  Migrasi dari ID integer starter belum dilakukan; jangan reset data tanpa izin.
 - Mekanisme route frontend: Inertia.js.
-- Command discovery/validation module: belum tersedia karena source aplikasi
-  belum dibuat.
+- Command discovery/validation module: belum tersedia. Starter Laravel/Inertia
+  sudah ada; module NusaLens belum diimplementasikan.
 - Bahasa dokumentasi dan handoff: Bahasa Indonesia.
 - Commit message: gaya Conventional Commit, contoh
   `feat(screening): add structured company screener`.
@@ -80,6 +79,14 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
 
 ## Aturan produk NusaLens
 
+- Keputusan MVP telah disetujui; baca `docs/DECISIONS.md`. Status accepted
+  bukan bukti implementasi. Perubahan terhadap keputusan tetap perlu persetujuan.
+- Registrasi publik; semua fitur riset wajib login dan verifikasi email.
+- Compare maksimal 3 saham. Riwayat MVP hanya perbandingan tersimpan manual,
+  privat, berbasis snapshot, dan pembaruan sebagai versi baru.
+- Scoring mencakup bank dan nonbank sesuai metrik v1 di `docs/SCORING.md`.
+  Minimal 5 peer lain per metrik, kelengkapan berbobot 70%, tampilan 2 desimal,
+  tanpa label kategori skor. Jangan mencampur bank dan nonbank sebagai peer.
 - NusaLens adalah alat informasi dan riset, bukan penasihat investasi, broker,
   trading bot, atau pemberi rekomendasi BUY/HOLD/SELL.
 - Sectors API v2 adalah sumber data inti.
@@ -87,6 +94,14 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
 - AI tidak boleh menentukan nilai, mengganti rumus, atau membuat klaim tanpa
   bukti data input.
 - Credit API harus dihemat. Ambil data bertahap sesuai kebutuhan pengguna.
+- Budget Sectors 1.000 credit sekali pakai; cadangan 600 membutuhkan persetujuan.
+  Kuota per akun 20 credit/hari, reset 00.00 WIB. Ledger permanen di MySQL,
+  tidak boleh ter-reset karena Redis hilang. Maksimal satu retry berbiaya.
+- TTL, fallback, dan pengecualian bursa tutup mengikuti `docs/DATA-FLOW.md`;
+  membaca cache atau menghitung ulang tidak memperbarui usia data sumber.
+- Penjelasan berbasis aturan wajib; AI opsional setelah inti stabil, dijalankan
+  atas permintaan. Provider/model/budget AI belum dipilih dan terpisah dari Sectors.
+- Billing, BYOK, watchlist, berbagi publik, dan riwayat screener otomatis di luar MVP.
 - Jangan mengunduh seluruh data IDX dari semua endpoint sekaligus.
 - Jangan mengambil semua section Company Report secara default.
 - Jangan menyamarkan error Sectors sebagai data kosong.
@@ -101,12 +116,12 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
 
 Modul awal yang menjadi batas tanggung jawab:
 
-- `MarketData`: integrasi provider data, mapping, cache, dan metadata freshness.
+- `MarketData`: integrasi provider, mapping, cache, freshness, ledger dan reservasi credit.
 - `Company`: identitas perusahaan, sektor/subsektor, profil, dan snapshot data.
 - `Screening`: kriteria pencarian, shortlist, filter, dan pengurutan kandidat.
 - `Intelligence`: normalisasi metrik, percentile, lima komponen nilai, dan
-  Nilai Prioritas Riset.
-- `Comparison`: perbandingan beberapa perusahaan berdampingan.
+  Nilai Prioritas Riset, snapshot bukti input/peer, dan versi formula.
+- `Comparison`: perbandingan maksimal 3 perusahaan dan versi tersimpan privat.
 - `Research`: bukti, penjelasan nilai, dan AI explainer opsional.
 
 Jangan membuat semua modul sekaligus bila belum ada work item yang membutuhkan.

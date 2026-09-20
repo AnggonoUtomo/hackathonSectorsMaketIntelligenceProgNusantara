@@ -1,7 +1,8 @@
 # API dan Integrasi
 
-Dokumen ini mencatat contract publik dan integrasi eksternal NusaLens. Source
-aplikasi belum dibuat, sehingga endpoint internal belum tersedia.
+Dokumen ini mencatat target contract publik dan integrasi eksternal NusaLens.
+Starter auth/settings sudah tersedia; endpoint riset dan adapter Sectors belum
+diimplementasikan. Nama client/adapter berikut adalah rancangan, bukan class aktif.
 
 ## Sectors API v2
 
@@ -22,6 +23,9 @@ SECTORS_API_TIMEOUT=10
 
 API key hanya boleh berada di backend. Jangan pernah mengirim API key ke
 frontend, log, source, test output, atau dokumentasi.
+Header Sectors memakai `Authorization: <api-key>` tanpa prefix Bearer, sesuai
+[overview v2](https://docs.sectors.app/get-started/v2/overview).
+Variabel contoh ini belum berarti wiring konfigurasi Sectors sudah tersedia.
 
 ## Prioritas endpoint
 
@@ -32,9 +36,6 @@ frontend, log, source, test output, atau dokumentasi.
 | B | `GET /v2/subsector/report/{sub_sector}/` | Konteks peer/subsektor. |
 | C | `GET /v2/financials/quarterly/{symbol}/` | Perkembangan keuangan kuartalan. |
 | C | `GET /v2/daily/{symbol}/` | Kekuatan pasar sederhana. |
-| C | `GET /v2/foreign-flow/{symbol}/` | Bukti aktivitas pasar tambahan. |
-| C | `GET /v2/broker-summary/{symbol}/top/` | Opsional untuk detail lanjutan. |
-| D | `GET /v2/news/`, `GET /v2/filings/` | Bukti tambahan, bukan nilai utama MVP. |
 
 Tabel memakai path penuh `/v2/...`; base URL sudah mengandung `/v2`, sehingga
 penyusunan URL client tidak boleh menggandakan prefix versi.
@@ -42,7 +43,10 @@ penyusunan URL client tidak boleh menggandakan prefix versi.
 Section prioritas Company Report: `overview`, `financials`, `valuation`, dan
 `peers`. Section prioritas Subsector Report: `statistics`, `valuation`, `growth`,
 dan `companies`. Ambil section sesuai kebutuhan halaman, bukan semuanya secara
-otomatis. Tahap C hanya untuk perusahaan yang dibuka atau dibandingkan.
+otomatis. Data scoring juga mencakup seluruh peer valid yang dibutuhkan, bukan
+hanya ticker yang dibuka atau dibandingkan. Peer provider tidak otomatis sama
+dengan populasi NusaLens. Foreign flow, broker, berita, filing, dan forecast
+bukan metrik skor v1 atau request wajib MVP.
 
 Daftar ini berasal dari rancangan produk, bukan hasil uji API saat ini. Saat
 implementasi, cocokkan auth header, query parameter, response, section, rate
@@ -50,6 +54,24 @@ limit, dan credit aktual dengan referensi resmi sebelum mengunci contract.
 
 Utamakan structured query untuk screener. Jangan menggunakan natural-language
 query jika structured query sudah cukup.
+
+## Kontrak sumber dan biaya
+
+Berikut hasil pembacaan dokumentasi resmi saat wawancara, bukan pengujian API
+live atau jaminan kelengkapan setiap emiten. Verifikasi lagi sebelum integrasi:
+
+| Sumber | Biaya/kendala penting |
+| --- | --- |
+| [Companies Screener](https://docs.sectors.app/api-references/v2/indonesia/screener/companies) | Structured query 1 credit; natural-language 3. Respons paginated; field tahun/kuartal eksplisit diperlukan untuk periode sebanding. |
+| [Company Report](https://docs.sectors.app/api-references/v2/indonesia/report/company-report) | 1 credit per section; default 8 section. Selalu pilih section eksplisit. |
+| [Quarterly Financials](https://docs.sectors.app/api-references/v2/indonesia/report/quarterly-financials) | 1 credit per kuartal dikembalikan; batasi n_quarters/report_date. Approx default true perlu dikendalikan dan periode hasil diperiksa. |
+| [Daily](https://docs.sectors.app/api-references/v2/indonesia/transaction/daily) | 1 credit, rentang maksimal 90 hari; close harian, tidak menjanjikan adjusted close. |
+
+Hierarchy helper: subindustry berada di industry, industry di subsector, lalu
+sector. Mapper menormalkan field/slug provider tanpa menganggap seluruh anggota
+sektor relevan. Periode implisit terbaru, field yang bisa difilter, dan
+`include_query_values` bukan bukti bahwa semua input/metadata dapat diambil
+dalam satu query. Validasi projection, pagination, unit dan tanggal sumber.
 
 ## Error handling
 
@@ -70,9 +92,11 @@ tidak tersedia, dan rate limit pada response aplikasi/UI.
 ## Retry dan observability
 
 - Jangan retry 4xx kecuali `429`.
-- Retry `429`, `5xx`, atau timeout dengan jeda bertahap kecil dan jumlah terbatas.
-- Tetapkan jumlah retry dan penanganan `Retry-After` pada work item integrasi;
-  jangan membuat request berulang tanpa batas.
+- Maksimal 1 retry (2 attempt total) untuk `429`, `5xx`, atau timeout yang
+  bersifat sementara; tiap attempt wajib lolos budget dan kuota.
+- Hormati `Retry-After` untuk 429; jika tidak layak ditunggu dalam alur request,
+  gunakan fallback/error eksplisit. Jangan retry tanpa batas atau mengasumsikan
+  timeout tidak ditagih provider.
 - Catat endpoint, status response, durasi, cache hit/miss, estimasi credit,
   dan request correlation id.
 - Jangan mencatat `Authorization`, API key, atau payload sensitif.
@@ -81,12 +105,13 @@ tidak tersedia, dan rate limit pada response aplikasi/UI.
 
 Input screener divalidasi dari allowlist field/operator yang didukung.
 Expression mentah user tidak langsung diteruskan ke Sectors. Endpoint publik
-aplikasi memakai rate limit dan tidak menjadi proxy bebas ke provider.
+aplikasi memakai rate limit; seluruh endpoint riset memerlukan login dan email
+verified. Aplikasi tidak menjadi proxy bebas ke provider.
 Detail aturan ada pada [SECURITY.md](SECURITY.md).
 
 ## Cache dan credit
 
-Tahap pengambilan data, TTL awal, dan anggaran credit per use case dicatat pada
+Tahap pengambilan data, TTL normal/fallback, hard budget dan kuota dicatat pada
 [DATA-FLOW.md](DATA-FLOW.md) sebagai acuan tunggal. Automated test menggunakan
 fake HTTP, termasuk cache hit/miss, timeout, dan error mapping.
 
@@ -96,5 +121,6 @@ fake HTTP, termasuk cache hit/miss, timeout, dan error mapping.
 - [API v2 references](https://docs.sectors.app/api-references/v2/).
 - [API v2 changelog](https://docs.sectors.app/api-references/v2/changelog).
 
-Referensi dipertahankan dari rancangan awal; endpoint/biaya belum diverifikasi
-ulang terhadap layanan live pada pekerjaan dokumentasi ini.
+Endpoint/biaya tidak diuji terhadap layanan live pada pekerjaan dokumentasi ini.
+Gunakan tautan endpoint spesifik di atas atau [indeks resmi](https://docs.sectors.app/llms.txt)
+jika halaman indeks umum berubah. Jangan menghabiskan credit untuk test otomatis.

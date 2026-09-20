@@ -29,6 +29,7 @@ rekomendasi BUY/HOLD/SELL.
 - [Keamanan](SECURITY.md): input screener, secret, integritas data, dan AI.
 - [Environment](ENVIRONMENT.md): persiapan Laravel 12, MySQL, dan Redis.
 - [Submission](SUBMISSION.md): checklist produk, teknis, dan alur demo.
+- [Roadmap](ROADMAP.md): urutan MVP, AI opsional, dan arah paket berbayar/BYOK.
 - [Template](templates/README.md), [module](modules/README.md), dan
   [work item](work-items/README.md): pola dokumentasi pekerjaan.
 
@@ -40,8 +41,9 @@ module mengikuti `app/Modules/{Module}` dari rancangan NusaLens.
 
 Koreksi user tanggal 2026-09-19 menetapkan Laravel 12 dan MySQL. PHP tetap pada
 target 8.4+ dari rancangan awal. Dokumen aktif ini menjadi acuan implementasi.
-Hal yang belum ditetapkan dicatat sebagai pertanyaan terbuka, bukan dianggap
-sebagai keputusan yang sudah disetujui.
+Keputusan wawancara MVP disetujui pada 2026-09-20 dan dicatat pada
+[Keputusan](DECISIONS.md). Bedakan keputusan accepted, kondisi source starter,
+dan verifikasi implementasi yang masih harus dilakukan.
 
 Folder sumber `docs/NusaLens/` dan `docs/templateDocs/` telah dihapus atas
 instruksi user setelah adaptasi dan verifikasi selesai. Pemetaan materi asal
@@ -55,8 +57,9 @@ Dokumen aktif dan template kerja tidak membutuhkan tautan ke kedua folder itu.
 - Frontend: Inertia.js, React + TypeScript, Tailwind CSS.
 - Database: MySQL. Cache dan queue: Redis.
 - Data provider: Sectors Financial API v2.
-- Visualisasi: Apache ECharts atau Recharts.
-- AI: OpenAI API opsional, hanya untuk menjelaskan hasil analisis.
+- Visualisasi: Recharts, belum dipasang.
+- AI: opsional, hanya menjelaskan hasil analisis. Provider/model/budget belum
+  dipilih; penjelasan berbasis aturan tetap wajib.
 
 ## Prinsip
 

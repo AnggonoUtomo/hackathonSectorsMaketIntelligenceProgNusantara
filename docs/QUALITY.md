@@ -48,17 +48,37 @@ status deprecated/EOL diperiksa terpisah dari jumlah vulnerability.
 - Semua metrik tersedia, satu metrik hilang, dan banyak metrik hilang.
 - Normalisasi, percentile, kalkulator, reweighting, dan kelengkapan data.
 - Nilai ekstrem dan pertumbuhan negatif.
-- Peer kosong dan peer terlalu sedikit sesuai kebijakan yang ditetapkan.
-- Pemilihan strategi bank/perusahaan umum jika digunakan.
+- Target + 5 peer valid; 4 peer tidak cukup; seluruh peer valid di kelompok,
+  average rank/ties (semua sama =50), dan lower-is-better dibalik.
+- Hierarki subindustry -> industry -> subsector -> sector, tanpa pencampuran
+  bank/nonbank, independen dari filter screener, fallback periode terbaru dahulu.
+- Kelengkapan tepat 70%, kurang dari 70%, komponen kosong, dan bobot awal sebelum
+  reweighting; pembulatan 2 desimal tidak mempengaruhi sorting/ambang.
+- Bank, perusahaan nonkeuangan, dan keuangan nonbank tanpa metrik risiko paksa.
+- Periode/basis tidak kompatibel, denominator nol/negatif, turnaround,
+  momentum 20 sesi dan konsistensi aksi korporasi, tanpa clipping outlier valid.
 - Data dan konfigurasi yang sama menghasilkan nilai yang sama.
 
-Kebijakan yang belum final pada [SCORING.md](SCORING.md) harus diputuskan
-sebelum test mengunci hasilnya. Jangan memakai angka dari contoh konsep sebagai
-expected result untuk formula yang belum ditetapkan.
+Formula v1 disetujui pada [SCORING.md](SCORING.md). Expected result diturunkan
+dari formula tersebut; kontrak/precision dan data provider tetap diverifikasi
+dengan fixture, bukan menganggap contoh dokumentasi sebagai data live lengkap.
+
+## Kasus akses, persistence, dan credit
+
+- Guest/unverified tidak dapat mengakses riset; registrasi/verifikasi tetap berfungsi.
+- Migrasi ULID users dan FK, tanpa reset data; ULID bukan pengganti authorization.
+- Perbandingan maksimal 3 saham, privat, rename/delete, update sebagai versi baru.
+- Snapshot immutable/reproducible, reuse lintas akun tanpa bocor metadata privat,
+  retensi 30 hari dengan referensi aktif dan cleanup yang tidak merusak bukti.
+- TTL 7 hari/24 jam/1 jam, batas fallback pasar 24 jam dan keuangan 7 hari,
+  kalender bursa, metadata observasi vs fetched_at, dan respons campuran.
+- Budget 1.000 sekali pakai, kuota 20/hari reset WIB, reservasi bersamaan,
+  retry maksimal satu, timeout charging, serta Redis hilang tidak mereset ledger.
+- AI gagal/disabled tidak menghilangkan penjelasan berbasis aturan.
 
 ## Skenario manual end-to-end
 
-1. Buka Temukan Saham dan pilih sektor Financials.
+1. Login dengan email terverifikasi, buka Temukan Saham dan pilih sektor Financials.
 2. Periksa shortlist, pagination, dan filter di URL.
 3. Buka BBCA atau kandidat lain yang datanya tersedia.
 4. Lihat lima nilai, Nilai Prioritas Riset, data, freshness, dan penjelasannya.

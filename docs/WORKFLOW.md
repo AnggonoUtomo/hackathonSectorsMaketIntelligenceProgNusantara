@@ -51,9 +51,8 @@ ketika user memintanya.
    alasan nilai, dan unit test.
 5. Detail Perusahaan: overview, kartu nilai, data pendukung, peer context, dan
    panel "Mengapa Nilainya Seperti Ini?".
-6. Bandingkan: target awal 3 saham, matriks angka asli/metrik ternormalisasi,
-   perbandingan nilai, dan teks kelebihan relatif berbasis aturan tetap.
-   Scope produk 3-5 saham; batas final diputuskan di work item Comparison.
+6. Bandingkan: maksimal 3 saham, matriks angka asli/metrik ternormalisasi,
+   perbandingan nilai, teks berbasis aturan, dan simpan manual privat berversi.
 7. Temukan Kandidat: kelompok kandidat yang ramah cache.
 8. AI Explainer opsional setelah fase inti stabil.
 9. Perapihan: error state, loading, empty state, responsive, accessibility,
@@ -62,6 +61,10 @@ ketika user memintanya.
 
 Fase 1 selesai ketika aplikasi berjalan, migration MySQL berhasil, Redis dapat
 diakses, dan test dasar berjalan. Setup dirinci pada [ENVIRONMENT.md](ENVIRONMENT.md).
+Starter sudah tersedia, tetapi ULID users, kewajiban email terverifikasi untuk
+riset, dan kesiapan MySQL/Redis target perlu diverifikasi pada increment fondasi.
+Keputusan MVP di [DECISIONS.md](DECISIONS.md) adalah input plan, bukan izin otomatis
+memulai implementasi setelah pekerjaan dokumentasi selesai.
 Fase 3 boleh menampilkan hasil screener sebelum scoring; pengurutan berdasarkan
 Nilai Prioritas Riset diaktifkan setelah fase 4. Fase 8 hanya dimulai jika fase
 1-7 stabil. Setiap increment mencakup backend, UI bila relevan, dan test yang
