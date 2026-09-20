@@ -2,7 +2,8 @@
 
 ## Status dan owner
 
-- Status: In progress; increment 1 client fake-first selesai.
+- Status: In progress; increment 1 client fake-first dan increment 2 ledger
+  reservasi selesai.
 - Owner: MarketData.
 - Target: `app/Modules/MarketData`, konfigurasi Sectors backend, ledger MySQL,
   cache Redis, dan test fake HTTP.
@@ -64,3 +65,15 @@ Non-scope:
   dan secret scan diff. Tidak ada live Sectors call.
 - Risiko terbuka: DDL ledger dan locking atomik harus diputuskan saat increment
   implementasi sebelum migration dibuat.
+
+## Handoff increment 2
+
+- Perubahan: migration `market_data_credit_reservations`, config credit
+  Sectors, DTO reservation, exception reservasi, dan service reservasi database.
+- Verifikasi: focused `CreditReservationTest` dan full PHPUnit. Test mencakup
+  success, hard budget, daily quota, timezone WIB, retry limit, dan kegagalan
+  tanpa row ledger.
+- Risiko terbuka: service memakai transaksi dan row lock database; pengujian
+  concurrency nyata pada MySQL multi-connection perlu diperluas sebelum live
+  traffic tinggi. Rekonsiliasi status final charge dan cache wrapper belum
+  dikerjakan.

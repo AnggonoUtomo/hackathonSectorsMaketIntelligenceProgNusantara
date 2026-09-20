@@ -18,10 +18,10 @@
 
 ## Increment 2: Ledger/reservasi credit
 
-- [ ] Rancang dan implement migration ledger/reservation minimal.
-- [ ] Implement reservasi atomik global budget dan daily quota user.
-- [ ] Test cache-free reservation, over-budget, over-quota, retry, dan concurrency.
-- [ ] Dokumentasikan DDL dan batas rollback.
+- [x] Rancang dan implement migration ledger/reservation minimal.
+- [x] Implement reservasi atomik global budget dan daily quota user.
+- [x] Test cache-free reservation, over-budget, over-quota, retry, dan failure rollback.
+- [x] Dokumentasikan DDL dan batas rollback.
 
 ## Increment 3: Cache/freshness
 
@@ -45,3 +45,20 @@ Authorization dikirim, missing key menolak request sebelum network, error
 400/401/403/404/429/5xx dipetakan eksplisit, timeout dipetakan, dan exception
 tidak membawa API key. Tidak ada migration bisnis, ledger/cache, UI, atau live
 Sectors call pada increment ini.
+
+## Hasil increment 2
+
+Ledger/reservasi credit minimal sudah dibuat pada tabel
+`market_data_credit_reservations` dengan ULID primary key, `user_id` ULID tanpa
+FK constraint, `usage_date`, endpoint, estimated credits, attempt, status, dan
+correlation id unik per attempt. Tidak memakai Redis sebagai sumber kebenaran.
+
+`CreditReservationService` melakukan reservasi dalam transaksi database,
+menghitung pemakaian status `reserved` dan `committed`, menolak over budget
+global, over daily quota user, dan attempt melebihi batas retry. Tanggal kuota
+harian memakai timezone konfigurasi, default `Asia/Jakarta`.
+
+Test `CreditReservationTest` membuktikan reservasi sukses, hard budget global,
+kuota harian user, tanggal reset WIB, retry maksimal satu, dan kegagalan
+reservasi tidak menulis row ledger. Belum ada integrasi cache, upstream Sectors,
+atau rekonsiliasi final charge pada increment ini.

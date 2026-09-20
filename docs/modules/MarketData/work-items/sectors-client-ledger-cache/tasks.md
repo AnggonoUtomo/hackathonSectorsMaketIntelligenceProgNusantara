@@ -15,9 +15,9 @@
 
 ## Ledger/reservasi
 
-- [ ] Finalisasi DDL minimal.
-- [ ] Implement migration dan reservasi atomik.
-- [ ] Test budget/quota/retry/concurrency.
+- [x] Finalisasi DDL minimal.
+- [x] Implement migration dan reservasi atomik.
+- [x] Test budget/quota/retry/failure rollback.
 
 ## Cache/freshness
 
