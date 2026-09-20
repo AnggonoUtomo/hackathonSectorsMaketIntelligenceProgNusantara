@@ -25,14 +25,14 @@
 
 ## Increment 3: Lingkungan
 
-- [ ] Dapatkan izin client Redis/environment dan siapkan transport email uji.
-- [ ] Verifikasi Redis via aplikasi, cache/queue isolated tanpa flush global.
-- [ ] Verifikasi pengiriman email nyata ke sink/inbox uji, bukan hanya log.
-- [ ] Catat konfigurasi target tanpa secret dan hasil QA/risk yang tersisa.
+- [x] Dapatkan izin client Redis/environment dan siapkan transport email uji.
+- [x] Verifikasi Redis via aplikasi, cache/queue isolated tanpa flush global.
+- [x] Verifikasi pengiriman email nyata ke sink/inbox uji, bukan hanya log.
+- [x] Catat konfigurasi target tanpa secret dan hasil QA/risk yang tersisa.
 
 ## Hasil saat increment 2
 
-ULID users dan akses dashboard wajib verified selesai dan terverifikasi melalui
-PHPUnit, typecheck, lint, build, whitespace check, dan MySQL disposable untuk
-schema ULID. Data aplikasi aktif tidak di-reset, tidak di-migrate, dan tidak
-di-seed. Redis, mail delivery nyata, commit/push, dan Sectors belum dikerjakan.
+ULID users, akses dashboard wajib verified, Redis CLI/dev, cache Redis, queue
+Redis, dan mail delivery lokal via Mailpit selesai. Data aplikasi aktif tidak
+di-reset, tidak di-migrate, dan tidak di-seed. Sectors belum dipakai. Browser QA
+manual dan restart Apache/Laragon belum dijalankan.

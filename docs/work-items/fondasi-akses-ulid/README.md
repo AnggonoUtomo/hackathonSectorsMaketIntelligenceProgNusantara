@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: Increment 1 dan 2 selesai; increment 3 belum dimulai.
+- Status: Increment 1, 2, dan 3 selesai untuk local CLI/dev.
 - Owner: lintas module, fondasi auth starter.
 - Target: model User, migration starter, tipe frontend, middleware akses dan test.
 - Scope implementasi selesai: ULID users fresh install, tipe frontend, akses
@@ -81,6 +81,39 @@ Ini membuktikan aplikasi mengirim notifikasi Laravel, bukan bukti email sampai
 ke inbox nyata. Browser QA manual juga belum dijalankan pada increment ini.
 Pengiriman nyata tetap masuk increment 3.
 
+## Hasil increment 3
+
+Implementasi dan konfigurasi lokal 2026-09-20:
+
+- PHP CLI Laragon `8.4.16` memakai build `x64`, `Thread Safety enabled`,
+  compiler `Visual C++ 2022`.
+- Extension `phpredis` dipasang dari paket PECL Windows Redis 6.2.0 untuk
+  `PHP 8.4 TS VS17 x64` ke folder PHP 8.4 Laragon.
+- `php.ini` dibackup sebelum perubahan:
+  `C:\laragon\bin\php\php-8.4.16-Win32-vs17-x64\php.ini.bak-nusalens-20260920164143`.
+- `.env` lokal yang ignored diatur ke `CACHE_STORE=redis`,
+  `QUEUE_CONNECTION=redis`, `SESSION_DRIVER=database`, `MAIL_MAILER=smtp`,
+  `MAIL_HOST=127.0.0.1`, `MAIL_PORT=1025`, dan `REDIS_CLIENT=phpredis`.
+- Mailpit portable `v1.31.2` dipasang di luar repo:
+  `C:\laragon\bin\mailpit\mailpit-v1.31.2`.
+- Mailpit berjalan lokal pada SMTP `127.0.0.1:1025` dan UI
+  `http://127.0.0.1:8025`.
+
+Verifikasi:
+
+- `php -m` menampilkan extension `redis`.
+- `Redis::connection()->ping()` via Laravel berhasil.
+- Cache Redis smoke test berhasil menyimpan TTL 30 detik dan menghapus key
+  `nusalens_smoke_*` tanpa flush global.
+- Queue Redis smoke test berhasil push/pop payload pada queue
+  `nusalens-smoke-*` dan menghapus key queue smoke saja.
+- Laravel mengirim `VerifyEmail` notification nyata via SMTP lokal dan Mailpit
+  menerima 1 pesan dengan subject `Verify Email Address`.
+
+Catatan: konfigurasi ini membuktikan kesiapan local CLI/dev. Jika Apache
+Laragon sedang memakai PHP process lama, restart Apache/Laragon agar extension
+`phpredis` dan `php.ini` terbaru ikut terbaca pada web server.
+
 Pemeriksaan schema wajib dibatasi ke database aktif. Inventaris tanpa pembatas
 schema dapat mencakup database lain pada server lokal dan tidak boleh dipakai
 untuk menyimpulkan kondisi NusaLens. Tidak ada tabel/database lain yang diubah.
@@ -114,10 +147,12 @@ Plan memakai jalur database aktif kosong, bukan migrasi konversi akun existing.
 Kondisi ini harus diperiksa ulang sebelum implementasi; database berisi data
 atau migration lama memerlukan plan konversi tersendiri dan persetujuan.
 
-## Handoff increment 2
+## Handoff increment 3
 
 Source dan test berubah untuk ULID dan akses verified. Database aplikasi aktif
 tetap tidak di-migrate dan tidak di-seed; schema write hanya dilakukan pada
-database MySQL disposable saat increment 1. Tidak memasang Redis client,
-menjalankan Sectors API, atau membuktikan email inbox nyata. Increment 3
-menunggu instruksi terpisah. Rincian ada pada [plan](plan.md).
+database MySQL disposable saat increment 1. Redis client, cache Redis, queue
+Redis, dan mail sink lokal sudah terverifikasi pada CLI/dev. Tidak menjalankan
+Sectors API dan tidak memakai SMTP publik. Browser QA manual dan restart Apache
+tetap menjadi verifikasi lanjutan bila ingin menguji via web server. Rincian
+ada pada [plan](plan.md).
