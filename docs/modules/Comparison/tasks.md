@@ -15,10 +15,10 @@
 
 ## Increment 2: Backend fake comparison payload
 
-- [ ] Buat `FakeComparisonBuilder` atau nama setara di module Comparison.
-- [ ] Validasi `symbols`: opsional, alfanumerik, maksimal 3, unknown ditolak.
-- [ ] Route `/bandingkan` mengirim props `comparison`.
-- [ ] Unit dan feature test backend fake comparison.
+- [x] Buat `FakeComparisonBuilder` atau nama setara di module Comparison.
+- [x] Validasi `symbols`: opsional, alfanumerik, maksimal 3, unknown ditolak.
+- [x] Route `/bandingkan` mengirim props `comparison`.
+- [x] Unit dan feature test backend fake comparison.
 
 ## Increment 3: UI matrix dan link detail
 

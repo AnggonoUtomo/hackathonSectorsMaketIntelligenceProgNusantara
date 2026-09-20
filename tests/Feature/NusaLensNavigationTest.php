@@ -119,4 +119,61 @@ class NusaLensNavigationTest extends TestCase
 
         $this->get('/perusahaan/ZZZZ')->assertNotFound();
     }
+
+    public function test_compare_page_receives_empty_fake_payload(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/bandingkan')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'compare')
+                ->where('comparison.meta.state', 'empty')
+                ->where('comparison.meta.limit', 3)
+                ->has('comparison.companies', 0)
+            );
+    }
+
+    public function test_compare_page_receives_fake_matrix_for_symbols(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/bandingkan?symbols=BBCA,TLKM')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'compare')
+                ->where('comparison.symbols.0', 'BBCA')
+                ->where('comparison.symbols.1', 'TLKM')
+                ->where('comparison.companies.0.name', 'Bank Central Asia Tbk')
+                ->where('comparison.metrics.0.label', 'Nilai Prioritas Riset')
+                ->where('comparison.metrics.0.values.BBCA', '82,45')
+                ->where('comparison.meta.state', 'ready')
+            );
+    }
+
+    public function test_compare_page_rejects_more_than_three_symbols(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->from('/bandingkan')
+            ->get('/bandingkan?symbols=BBCA,TLKM,ICBP,BBRI')
+            ->assertRedirect('/bandingkan')
+            ->assertSessionHasErrors('symbols');
+    }
+
+    public function test_compare_page_rejects_unknown_symbol(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->from('/bandingkan')
+            ->get('/bandingkan?symbols=BBCA,ZZZZ')
+            ->assertRedirect('/bandingkan')
+            ->assertSessionHasErrors('symbols');
+    }
 }

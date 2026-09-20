@@ -1,9 +1,11 @@
 <?php
 
 use App\Modules\Company\Application\FakeCompanySnapshot;
+use App\Modules\Comparison\Application\FakeComparisonBuilder;
 use App\Modules\Screening\Application\FakeDiscoverScreener;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -44,8 +46,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->whereAlphaNumeric('symbol')->name('companies.show');
 
-    Route::get('bandingkan', function () {
-        return Inertia::render('nusalens/placeholder', ['section' => 'compare']);
+    Route::get('bandingkan', function (Request $request, FakeComparisonBuilder $comparison) {
+        $validated = $request->validate([
+            'symbols' => ['nullable', 'string', 'max:64'],
+        ]);
+
+        try {
+            $payload = $comparison->build($validated['symbols'] ?? null);
+        } catch (\InvalidArgumentException $exception) {
+            throw ValidationException::withMessages([
+                'symbols' => $exception->getMessage(),
+            ]);
+        }
+
+        return Inertia::render('nusalens/placeholder', [
+            'section' => 'compare',
+            'comparison' => $payload,
+        ]);
     })->name('compare');
 
     Route::get('jelaskan-nilai', function () {
