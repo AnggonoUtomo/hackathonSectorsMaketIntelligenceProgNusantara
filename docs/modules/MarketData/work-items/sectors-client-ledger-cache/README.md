@@ -3,7 +3,8 @@
 ## Status dan owner
 
 - Status: In progress; increment 1 client fake-first, increment 2 ledger
-  reservasi, dan increment 3 cache wrapper selesai.
+  reservasi, increment 3 cache wrapper, dan increment 4 structured screener
+  internal selesai.
 - Owner: MarketData.
 - Target: `app/Modules/MarketData`, konfigurasi Sectors backend, ledger MySQL,
   cache Redis, dan test fake HTTP.
@@ -44,10 +45,10 @@ Non-scope:
 - [ ] Automated test tidak melakukan network call nyata ke Sectors.
 - [ ] API key tidak muncul di source, frontend, log, dokumentasi output, atau
   test output.
-- [ ] Cache hit tidak memakai credit dan tidak memanggil upstream.
+- [x] Cache hit tidak memakai credit dan tidak memanggil upstream.
 - [ ] Reservasi MySQL mencegah overspend global/daily.
 - [ ] Error provider tidak disamarkan sebagai data kosong.
-- [ ] Structured screener hanya memakai allowlist field/operator.
+- [x] Structured screener hanya memakai allowlist field/operator.
 
 ## Dependency dan keputusan
 
@@ -88,3 +89,16 @@ Non-scope:
   persisted, fallback stale, dan cache wrapper yang langsung membungkus
   `SectorsApiClient` belum dikerjakan; itu masuk increment structured screener
   dan/atau refinement berikutnya.
+
+## Handoff increment 4
+
+- Perubahan: DTO criteria/result/company screener, exception validasi,
+  `StructuredCompanyScreener`, allowlist field/operator, cache TTL 1 jam, dan
+  reservasi 1 credit hanya pada cache miss.
+- Verifikasi: focused `StructuredCompanyScreenerTest` dan full MarketData test
+  suite. Test membuktikan mapping simbol/nama/query values/pagination, cache
+  hit tidak memanggil provider atau menambah ledger, raw expression ditolak,
+  dan error provider tidak menjadi data kosong.
+- Risiko terbuka: belum ada inbound HTTP route authenticated+verified, empty
+  result khusus, quota error pada level screener, metadata freshness persisted,
+  status final charge, dan Company/Screening consumer.

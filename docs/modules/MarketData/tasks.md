@@ -31,10 +31,11 @@
 
 ## Increment 4: Structured screener vertical slice
 
-- [ ] Buat DTO internal screener minimal dan mapper provider.
-- [ ] Validasi allowlist field/operator structured query.
-- [ ] Test pagination, empty result, provider error, quota error, dan auth verified.
-- [ ] Catat estimasi credit per aksi sebelum live request di masa depan.
+- [x] Buat DTO internal screener minimal dan mapper provider.
+- [x] Validasi allowlist field/operator structured query.
+- [x] Test pagination, cache hit, provider error eksplisit, dan no-credit-on-hit.
+- [ ] Test empty result, quota error, dan auth verified saat inbound endpoint dibuat.
+- [x] Catat estimasi credit per aksi sebelum live request di masa depan.
 
 ## Hasil increment 1
 
@@ -77,3 +78,18 @@ menambah ledger credit, mapping version memisahkan key, parameter order
 deterministik, perubahan parameter menghasilkan key berbeda, dan cache expired
 menjalankan resolver ulang. Tidak ada flush Redis global; test memakai store
 testing sesuai konfigurasi PHPUnit.
+
+## Hasil increment 4
+
+Structured screener minimal sudah tersedia melalui `StructuredCompanyScreener`.
+Caller mengirim `StructuredScreenerCriteria` berisi field/operator allowlist;
+expression mentah bebas ditolak sebelum provider. Adapter memakai cache TTL 1
+jam dan hanya membuat reservasi 1 credit pada cache miss sebelum request
+`companies`.
+
+Mapper internal mengembalikan simbol, nama perusahaan, sektor/subsektor,
+`query_values`, dan pagination. Test `StructuredCompanyScreenerTest`
+membuktikan pagination dipertahankan, cache hit tidak memanggil provider atau
+menambah ledger, query raw/unknown ditolak, dan error 429 provider tetap
+eksplisit. Belum ada UI Discover atau endpoint HTTP authenticated+verified;
+itu sengaja ditunda sampai consumer Screening/Company dibuat.

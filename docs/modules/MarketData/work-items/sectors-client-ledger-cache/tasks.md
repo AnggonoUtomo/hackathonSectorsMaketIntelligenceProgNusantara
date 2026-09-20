@@ -26,6 +26,7 @@
 
 ## Structured screener
 
-- [ ] Implement DTO/mapper minimal.
-- [ ] Implement allowlist query.
-- [ ] Test pagination, empty, error, quota, dan auth verified.
+- [x] Implement DTO/mapper minimal.
+- [x] Implement allowlist query.
+- [x] Test pagination, cache hit, provider error eksplisit, dan no-credit-on-hit.
+- [ ] Test empty, quota, dan auth verified saat inbound endpoint dibuat.
