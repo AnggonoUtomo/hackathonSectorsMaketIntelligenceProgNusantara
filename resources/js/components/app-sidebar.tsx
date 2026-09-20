@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Building2, Folder, GitCompare, LayoutGrid, Radar, Search, Sparkles } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -12,6 +12,31 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         url: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Temukan Saham',
+        url: '/temukan-saham',
+        icon: Search,
+    },
+    {
+        title: 'Perusahaan',
+        url: '/perusahaan',
+        icon: Building2,
+    },
+    {
+        title: 'Bandingkan',
+        url: '/bandingkan',
+        icon: GitCompare,
+    },
+    {
+        title: 'Jelaskan Nilai',
+        url: '/jelaskan-nilai',
+        icon: Sparkles,
+    },
+    {
+        title: 'Kandidat Menarik',
+        url: '/kandidat-menarik',
+        icon: Radar,
     },
 ];
 
