@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -48,5 +49,50 @@ class NusaLensNavigationTest extends TestCase
             ->actingAs($user)
             ->get($path)
             ->assertRedirect(route('verification.notice', absolute: false));
+    }
+
+    public function test_discover_page_receives_fake_backend_results(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/temukan-saham?sector=financials&min_score=80&limit=2')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'discover')
+                ->where('discover.filters.sector', 'financials')
+                ->where('discover.filters.minScore', '80')
+                ->where('discover.results.0.symbol', 'BBCA')
+                ->has('discover.results', 1)
+                ->where('discover.meta.source', 'backend_fake')
+                ->where('discover.meta.estimatedCredits', 1)
+            );
+    }
+
+    public function test_discover_page_can_return_empty_fake_results(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/temukan-saham?keyword=ZZZZ')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('discover.filters.keyword', 'ZZZZ')
+                ->has('discover.results', 0)
+                ->where('discover.meta.state', 'empty')
+            );
+    }
+
+    public function test_discover_page_rejects_invalid_fake_filter(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->from('/temukan-saham')
+            ->get('/temukan-saham?sector=raw-expression')
+            ->assertRedirect('/temukan-saham')
+            ->assertSessionHasErrors('sector');
     }
 }

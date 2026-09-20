@@ -5,13 +5,41 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { BarChart3, Building2, Database, GitCompare, Info, Radar, Search, Sparkles } from 'lucide-react';
+import { FormEvent } from 'react';
 
 type SectionKey = 'discover' | 'companies' | 'compare' | 'research' | 'candidates';
 
 interface PlaceholderProps {
     section: SectionKey;
+    discover?: DiscoverPayload;
+}
+
+interface DiscoverCompany {
+    symbol: string;
+    name: string;
+    sector: string;
+    score: string;
+    completeness: string;
+    freshness: string;
+}
+
+interface DiscoverPayload {
+    filters: {
+        keyword: string;
+        sector: string;
+        minScore: string;
+        limit: string;
+    };
+    results: DiscoverCompany[];
+    meta: {
+        source: 'backend_fake';
+        state: 'ready' | 'empty';
+        estimatedCredits: number;
+        cachePolicy: string;
+        liveProvider: boolean;
+    };
 }
 
 const sections = {
@@ -47,7 +75,7 @@ const sections = {
     },
 } satisfies Record<SectionKey, { title: string; eyebrow: string; description: string; icon: typeof Search }>;
 
-const companies = [
+const fallbackCompanies = [
     { symbol: 'BBCA', name: 'Bank Central Asia Tbk', sector: 'Financials', score: '82,45', completeness: '91,00', freshness: 'Cache 42 menit' },
     { symbol: 'TLKM', name: 'Telkom Indonesia Tbk', sector: 'Infrastructure', score: '78,20', completeness: '86,50', freshness: 'Cache 18 menit' },
     { symbol: 'ICBP', name: 'Indofood CBP Sukses Makmur Tbk', sector: 'Consumer Non-Cyclicals', score: '74,85', completeness: '88,00', freshness: 'Cache 51 menit' },
@@ -58,9 +86,37 @@ const breadcrumbs = (title: string): BreadcrumbItem[] => [
     { title, href: '#' },
 ];
 
-export default function NusaLensPlaceholder({ section }: PlaceholderProps) {
+export default function NusaLensPlaceholder({ section, discover }: PlaceholderProps) {
     const current = sections[section] ?? sections.discover;
     const Icon = current.icon;
+    const isDiscover = section === 'discover';
+    const companies = discover?.results ?? fallbackCompanies;
+    const meta = discover?.meta ?? {
+        source: 'backend_fake',
+        state: companies.length === 0 ? 'empty' : 'ready',
+        estimatedCredits: 1,
+        cachePolicy: '1 jam',
+        liveProvider: false,
+    };
+    const form = useForm({
+        keyword: discover?.filters.keyword ?? '',
+        sector: discover?.filters.sector ?? 'all',
+        min_score: discover?.filters.minScore ?? '',
+        limit: discover?.filters.limit ?? '10',
+    });
+
+    function submitDiscover(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        form.get('/temukan-saham', {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    }
+
+    function resetDiscover() {
+        router.get('/temukan-saham', {}, { preserveScroll: true });
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs(current.title)}>
@@ -77,7 +133,7 @@ export default function NusaLensPlaceholder({ section }: PlaceholderProps) {
                             <p className="mt-2 text-sm text-muted-foreground">{current.description}</p>
                         </div>
                         <div className="rounded-md border bg-background px-3 py-2 text-sm">
-                            <span className="text-muted-foreground">Estimasi aksi:</span> 1 credit saat cache miss
+                            <span className="text-muted-foreground">Estimasi aksi:</span> {meta.estimatedCredits} credit saat cache miss
                         </div>
                     </div>
                 </section>
@@ -85,19 +141,28 @@ export default function NusaLensPlaceholder({ section }: PlaceholderProps) {
                 <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="text-base">Filter Placeholder</CardTitle>
-                            <CardDescription>Belum mengirim request ke Sectors API.</CardDescription>
+                            <CardTitle className="text-base">{isDiscover ? 'Filter Backend Fake' : 'Filter Placeholder'}</CardTitle>
+                            <CardDescription>
+                                {isDiscover ? 'Submit filter ke Laravel, hasil masih dari provider fake internal.' : 'Belum mengirim request ke Sectors API.'}
+                            </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-3">
+                        <CardContent>
+                            <form className="space-y-3" onSubmit={submitDiscover}>
                             <div className="space-y-1.5">
                                 <label className="text-sm font-medium" htmlFor="keyword">
                                     Ticker atau nama
                                 </label>
-                                <Input id="keyword" placeholder="BBCA, TLKM, ICBP" />
+                                <Input
+                                    id="keyword"
+                                    placeholder="BBCA, TLKM, ICBP"
+                                    value={form.data.keyword}
+                                    onChange={(event) => form.setData('keyword', event.target.value)}
+                                    disabled={!isDiscover}
+                                />
                             </div>
                             <div className="space-y-1.5">
                                 <label className="text-sm font-medium">Sektor</label>
-                                <Select defaultValue="all">
+                                <Select value={form.data.sector} onValueChange={(value) => form.setData('sector', value)} disabled={!isDiscover}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Pilih sektor" />
                                     </SelectTrigger>
@@ -114,18 +179,36 @@ export default function NusaLensPlaceholder({ section }: PlaceholderProps) {
                                     <label className="text-sm font-medium" htmlFor="min-score">
                                         Nilai min
                                     </label>
-                                    <Input id="min-score" placeholder="70,00" />
+                                    <Input
+                                        id="min-score"
+                                        placeholder="70,00"
+                                        value={form.data.min_score}
+                                        onChange={(event) => form.setData('min_score', event.target.value)}
+                                        disabled={!isDiscover}
+                                    />
                                 </div>
                                 <div className="space-y-1.5">
                                     <label className="text-sm font-medium" htmlFor="max-items">
                                         Limit
                                     </label>
-                                    <Input id="max-items" placeholder="10" />
+                                    <Input
+                                        id="max-items"
+                                        placeholder="10"
+                                        value={form.data.limit}
+                                        onChange={(event) => form.setData('limit', event.target.value)}
+                                        disabled={!isDiscover}
+                                    />
                                 </div>
                             </div>
-                            <Button className="w-full" disabled>
-                                Jalankan setelah backend siap
-                            </Button>
+                            <div className="grid grid-cols-2 gap-2">
+                                <Button type="submit" disabled={!isDiscover || form.processing}>
+                                    Terapkan
+                                </Button>
+                                <Button type="button" variant="outline" disabled={!isDiscover || form.processing} onClick={resetDiscover}>
+                                    Reset
+                                </Button>
+                            </div>
+                            </form>
                         </CardContent>
                     </Card>
 
@@ -134,13 +217,23 @@ export default function NusaLensPlaceholder({ section }: PlaceholderProps) {
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div>
                                     <CardTitle className="text-base">Shortlist Contoh</CardTitle>
-                                    <CardDescription>Angka berikut hanya data contoh untuk mempelajari layout.</CardDescription>
+                                    <CardDescription>
+                                        {isDiscover
+                                            ? `Sumber ${meta.source}; live provider ${meta.liveProvider ? 'aktif' : 'nonaktif'}; cache ${meta.cachePolicy}.`
+                                            : 'Angka berikut hanya data contoh untuk mempelajari layout.'}
+                                    </CardDescription>
                                 </div>
                                 <Badge variant="secondary">2 desimal</Badge>
                             </div>
                         </CardHeader>
                         <CardContent>
-                            <div className="overflow-x-auto rounded-md border">
+                            {companies.length === 0 ? (
+                                <div role="status" className="rounded-md border border-dashed p-8 text-center">
+                                    <div className="text-sm font-medium">Belum ada kandidat cocok</div>
+                                    <p className="mt-1 text-sm text-muted-foreground">Coba longgarkan filter ticker, sektor, atau nilai minimum.</p>
+                                </div>
+                            ) : (
+                                <div className="overflow-x-auto rounded-md border">
                                 <table className="w-full min-w-[720px] text-sm">
                                     <thead className="bg-muted/50 text-left">
                                         <tr>
@@ -166,6 +259,7 @@ export default function NusaLensPlaceholder({ section }: PlaceholderProps) {
                                     </tbody>
                                 </table>
                             </div>
+                            )}
                         </CardContent>
                     </Card>
                 </section>
