@@ -22,15 +22,17 @@
 
 ## Increment 3: UI matrix dan link detail
 
-- [ ] Halaman Bandingkan menampilkan empty state saat belum ada symbol.
-- [ ] Halaman Bandingkan menampilkan matrix side-by-side dari backend props.
-- [ ] Detail perusahaan memiliki link ke `/bandingkan?symbols={symbol}`.
-- [ ] Typecheck, lint, build, full test, whitespace, dan secret scan lulus.
+- [x] Halaman Bandingkan menampilkan empty state saat belum ada symbol.
+- [x] Halaman Bandingkan menampilkan matrix side-by-side dari backend props.
+- [x] Detail perusahaan memiliki link ke `/bandingkan?symbols={symbol}`.
+- [x] Typecheck, lint, build, full test, whitespace, dan sensitive-data scan lulus.
 
 ## Hasil
 
 - [ ] Scope selesai dan dokumentasi diperbarui.
-- Perubahan: belum dikerjakan.
-- Verifikasi: belum dijalankan.
+- Perubahan: backend fake comparison, validasi query, UI matrix, dan link dari
+  Detail Perusahaan ke Bandingkan selesai.
+- Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
+  whitespace, dan sensitive-data scan lulus.
 - Risiko: persistence perbandingan privat dan versioning snapshot belum masuk
   fake flow.

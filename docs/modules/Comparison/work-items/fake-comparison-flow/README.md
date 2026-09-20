@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: In progress.
+- Status: Done.
 - Owner: Comparison.
 - Target: `app/Modules/Comparison`, route `/bandingkan`, dan UI Inertia
   placeholder NusaLens.
@@ -50,7 +50,10 @@ Non-scope:
 
 ## Handoff
 
-- Perubahan: belum dikerjakan.
-- Verifikasi: belum dijalankan.
+- Perubahan: backend fake comparison payload, validasi maksimal 3 symbol,
+  matrix UI Bandingkan, empty state, error state query, dan link dari Detail
+  Perusahaan ke Bandingkan.
+- Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
+  whitespace, dan sensitive-data scan lulus.
 - Risiko terbuka: persistence dan snapshot berversi Comparison belum dirancang
   pada increment ini.

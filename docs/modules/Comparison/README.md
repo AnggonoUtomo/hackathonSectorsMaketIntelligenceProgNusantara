@@ -35,6 +35,6 @@ Verifikasi awal untuk fake flow:
 - feature test route Bandingkan menerima maksimal 3 symbol;
 - invalid/unknown symbol ditangani eksplisit;
 - UI menampilkan matriks side-by-side dari backend fake;
-- `php artisan test`, typecheck, lint, build, dan secret scan tetap lulus.
+- `php artisan test`, typecheck, lint, build, dan sensitive-data scan tetap lulus.
 
 Source mengikuti `docs/ARCHITECTURE.md` dan `docs/FOLDER-STRUCTURE.md`.

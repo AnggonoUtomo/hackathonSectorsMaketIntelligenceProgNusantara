@@ -12,13 +12,14 @@
 - [x] Buat backend fake comparison payload.
 - [x] Tambahkan validasi query `symbols`.
 - [x] Tambahkan test empty/success/over-limit/unknown.
-- [ ] Update UI Bandingkan menjadi matrix.
-- [ ] Tambahkan link dari Detail Perusahaan ke Bandingkan.
+- [x] Update UI Bandingkan menjadi matrix.
+- [x] Tambahkan link dari Detail Perusahaan ke Bandingkan.
 
 ## Hasil
 
 - [ ] Scope selesai dan dokumentasi diperbarui.
-- Perubahan: backend fake comparison payload, validasi query, route props, dan
-  test backend selesai.
-- Verifikasi: focused PHPUnit backend comparison lulus.
+- Perubahan: backend fake comparison payload, validasi query, route props, UI
+  matrix, dan link dari detail selesai.
+- Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
+  whitespace, dan sensitive-data scan lulus.
 - Risiko: persistence privat dan versioning snapshot di luar scope.

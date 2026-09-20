@@ -15,6 +15,7 @@ interface PlaceholderProps {
     section: SectionKey;
     discover?: DiscoverPayload;
     company?: CompanySnapshot;
+    comparison?: ComparisonPayload;
 }
 
 interface DiscoverCompany {
@@ -57,6 +58,27 @@ interface CompanySnapshot {
     meta: {
         source: 'backend_fake';
         freshness: string;
+        liveProvider: boolean;
+    };
+}
+
+interface ComparisonPayload {
+    symbols: string[];
+    companies: Array<{
+        symbol: string;
+        name: string;
+        sector: string;
+        freshness: string;
+    }>;
+    metrics: Array<{
+        label: string;
+        values: Record<string, string>;
+        notes: Record<string, string>;
+    }>;
+    meta: {
+        source: 'backend_fake';
+        state: 'ready' | 'empty';
+        limit: number;
         liveProvider: boolean;
     };
 }
@@ -105,11 +127,12 @@ const breadcrumbs = (title: string): BreadcrumbItem[] => [
     { title, href: '#' },
 ];
 
-export default function NusaLensPlaceholder({ section, discover, company }: PlaceholderProps) {
+export default function NusaLensPlaceholder({ section, discover, company, comparison }: PlaceholderProps) {
     const current = sections[section] ?? sections.discover;
     const Icon = current.icon;
     const isDiscover = section === 'discover';
     const isCompanyDetail = section === 'companies' && company !== undefined;
+    const isCompare = section === 'compare';
     const companies = discover?.results ?? fallbackCompanies;
     const meta = discover?.meta ?? {
         source: 'backend_fake',
@@ -124,6 +147,9 @@ export default function NusaLensPlaceholder({ section, discover, company }: Plac
         min_score: discover?.filters.minScore ?? '',
         limit: discover?.filters.limit ?? '10',
     });
+    const comparisonForm = useForm({
+        symbols: comparison?.symbols.join(',') ?? '',
+    });
 
     function submitDiscover(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -136,6 +162,19 @@ export default function NusaLensPlaceholder({ section, discover, company }: Plac
 
     function resetDiscover() {
         router.get('/temukan-saham', {}, { preserveScroll: true });
+    }
+
+    function submitComparison(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        comparisonForm.get('/bandingkan', {
+            preserveScroll: true,
+            preserveState: true,
+        });
+    }
+
+    function resetComparison() {
+        router.get('/bandingkan', {}, { preserveScroll: true });
     }
 
     return (
@@ -209,12 +248,120 @@ export default function NusaLensPlaceholder({ section, discover, company }: Plac
                                         Kembali ke Temukan Saham
                                     </Link>
                                 </Button>
+                                <Button asChild size="sm">
+                                    <Link href={`/bandingkan?symbols=${company.symbol}`} prefetch>
+                                        Bandingkan
+                                    </Link>
+                                </Button>
                             </CardContent>
                         </Card>
                     </section>
                 )}
 
-                {!isCompanyDetail && <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
+                {isCompare && comparison !== undefined && (
+                    <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Pilih Saham</CardTitle>
+                                <CardDescription>Maksimal {comparison.meta.limit} ticker, pisahkan dengan koma.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <form className="space-y-3" onSubmit={submitComparison}>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium" htmlFor="compare-symbols">
+                                            Ticker
+                                        </label>
+                                        <Input
+                                            id="compare-symbols"
+                                            placeholder="BBCA,TLKM,ICBP"
+                                            value={comparisonForm.data.symbols}
+                                            onChange={(event) => comparisonForm.setData('symbols', event.target.value)}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <Button type="submit" disabled={comparisonForm.processing}>
+                                            Bandingkan
+                                        </Button>
+                                        <Button type="button" variant="outline" disabled={comparisonForm.processing} onClick={resetComparison}>
+                                            Reset
+                                        </Button>
+                                    </div>
+                                </form>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <div>
+                                        <CardTitle className="text-base">Matrix Perbandingan</CardTitle>
+                                        <CardDescription>
+                                            Sumber {comparison.meta.source}; live provider {comparison.meta.liveProvider ? 'aktif' : 'nonaktif'}.
+                                        </CardDescription>
+                                    </div>
+                                    <Badge variant="secondary">Maks {comparison.meta.limit} saham</Badge>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                {comparison.companies.length === 0 ? (
+                                    <div role="status" className="rounded-md border border-dashed p-8 text-center">
+                                        <div className="text-sm font-medium">Belum ada saham untuk dibandingkan</div>
+                                        <p className="mt-1 text-sm text-muted-foreground">
+                                            Masukkan ticker dari dataset fake: BBCA, TLKM, atau ICBP.
+                                        </p>
+                                    </div>
+                                ) : (
+                                    <div className="overflow-x-auto rounded-md border">
+                                        <table className="w-full min-w-[760px] text-sm">
+                                            <thead className="bg-muted/50 text-left">
+                                                <tr>
+                                                    <th className="px-3 py-2 font-medium">Metrik</th>
+                                                    {comparison.companies.map((item) => (
+                                                        <th key={item.symbol} className="px-3 py-2 font-medium">
+                                                            <div>{item.symbol}</div>
+                                                            <div className="text-xs font-normal text-muted-foreground">{item.name}</div>
+                                                        </th>
+                                                    ))}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr className="border-t">
+                                                    <td className="px-3 py-3 font-medium">Sektor</td>
+                                                    {comparison.companies.map((item) => (
+                                                        <td key={item.symbol} className="px-3 py-3 text-muted-foreground">
+                                                            {item.sector}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                                <tr className="border-t">
+                                                    <td className="px-3 py-3 font-medium">Freshness</td>
+                                                    {comparison.companies.map((item) => (
+                                                        <td key={item.symbol} className="px-3 py-3 text-muted-foreground">
+                                                            {item.freshness}
+                                                        </td>
+                                                    ))}
+                                                </tr>
+                                                {comparison.metrics.map((metric) => (
+                                                    <tr key={metric.label} className="border-t">
+                                                        <td className="px-3 py-3 font-medium">{metric.label}</td>
+                                                        {comparison.symbols.map((symbol) => (
+                                                            <td key={symbol} className="px-3 py-3">
+                                                                <div className="font-semibold tabular-nums">{metric.values[symbol]}</div>
+                                                                <div className="mt-1 text-xs text-muted-foreground">{metric.notes[symbol]}</div>
+                                                            </td>
+                                                        ))}
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </section>
+                )}
+
+                {!isCompanyDetail && !isCompare && <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">{isDiscover ? 'Filter Backend Fake' : 'Filter Placeholder'}</CardTitle>
