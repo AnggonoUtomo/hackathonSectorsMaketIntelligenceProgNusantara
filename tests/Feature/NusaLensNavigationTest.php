@@ -95,4 +95,28 @@ class NusaLensNavigationTest extends TestCase
             ->assertRedirect('/temukan-saham')
             ->assertSessionHasErrors('sector');
     }
+
+    public function test_company_detail_page_receives_fake_snapshot(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/perusahaan/BBCA')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'companies')
+                ->where('company.symbol', 'BBCA')
+                ->where('company.name', 'Bank Central Asia Tbk')
+                ->where('company.metrics.0.label', 'Nilai Prioritas Riset')
+                ->where('company.meta.source', 'backend_fake')
+            );
+    }
+
+    public function test_unknown_company_detail_returns_not_found(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this->get('/perusahaan/ZZZZ')->assertNotFound();
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Company\Application\FakeCompanySnapshot;
 use App\Modules\Screening\Application\FakeDiscoverScreener;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('perusahaan', function () {
         return Inertia::render('nusalens/placeholder', ['section' => 'companies']);
     })->name('companies');
+
+    Route::get('perusahaan/{symbol}', function (string $symbol, FakeCompanySnapshot $snapshots) {
+        $company = $snapshots->find($symbol);
+
+        abort_if($company === null, 404);
+
+        return Inertia::render('nusalens/placeholder', [
+            'section' => 'companies',
+            'company' => $company,
+        ]);
+    })->whereAlphaNumeric('symbol')->name('companies.show');
 
     Route::get('bandingkan', function () {
         return Inertia::render('nusalens/placeholder', ['section' => 'compare']);

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { BarChart3, Building2, Database, GitCompare, Info, Radar, Search, Sparkles } from 'lucide-react';
 import { FormEvent } from 'react';
 
@@ -14,6 +14,7 @@ type SectionKey = 'discover' | 'companies' | 'compare' | 'research' | 'candidate
 interface PlaceholderProps {
     section: SectionKey;
     discover?: DiscoverPayload;
+    company?: CompanySnapshot;
 }
 
 interface DiscoverCompany {
@@ -38,6 +39,24 @@ interface DiscoverPayload {
         state: 'ready' | 'empty';
         estimatedCredits: number;
         cachePolicy: string;
+        liveProvider: boolean;
+    };
+}
+
+interface CompanySnapshot {
+    symbol: string;
+    name: string;
+    sector: string;
+    subSector: string;
+    summary: string;
+    metrics: Array<{
+        label: string;
+        value: string;
+        note: string;
+    }>;
+    meta: {
+        source: 'backend_fake';
+        freshness: string;
         liveProvider: boolean;
     };
 }
@@ -86,10 +105,11 @@ const breadcrumbs = (title: string): BreadcrumbItem[] => [
     { title, href: '#' },
 ];
 
-export default function NusaLensPlaceholder({ section, discover }: PlaceholderProps) {
+export default function NusaLensPlaceholder({ section, discover, company }: PlaceholderProps) {
     const current = sections[section] ?? sections.discover;
     const Icon = current.icon;
     const isDiscover = section === 'discover';
+    const isCompanyDetail = section === 'companies' && company !== undefined;
     const companies = discover?.results ?? fallbackCompanies;
     const meta = discover?.meta ?? {
         source: 'backend_fake',
@@ -130,15 +150,71 @@ export default function NusaLensPlaceholder({ section, discover }: PlaceholderPr
                                 <Icon className="size-6" />
                                 <h1 className="text-2xl font-semibold">{current.title}</h1>
                             </div>
-                            <p className="mt-2 text-sm text-muted-foreground">{current.description}</p>
+                            <p className="mt-2 text-sm text-muted-foreground">{company?.summary ?? current.description}</p>
                         </div>
                         <div className="rounded-md border bg-background px-3 py-2 text-sm">
-                            <span className="text-muted-foreground">Estimasi aksi:</span> {meta.estimatedCredits} credit saat cache miss
+                            {isCompanyDetail ? (
+                                <>
+                                    <span className="text-muted-foreground">Freshness:</span> {company.meta.freshness}
+                                </>
+                            ) : (
+                                <>
+                                    <span className="text-muted-foreground">Estimasi aksi:</span> {meta.estimatedCredits} credit saat cache miss
+                                </>
+                            )}
                         </div>
                     </div>
                 </section>
 
-                <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
+                {isCompanyDetail && (
+                    <section className="grid gap-4 lg:grid-cols-[1fr_320px]">
+                        <Card>
+                            <CardHeader>
+                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <div>
+                                        <CardTitle className="text-base">
+                                            {company.symbol} - {company.name}
+                                        </CardTitle>
+                                        <CardDescription>
+                                            {company.sector} / {company.subSector}
+                                        </CardDescription>
+                                    </div>
+                                    <Badge variant="secondary">Backend fake</Badge>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                                    {company.metrics.map((metric) => (
+                                        <div key={metric.label} className="rounded-md border bg-background p-3">
+                                            <div className="text-xs text-muted-foreground">{metric.label}</div>
+                                            <div className="mt-2 text-xl font-semibold tabular-nums">{metric.value}</div>
+                                            <div className="mt-1 text-xs text-muted-foreground">{metric.note}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-base">Status Data</CardTitle>
+                                <CardDescription>
+                                    Sumber {company.meta.source}; live provider {company.meta.liveProvider ? 'aktif' : 'nonaktif'}.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-3 text-sm text-muted-foreground">
+                                <p>Snapshot ini masih contoh internal untuk menguji alur dari screener ke detail perusahaan.</p>
+                                <Button asChild variant="outline" size="sm">
+                                    <Link href="/temukan-saham" prefetch>
+                                        Kembali ke Temukan Saham
+                                    </Link>
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </section>
+                )}
+
+                {!isCompanyDetail && <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">{isDiscover ? 'Filter Backend Fake' : 'Filter Placeholder'}</CardTitle>
@@ -248,8 +324,16 @@ export default function NusaLensPlaceholder({ section, discover }: PlaceholderPr
                                     <tbody>
                                         {companies.map((company) => (
                                             <tr key={company.symbol} className="border-t">
-                                                <td className="px-3 py-3 font-semibold">{company.symbol}</td>
-                                                <td className="px-3 py-3">{company.name}</td>
+                                                <td className="px-3 py-3 font-semibold">
+                                                    <Link className="underline-offset-4 hover:underline" href={`/perusahaan/${company.symbol}`} prefetch>
+                                                        {company.symbol}
+                                                    </Link>
+                                                </td>
+                                                <td className="px-3 py-3">
+                                                    <Link className="underline-offset-4 hover:underline" href={`/perusahaan/${company.symbol}`} prefetch>
+                                                        {company.name}
+                                                    </Link>
+                                                </td>
                                                 <td className="px-3 py-3 text-muted-foreground">{company.sector}</td>
                                                 <td className="px-3 py-3 text-right tabular-nums">{company.score}</td>
                                                 <td className="px-3 py-3 text-right tabular-nums">{company.completeness}%</td>
@@ -262,7 +346,7 @@ export default function NusaLensPlaceholder({ section, discover }: PlaceholderPr
                             )}
                         </CardContent>
                     </Card>
-                </section>
+                </section>}
 
                 <section className="grid gap-4 md:grid-cols-3">
                     <Card>
