@@ -28,6 +28,12 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    'sectors' => [
+        'base_url' => env('SECTORS_API_BASE_URL', 'https://api.sectors.app/v2'),
+        'api_key' => env('SECTORS_API_KEY'),
+        'timeout' => (int) env('SECTORS_API_TIMEOUT', 10),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

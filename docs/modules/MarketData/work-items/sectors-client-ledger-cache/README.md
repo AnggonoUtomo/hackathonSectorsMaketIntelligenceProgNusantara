@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: Planned; menunggu persetujuan implementasi.
+- Status: In progress; increment 1 client fake-first selesai.
 - Owner: MarketData.
 - Target: `app/Modules/MarketData`, konfigurasi Sectors backend, ledger MySQL,
   cache Redis, dan test fake HTTP.
@@ -56,10 +56,11 @@ Non-scope:
 - `docs/API.md`: endpoint prioritas dan larangan menggandakan `/v2`.
 - `docs/SECURITY.md`: secret backend-only dan validasi query.
 
-## Handoff
+## Handoff increment 1
 
-- Perubahan saat ini: dokumentasi module dan plan foundation.
-- Verifikasi: dokumen aktif dan dokumentasi resmi Sectors dibaca ulang; belum
-  ada source code atau migration bisnis.
+- Perubahan saat ini: dokumentasi module, konfigurasi Sectors backend,
+  `SectorsApiClient`, exception internal, dan test fake HTTP.
+- Verifikasi: focused `SectorsApiClientTest`, full PHPUnit, whitespace check,
+  dan secret scan diff. Tidak ada live Sectors call.
 - Risiko terbuka: DDL ledger dan locking atomik harus diputuskan saat increment
   implementasi sebelum migration dibuat.

@@ -5,13 +5,13 @@
 - [x] Baca dokumen arsitektur, struktur, module, data-flow, security, API, dan
   Sectors docs resmi.
 - [x] Tulis scope, non-scope, acceptance, increment, dan stop condition.
-- [ ] User menyetujui implementasi.
+- [x] User menyetujui implementasi.
 
 ## Client fake-first
 
-- [ ] Tambahkan config env Sectors di backend.
-- [ ] Buat client HTTP dan error mapping.
-- [ ] Test success/error/timeout/header dengan fake HTTP.
+- [x] Tambahkan config env Sectors di backend.
+- [x] Buat client HTTP dan error mapping.
+- [x] Test success/error/timeout/header dengan fake HTTP.
 
 ## Ledger/reservasi
 
