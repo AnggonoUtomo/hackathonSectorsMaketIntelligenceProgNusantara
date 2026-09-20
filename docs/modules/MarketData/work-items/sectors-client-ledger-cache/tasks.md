@@ -21,8 +21,8 @@
 
 ## Cache/freshness
 
-- [ ] Implement cache key/TTL/metadata.
-- [ ] Test hit/miss/expired dan no-credit-on-hit.
+- [x] Implement cache key/TTL/metadata.
+- [x] Test hit/miss/expired dan no-credit-on-hit.
 
 ## Structured screener
 

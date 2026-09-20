@@ -25,9 +25,9 @@
 
 ## Increment 3: Cache/freshness
 
-- [ ] Implement cache key dan metadata untuk endpoint yang sudah dipakai.
-- [ ] Test hit/miss/expired dan Redis/cache behavior tanpa flush global.
-- [ ] Pastikan cache hit tidak membuat ledger konsumsi baru.
+- [x] Implement cache key dan metadata untuk endpoint yang sudah dipakai.
+- [x] Test hit/miss/expired dan Redis/cache behavior tanpa flush global.
+- [x] Pastikan cache hit tidak membuat ledger konsumsi baru.
 
 ## Increment 4: Structured screener vertical slice
 
@@ -62,3 +62,18 @@ Test `CreditReservationTest` membuktikan reservasi sukses, hard budget global,
 kuota harian user, tanggal reset WIB, retry maksimal satu, dan kegagalan
 reservasi tidak menulis row ledger. Belum ada integrasi cache, upstream Sectors,
 atau rekonsiliasi final charge pada increment ini.
+
+## Hasil increment 3
+
+Cache/freshness wrapper minimal sudah dibuat melalui `MarketDataCache`.
+Key cache memakai prefix konfigurasi, endpoint terstruktur, parameter yang
+diurutkan, dan `mapping_version`, lalu di-hash agar parameter query tidak bocor
+di key mentah. TTL masih diberikan oleh caller sesuai use case; wrapper belum
+menentukan TTL otomatis per endpoint.
+
+Test `MarketDataCacheTest` membuktikan cache miss menjalankan resolver dan dapat
+melakukan reservasi credit, cache hit tidak menjalankan resolver dan tidak
+menambah ledger credit, mapping version memisahkan key, parameter order
+deterministik, perubahan parameter menghasilkan key berbeda, dan cache expired
+menjalankan resolver ulang. Tidak ada flush Redis global; test memakai store
+testing sesuai konfigurasi PHPUnit.

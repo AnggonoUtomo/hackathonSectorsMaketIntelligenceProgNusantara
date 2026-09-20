@@ -1,6 +1,11 @@
 <?php
 
 return [
+    'cache' => [
+        'mapping_version' => env('MARKETDATA_MAPPING_VERSION', 'v1'),
+        'prefix' => env('MARKETDATA_CACHE_PREFIX', 'marketdata'),
+    ],
+
     'credits' => [
         'global_budget' => (int) env('SECTORS_CREDIT_GLOBAL_BUDGET', 1000),
         'daily_user_quota' => (int) env('SECTORS_CREDIT_DAILY_USER_QUOTA', 20),

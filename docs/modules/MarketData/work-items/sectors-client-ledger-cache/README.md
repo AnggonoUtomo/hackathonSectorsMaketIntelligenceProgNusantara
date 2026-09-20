@@ -2,8 +2,8 @@
 
 ## Status dan owner
 
-- Status: In progress; increment 1 client fake-first dan increment 2 ledger
-  reservasi selesai.
+- Status: In progress; increment 1 client fake-first, increment 2 ledger
+  reservasi, dan increment 3 cache wrapper selesai.
 - Owner: MarketData.
 - Target: `app/Modules/MarketData`, konfigurasi Sectors backend, ledger MySQL,
   cache Redis, dan test fake HTTP.
@@ -77,3 +77,14 @@ Non-scope:
   concurrency nyata pada MySQL multi-connection perlu diperluas sebelum live
   traffic tinggi. Rekonsiliasi status final charge dan cache wrapper belum
   dikerjakan.
+
+## Handoff increment 3
+
+- Perubahan: `MarketDataCache`, config `MARKETDATA_MAPPING_VERSION` dan
+  `MARKETDATA_CACHE_PREFIX`, serta test cache hit/miss/expired.
+- Verifikasi: focused `MarketDataCacheTest` dan full PHPUnit. Test membuktikan
+  cache hit tidak memanggil resolver dan tidak membuat reservasi credit baru.
+- Risiko terbuka: TTL otomatis per kategori endpoint, metadata freshness
+  persisted, fallback stale, dan cache wrapper yang langsung membungkus
+  `SectorsApiClient` belum dikerjakan; itu masuk increment structured screener
+  dan/atau refinement berikutnya.
