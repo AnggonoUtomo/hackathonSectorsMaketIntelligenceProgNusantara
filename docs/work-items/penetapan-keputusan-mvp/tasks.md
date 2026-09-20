@@ -13,12 +13,14 @@
 - [x] Koreksi status source dan keputusan lama pada dokumen aktif/AGENTS.
 - [x] Tulis README berorientasi produk dan roadmap pengembangan.
 - [x] Validasi tautan lokal, placeholder/stale statements, rumus, dan whitespace.
-- [ ] Review/stage hanya dokumen dan `.htaccess` yang diminta.
-- [ ] Commit/push dan verifikasi hash remote serta sisa worktree.
+- [x] Review/stage hanya dokumen dan `.htaccess` yang diminta.
+- [x] Commit/push dan verifikasi hash remote serta sisa worktree.
 
 ## Hasil
 
 - Perubahan: lihat README work item.
 - Verifikasi: 119 tautan/41 Markdown valid, contoh aritmetika cocok, tidak ada
-  placeholder aktif, dan `git diff --check` lulus; Git delivery menyusul.
+  placeholder aktif, dan `git diff --check` lulus. Staged scope dan pola secret
+  diperiksa. `6812aa7` dan `dbc4a5f` telah di-push; hash remote cocok. Penutupan
+  catatan diverifikasi kembali pada handoff; dua file runtime LSP tidak di-commit.
 - Batas: tidak menguji ulang runtime aplikasi/Apache atau menghabiskan credit API.

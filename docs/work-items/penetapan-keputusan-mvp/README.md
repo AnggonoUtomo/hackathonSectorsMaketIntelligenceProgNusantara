@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: In progress.
+- Status: Done.
 - Owner: lintas module.
 - Target: README, AGENTS, dokumentasi aktif, ADR-003, dan roadmap.
 
@@ -27,8 +27,8 @@ API berbiaya. Tidak otomatis memulai implementasi roadmap.
 - [x] Status accepted dipisahkan dari implemented dan kontrak provider belum teruji.
 - [x] README berorientasi produk dengan contoh hitungan; roadmap sesuai rencana user.
 - [x] Tautan lokal, stale statement, placeholder, dan whitespace diperiksa.
-- [ ] Staged scope diperiksa sebelum commit.
-- [ ] Commit/push terverifikasi dengan hash remote; file sementara tidak ikut.
+- [x] Staged scope diperiksa sebelum commit.
+- [x] Commit/push terverifikasi dengan hash remote; file sementara tidak ikut.
 
 ## Dependency dan keputusan
 
@@ -43,6 +43,11 @@ setelah persetujuan awal yang sebelumnya membatasi scope pada dokumentasi.
   ditemukan; `git diff --check` lulus. Contoh README =70,00 dan ties =50 diperiksa.
   Pernyataan lama pada ADR-002/work item adaptasi dipertahankan sebagai riwayat.
   Tidak menjalankan ulang test runtime karena tidak ada perubahan source fitur.
+- Delivery: `6812aa7` mencatat dokumentasi dan `dbc4a5f` mencatat `.htaccess`
+  user tanpa perubahan isi. Push ke `origin/main` berhasil; `git ls-remote`
+  mengonfirmasi hash `dbc4a5f73a3434f80ed396083a21e8a002a77d63` sama dengan HEAD
+  pada pemeriksaan delivery. Commit penutupan catatan ini menyusul; hash final
+  dilaporkan pada handoff. Dua file `storage/framework/lsp-*.php` tetap untracked.
 - Risiko: kontrak field/periode/aksi korporasi dan kalender provider, estimasi
   credit seluruh peer, DDL/precision/migrasi ULID, dan MySQL/Redis masih harus
   dibuktikan saat implementasi. Provider/model/budget AI belum dipilih.
