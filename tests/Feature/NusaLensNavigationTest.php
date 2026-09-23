@@ -197,11 +197,34 @@ class NusaLensNavigationTest extends TestCase
             );
     }
 
-    public function test_unknown_company_detail_returns_not_found(): void
+    public function test_companies_page_receives_company_list(): void
     {
         $this->actingAs(User::factory()->create());
 
-        $this->get('/perusahaan/ZZZZ')->assertNotFound();
+        $this
+            ->get('/perusahaan')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'companies')
+                ->where('companies.0.symbol', 'BBCA')
+                ->where('companies.0.sector', 'Financials')
+            );
+    }
+
+    public function test_unknown_company_detail_returns_pending_snapshot(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/perusahaan/ADES')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'companies')
+                ->where('company.symbol', 'ADES')
+                ->where('company.meta.source', 'detail_pending')
+            );
     }
 
     public function test_compare_page_receives_empty_fake_payload(): void

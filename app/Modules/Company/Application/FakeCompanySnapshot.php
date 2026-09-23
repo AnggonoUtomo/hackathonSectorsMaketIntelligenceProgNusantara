@@ -5,6 +5,24 @@ namespace App\Modules\Company\Application;
 class FakeCompanySnapshot
 {
     /**
+     * @return list<array{symbol: string, name: string, sector: string, subSector: string, freshness: string, source: string}>
+     */
+    public function list(): array
+    {
+        return array_values(array_map(
+            fn (array $snapshot): array => [
+                'symbol' => $snapshot['symbol'],
+                'name' => $snapshot['name'],
+                'sector' => $snapshot['sector'],
+                'subSector' => $snapshot['subSector'],
+                'freshness' => $snapshot['meta']['freshness'],
+                'source' => $snapshot['meta']['source'],
+            ],
+            $this->snapshots(),
+        ));
+    }
+
+    /**
      * @return null|array{
      *     symbol: string,
      *     name: string,
@@ -17,9 +35,13 @@ class FakeCompanySnapshot
      */
     public function find(string $symbol): ?array
     {
-        $symbol = strtoupper($symbol);
+        $symbol = strtoupper(preg_replace('/\.JK$/i', '', $symbol) ?? '');
 
-        return $this->snapshots()[$symbol] ?? null;
+        if (! preg_match('/^[A-Z0-9]{4,8}$/', $symbol)) {
+            return null;
+        }
+
+        return $this->snapshots()[$symbol] ?? $this->pendingSnapshot($symbol);
     }
 
     /**
@@ -89,6 +111,39 @@ class FakeCompanySnapshot
                     'freshness' => 'Cache 51 menit',
                     'liveProvider' => false,
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array{
+     *     symbol: string,
+     *     name: string,
+     *     sector: string,
+     *     subSector: string,
+     *     summary: string,
+     *     metrics: list<array{label: string, value: string, note: string}>,
+     *     meta: array{source: string, freshness: string, liveProvider: bool}
+     * }
+     */
+    private function pendingSnapshot(string $symbol): array
+    {
+        return [
+            'symbol' => $symbol,
+            'name' => $symbol.' - data detail belum dimuat',
+            'sector' => 'Belum tersedia',
+            'subSector' => 'Belum tersedia',
+            'summary' => 'Ticker ini berasal dari hasil screener. Detail perusahaan real belum diambil agar credit Sectors tetap hemat.',
+            'metrics' => [
+                ['label' => 'Nilai Prioritas Riset', 'value' => '-', 'note' => 'Menunggu scoring real'],
+                ['label' => 'Kelengkapan Data', 'value' => '-', 'note' => 'Menunggu Company Report'],
+                ['label' => 'Sektor', 'value' => '-', 'note' => 'Belum dimuat pada snapshot detail'],
+                ['label' => 'Status', 'value' => 'Pending', 'note' => 'Siap dihubungkan ke data real'],
+            ],
+            'meta' => [
+                'source' => 'detail_pending',
+                'freshness' => 'Belum diambil',
+                'liveProvider' => false,
             ],
         ];
     }

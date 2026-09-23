@@ -8,6 +8,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { BarChart3, Building2, Database, GitCompare, Info, Radar, Search, Sparkles } from 'lucide-react';
 import { FormEvent } from 'react';
+import { CompanyDashboard } from './company-dashboard';
 import { DiscoverDashboard } from './discover-dashboard';
 
 type SectionKey = 'discover' | 'companies' | 'compare' | 'research' | 'candidates';
@@ -15,6 +16,7 @@ type SectionKey = 'discover' | 'companies' | 'compare' | 'research' | 'candidate
 interface PlaceholderProps {
     section: SectionKey;
     discover?: DiscoverPayload;
+    companies?: CompanyListItem[];
     company?: CompanySnapshot;
     comparison?: ComparisonPayload;
 }
@@ -61,6 +63,15 @@ interface CompanySnapshot {
         freshness: string;
         liveProvider: boolean;
     };
+}
+
+interface CompanyListItem {
+    symbol: string;
+    name: string;
+    sector: string;
+    subSector: string;
+    freshness: string;
+    source: string;
 }
 
 interface ComparisonPayload {
@@ -128,7 +139,7 @@ const breadcrumbs = (title: string): BreadcrumbItem[] => [
     { title, href: '#' },
 ];
 
-export default function NusaLensPlaceholder({ section, discover, company, comparison }: PlaceholderProps) {
+export default function NusaLensPlaceholder({ section, discover, companies: companyList = [], company, comparison }: PlaceholderProps) {
     const current = sections[section] ?? sections.discover;
     const Icon = current.icon;
     const isDiscover = section === 'discover';
@@ -196,6 +207,15 @@ export default function NusaLensPlaceholder({ section, discover, company, compar
                         }
                     }
                 />
+            </AppLayout>
+        );
+    }
+
+    if (section === 'companies' && !isCompanyDetail) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs(current.title)}>
+                <Head title={current.title} />
+                <CompanyDashboard companies={companyList} />
             </AppLayout>
         );
     }

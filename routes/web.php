@@ -96,8 +96,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('discover');
 
-    Route::get('perusahaan', function () {
-        return Inertia::render('nusalens/placeholder', ['section' => 'companies']);
+    Route::get('perusahaan', function (FakeCompanySnapshot $snapshots) {
+        return Inertia::render('nusalens/placeholder', [
+            'section' => 'companies',
+            'companies' => $snapshots->list(),
+        ]);
     })->name('companies');
 
     Route::get('perusahaan/{symbol}', function (string $symbol, FakeCompanySnapshot $snapshots) {
