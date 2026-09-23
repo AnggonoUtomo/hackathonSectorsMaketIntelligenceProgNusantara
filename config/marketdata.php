@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'provider_mode' => env('MARKETDATA_PROVIDER_MODE', 'fake'),
+
     'cache' => [
         'mapping_version' => env('MARKETDATA_MAPPING_VERSION', 'v1'),
         'prefix' => env('MARKETDATA_CACHE_PREFIX', 'marketdata'),

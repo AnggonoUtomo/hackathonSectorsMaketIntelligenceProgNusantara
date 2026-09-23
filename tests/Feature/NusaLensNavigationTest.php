@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -94,6 +96,84 @@ class NusaLensNavigationTest extends TestCase
             ->get('/temukan-saham?sector=raw-expression')
             ->assertRedirect('/temukan-saham')
             ->assertSessionHasErrors('sector');
+    }
+
+    public function test_discover_page_can_use_real_mode_with_fake_http(): void
+    {
+        Cache::flush();
+        config([
+            'marketdata.provider_mode' => 'real',
+            'services.sectors.api_key' => 'test-sectors-key',
+            'services.sectors.base_url' => 'https://api.example.test/v2',
+        ]);
+        Http::fake([
+            'https://api.example.test/v2/companies*' => Http::response([
+                'data' => [
+                    [
+                        'symbol' => 'BBCA',
+                        'company_name' => 'Bank Central Asia Tbk',
+                        'sector' => 'Financials',
+                    ],
+                ],
+                'meta' => [
+                    'current_page' => 1,
+                    'per_page' => 5,
+                    'total' => 1,
+                    'last_page' => 1,
+                ],
+            ]),
+        ]);
+
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/temukan-saham?sector=financials&limit=5')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'discover')
+                ->where('discover.meta.source', 'sectors_real')
+                ->where('discover.meta.liveProvider', true)
+                ->where('discover.results.0.symbol', 'BBCA')
+        );
+
+        $this->assertDatabaseCount('market_data_credit_reservations', 1);
+        $this->assertCount(1, Http::recorded(fn ($request): bool => str_contains($request->url(), 'api.example.test/v2/companies')));
+    }
+
+    public function test_discover_real_mode_cache_hit_does_not_reserve_credit_again(): void
+    {
+        Cache::flush();
+        config([
+            'marketdata.provider_mode' => 'real',
+            'services.sectors.api_key' => 'test-sectors-key',
+            'services.sectors.base_url' => 'https://api.example.test/v2',
+        ]);
+        Http::fake([
+            'https://api.example.test/v2/companies*' => Http::response([
+                'data' => [
+                    [
+                        'symbol' => 'TLKM',
+                        'company_name' => 'Telkom Indonesia Tbk',
+                        'sector' => 'Infrastructure',
+                    ],
+                ],
+                'meta' => [
+                    'current_page' => 1,
+                    'per_page' => 5,
+                    'total' => 1,
+                    'last_page' => 1,
+                ],
+            ]),
+        ]);
+
+        $this->actingAs(User::factory()->create());
+
+        $this->get('/temukan-saham?sector=infrastructure&limit=5')->assertOk();
+        $this->get('/temukan-saham?sector=infrastructure&limit=5')->assertOk();
+
+        $this->assertDatabaseCount('market_data_credit_reservations', 1);
+        $this->assertCount(1, Http::recorded(fn ($request): bool => str_contains($request->url(), 'api.example.test/v2/companies')));
     }
 
     public function test_company_detail_page_receives_fake_snapshot(): void
