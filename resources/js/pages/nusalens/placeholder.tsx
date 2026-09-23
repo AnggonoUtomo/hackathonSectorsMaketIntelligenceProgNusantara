@@ -9,7 +9,9 @@ import { Head, Link, router, useForm } from '@inertiajs/react';
 import { BarChart3, Building2, Database, GitCompare, Info, Radar, Search, Sparkles } from 'lucide-react';
 import { FormEvent } from 'react';
 import { CompanyDashboard } from './company-dashboard';
+import { ComparisonDashboard } from './comparison-dashboard';
 import { DiscoverDashboard } from './discover-dashboard';
+import { ResearchDashboard } from './research-dashboard';
 
 type SectionKey = 'discover' | 'companies' | 'compare' | 'research' | 'candidates';
 
@@ -19,6 +21,7 @@ interface PlaceholderProps {
     companies?: CompanyListItem[];
     company?: CompanySnapshot;
     comparison?: ComparisonPayload;
+    research?: ResearchPayload;
 }
 
 interface DiscoverCompany {
@@ -95,6 +98,30 @@ interface ComparisonPayload {
     };
 }
 
+interface ResearchPayload {
+    symbol: string;
+    company: {
+        symbol: string;
+        name: string;
+        sector: string;
+        subSector: string;
+        summary: string;
+    };
+    metrics: Array<{
+        label: string;
+        value: string;
+        note: string;
+        explanation: string;
+    }>;
+    bullets: string[];
+    meta: {
+        source: string;
+        state: 'ready' | 'pending';
+        aiEnabled: boolean;
+        disclaimer: string;
+    };
+}
+
 const sections = {
     discover: {
         title: 'Temukan Saham',
@@ -139,7 +166,7 @@ const breadcrumbs = (title: string): BreadcrumbItem[] => [
     { title, href: '#' },
 ];
 
-export default function NusaLensPlaceholder({ section, discover, companies: companyList = [], company, comparison }: PlaceholderProps) {
+export default function NusaLensPlaceholder({ section, discover, companies: companyList = [], company, comparison, research }: PlaceholderProps) {
     const current = sections[section] ?? sections.discover;
     const Icon = current.icon;
     const isDiscover = section === 'discover';
@@ -216,6 +243,24 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
             <AppLayout breadcrumbs={breadcrumbs(current.title)}>
                 <Head title={current.title} />
                 <CompanyDashboard companies={companyList} />
+            </AppLayout>
+        );
+    }
+
+    if (isCompare && comparison !== undefined) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs(current.title)}>
+                <Head title={current.title} />
+                <ComparisonDashboard comparison={comparison} />
+            </AppLayout>
+        );
+    }
+
+    if (section === 'research' && research !== undefined) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs(current.title)}>
+                <Head title={current.title} />
+                <ResearchDashboard research={research} />
             </AppLayout>
         );
     }

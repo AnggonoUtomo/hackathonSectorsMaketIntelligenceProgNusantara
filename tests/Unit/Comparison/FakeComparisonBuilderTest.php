@@ -8,12 +8,12 @@ use Tests\TestCase;
 
 class FakeComparisonBuilderTest extends TestCase
 {
-    public function test_it_returns_empty_fake_comparison_without_symbols(): void
+    public function test_it_returns_default_fake_comparison_without_symbols(): void
     {
         $payload = app(FakeComparisonBuilder::class)->build(null);
 
-        $this->assertSame([], $payload['symbols']);
-        $this->assertSame('empty', $payload['meta']['state']);
+        $this->assertSame(['BBCA', 'TLKM', 'ICBP'], $payload['symbols']);
+        $this->assertSame('ready', $payload['meta']['state']);
         $this->assertSame(3, $payload['meta']['limit']);
     }
 
@@ -36,11 +36,22 @@ class FakeComparisonBuilderTest extends TestCase
         app(FakeComparisonBuilder::class)->build('BBCA,TLKM,ICBP,BBRI');
     }
 
-    public function test_it_rejects_unknown_symbol(): void
+    public function test_it_builds_pending_matrix_for_unknown_valid_symbols(): void
+    {
+        $payload = app(FakeComparisonBuilder::class)->build('ADES,AADI');
+
+        $this->assertSame(['ADES', 'AADI'], $payload['symbols']);
+        $this->assertSame('ready', $payload['meta']['state']);
+        $this->assertSame('ADES - data detail belum dimuat', $payload['companies'][0]['name']);
+        $this->assertSame('-', $payload['metrics'][0]['values']['ADES']);
+        $this->assertSame('Data real belum dimuat untuk ticker ini', $payload['metrics'][0]['notes']['AADI']);
+    }
+
+    public function test_it_rejects_invalid_symbol_format(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unknown comparison symbol [ZZZZ].');
+        $this->expectExceptionMessage('Invalid comparison symbol [RAW-EXPRESSION].');
 
-        app(FakeComparisonBuilder::class)->build('BBCA,ZZZZ');
+        app(FakeComparisonBuilder::class)->build('BBCA,raw-expression');
     }
 }

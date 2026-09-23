@@ -227,7 +227,7 @@ class NusaLensNavigationTest extends TestCase
             );
     }
 
-    public function test_compare_page_receives_empty_fake_payload(): void
+    public function test_compare_page_receives_default_fake_payload(): void
     {
         $this->actingAs(User::factory()->create());
 
@@ -237,9 +237,12 @@ class NusaLensNavigationTest extends TestCase
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('nusalens/placeholder')
                 ->where('section', 'compare')
-                ->where('comparison.meta.state', 'empty')
+                ->where('comparison.meta.state', 'ready')
                 ->where('comparison.meta.limit', 3)
-                ->has('comparison.companies', 0)
+                ->where('comparison.symbols.0', 'BBCA')
+                ->where('comparison.symbols.1', 'TLKM')
+                ->where('comparison.symbols.2', 'ICBP')
+                ->has('comparison.companies', 3)
             );
     }
 
@@ -262,6 +265,24 @@ class NusaLensNavigationTest extends TestCase
             );
     }
 
+    public function test_compare_page_receives_pending_matrix_for_real_symbols(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/bandingkan?symbols=ADES,AADI')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'compare')
+                ->where('comparison.symbols.0', 'ADES')
+                ->where('comparison.symbols.1', 'AADI')
+                ->where('comparison.companies.0.name', 'ADES - data detail belum dimuat')
+                ->where('comparison.metrics.0.values.ADES', '-')
+                ->where('comparison.meta.state', 'ready')
+            );
+    }
+
     public function test_compare_page_rejects_more_than_three_symbols(): void
     {
         $this->actingAs(User::factory()->create());
@@ -273,14 +294,58 @@ class NusaLensNavigationTest extends TestCase
             ->assertSessionHasErrors('symbols');
     }
 
-    public function test_compare_page_rejects_unknown_symbol(): void
+    public function test_compare_page_rejects_invalid_symbol_format(): void
     {
         $this->actingAs(User::factory()->create());
 
         $this
             ->from('/bandingkan')
-            ->get('/bandingkan?symbols=BBCA,ZZZZ')
+            ->get('/bandingkan?symbols=BBCA,raw-expression')
             ->assertRedirect('/bandingkan')
             ->assertSessionHasErrors('symbols');
+    }
+
+    public function test_research_page_receives_default_rule_based_explainer(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/jelaskan-nilai')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'research')
+                ->where('research.symbol', 'BBCA')
+                ->where('research.company.name', 'Bank Central Asia Tbk')
+                ->where('research.meta.state', 'ready')
+                ->where('research.meta.aiEnabled', false)
+            );
+    }
+
+    public function test_research_page_receives_pending_explainer_for_real_symbol(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/jelaskan-nilai?symbol=ADES')
+            ->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/placeholder')
+                ->where('section', 'research')
+                ->where('research.symbol', 'ADES')
+                ->where('research.meta.state', 'pending')
+                ->where('research.metrics.0.value', '-')
+            );
+    }
+
+    public function test_research_page_rejects_invalid_symbol_format(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->from('/jelaskan-nilai')
+            ->get('/jelaskan-nilai?symbol=raw-expression')
+            ->assertRedirect('/jelaskan-nilai')
+            ->assertSessionHasErrors('symbol');
     }
 }

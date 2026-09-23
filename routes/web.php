@@ -4,6 +4,7 @@ use App\Modules\Company\Application\FakeCompanySnapshot;
 use App\Modules\Comparison\Application\FakeComparisonBuilder;
 use App\Modules\MarketData\Application\DTO\StructuredScreenerCriteria;
 use App\Modules\MarketData\Infrastructure\Sectors\StructuredCompanyScreener;
+use App\Modules\Research\Application\RuleBasedResearchExplainer;
 use App\Modules\Screening\Application\FakeDiscoverScreener;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -133,8 +134,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('compare');
 
-    Route::get('jelaskan-nilai', function () {
-        return Inertia::render('nusalens/placeholder', ['section' => 'research']);
+    Route::get('jelaskan-nilai', function (Request $request, RuleBasedResearchExplainer $explainer) {
+        $validated = $request->validate([
+            'symbol' => ['nullable', 'string', 'max:12'],
+        ]);
+
+        try {
+            $research = $explainer->explain($validated['symbol'] ?? null);
+        } catch (\InvalidArgumentException $exception) {
+            throw ValidationException::withMessages([
+                'symbol' => $exception->getMessage(),
+            ]);
+        }
+
+        return Inertia::render('nusalens/placeholder', [
+            'section' => 'research',
+            'research' => $research,
+        ]);
     })->name('research');
 
     Route::get('kandidat-menarik', function () {

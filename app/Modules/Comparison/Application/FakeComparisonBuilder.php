@@ -7,6 +7,7 @@ use InvalidArgumentException;
 class FakeComparisonBuilder
 {
     private const LIMIT = 3;
+    private const DEFAULT_SYMBOLS = ['BBCA', 'TLKM', 'ICBP'];
 
     /**
      * @return array{
@@ -21,18 +22,12 @@ class FakeComparisonBuilder
         $requested = $this->parseSymbols($symbols);
         $dataset = $this->companies();
 
-        foreach ($requested as $symbol) {
-            if (! array_key_exists($symbol, $dataset)) {
-                throw new InvalidArgumentException("Unknown comparison symbol [{$symbol}].");
-            }
-        }
-
         $companies = array_map(
             fn (string $symbol): array => [
                 'symbol' => $symbol,
-                'name' => $dataset[$symbol]['name'],
-                'sector' => $dataset[$symbol]['sector'],
-                'freshness' => $dataset[$symbol]['freshness'],
+                'name' => $dataset[$symbol]['name'] ?? $symbol.' - data detail belum dimuat',
+                'sector' => $dataset[$symbol]['sector'] ?? 'Belum tersedia',
+                'freshness' => $dataset[$symbol]['freshness'] ?? 'Belum diambil',
             ],
             $requested,
         );
@@ -56,7 +51,7 @@ class FakeComparisonBuilder
     private function parseSymbols(?string $symbols): array
     {
         if ($symbols === null || trim($symbols) === '') {
-            return [];
+            return self::DEFAULT_SYMBOLS;
         }
 
         $parsed = array_values(array_unique(array_filter(array_map(
@@ -97,8 +92,8 @@ class FakeComparisonBuilder
             $notes = [];
 
             foreach ($symbols as $symbol) {
-                $values[$symbol] = $dataset[$symbol][$metricKey];
-                $notes[$symbol] = $dataset[$symbol][$metricKey.'Note'];
+                $values[$symbol] = $dataset[$symbol][$metricKey] ?? '-';
+                $notes[$symbol] = $dataset[$symbol][$metricKey.'Note'] ?? 'Data real belum dimuat untuk ticker ini';
             }
 
             return [
