@@ -20,7 +20,7 @@ class SectorsApiClientTest extends TestCase
         ]);
 
         Http::fake([
-            'https://api.example.test/v2/companies?keyword=BBCA&page=1' => Http::response([
+            'https://api.example.test/v2/companies/?keyword=BBCA&page=1' => Http::response([
                 'data' => [
                     ['symbol' => 'BBCA'],
                 ],
@@ -35,7 +35,7 @@ class SectorsApiClientTest extends TestCase
         $this->assertSame('BBCA', $response['data'][0]['symbol']);
 
         Http::assertSent(function ($request): bool {
-            return $request->url() === 'https://api.example.test/v2/companies?keyword=BBCA&page=1'
+            return $request->url() === 'https://api.example.test/v2/companies/?keyword=BBCA&page=1'
                 && $request->hasHeader('Authorization', 'test-secret-key');
         });
     }
@@ -63,7 +63,7 @@ class SectorsApiClientTest extends TestCase
         ]);
 
         Http::fake([
-            'https://api.example.test/v2/companies' => Http::response([
+            'https://api.example.test/v2/companies/' => Http::response([
                 'message' => 'Unauthorized',
             ], 401),
         ]);
@@ -101,7 +101,7 @@ class SectorsApiClientTest extends TestCase
         ]);
 
         Http::fake([
-            'https://api.example.test/v2/companies' => Http::response([], $status),
+            'https://api.example.test/v2/companies/' => Http::response([], $status),
         ]);
 
         try {

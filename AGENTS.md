@@ -53,6 +53,23 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
   eksplisit user.
 - Jangan otomatis memulai work item berikutnya setelah scope selesai.
 
+## Aturan UI tabel
+
+- Untuk UI module yang memiliki tabel atau daftar operasional, gunakan pola
+  `ContohUI` sebagai baseline UX: summary cards, shortcut bar, filter/search
+  bar, tabel padat, empty state, loading state, reset filter, pagination, dan
+  aksi berbasis ikon dengan tooltip.
+- Search/filter tabel harus mempertahankan state lewat query URL/Inertia,
+  memakai debounce untuk live search bila sesuai, dan tetap menyediakan tombol
+  terapkan/reset yang eksplisit.
+- Tabel harus mudah dipindai: header uppercase kecil, spacing rapat namun
+  terbaca, badge status, angka tabular, horizontal overflow pada layar kecil,
+  dan aksi kanan berbasis ikon familiar.
+- Halaman tabel tidak dibuat sebagai hero/landing page. Utamakan workflow kerja
+  pengguna: ringkasan, filter, daftar, aksi, dan status data.
+- Gunakan gaya `dashboard-*` yang sudah ada atau pola setara dari `ContohUI`;
+  jangan membuat variasi visual baru yang tidak konsisten tanpa alasan domain.
+
 ## Arsitektur dan keamanan
 
 - Gunakan DDD-lite Modular Monolith dengan Hexagonal Architecture.

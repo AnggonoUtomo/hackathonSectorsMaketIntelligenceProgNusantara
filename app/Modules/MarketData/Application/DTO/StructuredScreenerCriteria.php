@@ -70,15 +70,62 @@ readonly class StructuredScreenerCriteria
     }
 
     /**
-     * @return array{page: int, per_page: int, query: string}
+     * @return array{limit: int, offset: int, include_query_values: bool, where?: string}
      */
     public function toQueryParameters(): array
     {
-        return [
-            'page' => $this->page,
-            'per_page' => $this->perPage,
-            'query' => json_encode($this->filters, JSON_THROW_ON_ERROR),
+        $parameters = [
+            'limit' => $this->perPage,
+            'offset' => ($this->page - 1) * $this->perPage,
+            'include_query_values' => true,
         ];
+
+        if ($this->filters !== []) {
+            $parameters['where'] = implode(' and ', array_map(
+                fn (array $filter): string => $this->toWhereClause($filter),
+                $this->filters,
+            ));
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * @param  array{field: string, operator: string, value: scalar|list<scalar>}  $filter
+     */
+    private function toWhereClause(array $filter): string
+    {
+        $operator = match ($filter['operator']) {
+            'eq' => '=',
+            'neq' => '!=',
+            'gt' => '>',
+            'gte' => '>=',
+            'lt' => '<',
+            'lte' => '<=',
+            'in' => 'in',
+        };
+
+        if ($operator === 'in') {
+            /** @var list<scalar> $values */
+            $values = $filter['value'];
+
+            return sprintf(
+                '%s in [%s]',
+                $filter['field'],
+                implode(', ', array_map(fn (mixed $value): string => $this->formatValue($value), $values)),
+            );
+        }
+
+        return sprintf('%s %s %s', $filter['field'], $operator, $this->formatValue($filter['value']));
+    }
+
+    private function formatValue(mixed $value): string
+    {
+        if (is_numeric($value)) {
+            return (string) $value;
+        }
+
+        return "'".str_replace("'", "\\'", (string) $value)."'";
     }
 
     /**

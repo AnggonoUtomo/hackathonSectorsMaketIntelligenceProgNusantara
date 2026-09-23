@@ -156,3 +156,69 @@
         @apply bg-background text-foreground;
     }
 }
+
+@layer components {
+    .dashboard-card {
+        @apply bg-card text-card-foreground shadow-sm;
+    }
+
+    .dashboard-card--blue {
+        @apply border-sky-500/20 bg-sky-500/5;
+    }
+
+    .dashboard-card--cyan {
+        @apply border-cyan-500/20 bg-cyan-500/5;
+    }
+
+    .dashboard-card--emerald {
+        @apply border-emerald-500/20 bg-emerald-500/5;
+    }
+
+    .dashboard-card--violet {
+        @apply border-violet-500/20 bg-violet-500/5;
+    }
+
+    .dashboard-card--rose {
+        @apply border-rose-500/20 bg-rose-500/5;
+    }
+
+    .dashboard-icon {
+        @apply border;
+    }
+
+    .dashboard-accent--blue {
+        @apply border-sky-500/20 bg-sky-500/10 text-sky-700 dark:text-sky-300;
+    }
+
+    .dashboard-accent--emerald {
+        @apply border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300;
+    }
+
+    .dashboard-accent--violet {
+        @apply border-violet-500/20 bg-violet-500/10 text-violet-700 dark:text-violet-300;
+    }
+
+    .dashboard-accent--rose {
+        @apply border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300;
+    }
+
+    .dashboard-shortcut-bar {
+        @apply border-border/70 bg-muted/40 text-muted-foreground;
+    }
+
+    .dashboard-shortcut-bar kbd {
+        @apply rounded border bg-background px-1.5 py-0.5 font-mono text-[0.7rem] text-foreground;
+    }
+
+    .dashboard-table-header {
+        @apply bg-muted/60;
+    }
+
+    .dashboard-table-row {
+        @apply bg-card/80 hover:bg-muted/40;
+    }
+
+    .dashboard-badge {
+        @apply bg-background/80 font-medium;
+    }
+}

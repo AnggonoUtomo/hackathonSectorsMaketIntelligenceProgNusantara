@@ -26,10 +26,10 @@ class StructuredCompanyScreenerTest extends TestCase
 
         Http::fake([
             'https://api.example.test/v2/companies*' => Http::response([
-                'data' => [
+                'results' => [
                     [
-                        'symbol' => 'BBCA',
-                        'company_name' => 'Bank Central Asia Tbk',
+                        'symbol' => 'BBCA.JK',
+                        'company_name' => 'PT Bank Central Asia Tbk.',
                         'sector' => 'Financials',
                         'sub_sector' => 'Banks',
                         'query_values' => [
@@ -37,11 +37,13 @@ class StructuredCompanyScreenerTest extends TestCase
                         ],
                     ],
                 ],
-                'meta' => [
-                    'current_page' => 2,
-                    'per_page' => 10,
-                    'total' => 31,
-                    'last_page' => 4,
+                'pagination' => [
+                    'total_count' => 31,
+                    'showing' => 1,
+                    'limit' => 10,
+                    'offset' => 10,
+                    'has_next' => true,
+                    'has_previous' => true,
                 ],
             ]),
         ]);
@@ -67,8 +69,8 @@ class StructuredCompanyScreenerTest extends TestCase
         $this->assertSame(31, $result->total);
         $this->assertSame(4, $result->lastPage);
         $this->assertCount(1, $result->companies);
-        $this->assertSame('BBCA', $result->companies[0]->symbol);
-        $this->assertSame('Bank Central Asia Tbk', $result->companies[0]->name);
+        $this->assertSame('BBCA.JK', $result->companies[0]->symbol);
+        $this->assertSame('PT Bank Central Asia Tbk.', $result->companies[0]->name);
         $this->assertSame('Banks', $result->companies[0]->subSector);
         $this->assertSame(['return_on_equity' => 21.1234], $result->companies[0]->queryValues);
         $this->assertDatabaseHas('market_data_credit_reservations', [
@@ -80,16 +82,13 @@ class StructuredCompanyScreenerTest extends TestCase
 
         Http::assertSent(function ($request): bool {
             $query = $request->data();
-            $structuredQuery = json_decode((string) $query['query'], true);
 
-            return $request->url() === 'https://api.example.test/v2/companies?page=2&per_page=10&query='.urlencode((string) $query['query'])
+            return str_starts_with($request->url(), 'https://api.example.test/v2/companies/?')
                 && $request->hasHeader('Authorization', 'test-sectors-key')
-                && $query['page'] === 2
-                && $query['per_page'] === 10
-                && $structuredQuery === [
-                    ['field' => 'sector', 'operator' => 'eq', 'value' => 'Financials'],
-                    ['field' => 'market_cap', 'operator' => 'gte', 'value' => 1000000000000],
-                ];
+                && $query['limit'] === 10
+                && $query['offset'] === 10
+                && $query['include_query_values'] === true
+                && $query['where'] === "sector = 'Financials' and market_cap >= 1000000000000";
         });
     }
 

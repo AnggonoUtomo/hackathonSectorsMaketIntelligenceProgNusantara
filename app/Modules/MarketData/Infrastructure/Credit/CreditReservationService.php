@@ -26,6 +26,16 @@ class CreditReservationService
         }
 
         return DB::transaction(function () use ($userId, $endpoint, $estimatedCredits, $correlationId, $attempt): CreditReservation {
+            $existing = DB::table('market_data_credit_reservations')
+                ->where('correlation_id', $correlationId)
+                ->where('attempt', $attempt)
+                ->lockForUpdate()
+                ->first();
+
+            if ($existing !== null) {
+                return $this->reservationFromRow($existing);
+            }
+
             $usageDate = Carbon::now((string) config('marketdata.credits.timezone', 'Asia/Jakarta'))->toDateString();
             $countedStatuses = ['reserved', 'committed'];
 
@@ -76,5 +86,19 @@ class CreditReservationService
                 correlationId: $correlationId,
             );
         });
+    }
+
+    private function reservationFromRow(object $row): CreditReservation
+    {
+        return new CreditReservation(
+            id: (string) $row->id,
+            userId: (string) $row->user_id,
+            usageDate: (string) $row->usage_date,
+            endpoint: (string) $row->endpoint,
+            estimatedCredits: (int) $row->estimated_credits,
+            attempt: (int) $row->attempt,
+            status: (string) $row->status,
+            correlationId: (string) $row->correlation_id,
+        );
     }
 }

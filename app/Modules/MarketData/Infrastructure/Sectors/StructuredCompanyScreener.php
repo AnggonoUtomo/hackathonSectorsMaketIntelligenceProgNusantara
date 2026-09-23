@@ -44,8 +44,8 @@ class StructuredCompanyScreener
      */
     private function mapResult(array $payload): ScreenerResult
     {
-        $items = $payload['data'] ?? [];
-        $meta = $payload['meta'] ?? [];
+        $items = $payload['results'] ?? $payload['data'] ?? [];
+        $meta = $payload['pagination'] ?? $payload['meta'] ?? [];
 
         if (! is_array($items)) {
             $items = [];
@@ -82,11 +82,36 @@ class StructuredCompanyScreener
 
         return new ScreenerResult(
             companies: $companies,
-            page: (int) ($meta['current_page'] ?? $payload['page'] ?? 1),
-            perPage: (int) ($meta['per_page'] ?? $payload['per_page'] ?? count($companies)),
-            total: (int) ($meta['total'] ?? count($companies)),
-            lastPage: (int) ($meta['last_page'] ?? $meta['total_pages'] ?? 1),
+            page: $this->pageFromMeta($meta, $payload),
+            perPage: (int) ($meta['limit'] ?? $meta['per_page'] ?? $payload['per_page'] ?? count($companies)),
+            total: (int) ($meta['total_count'] ?? $meta['total'] ?? count($companies)),
+            lastPage: $this->lastPageFromMeta($meta, count($companies)),
         );
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     * @param  array<string, mixed>  $payload
+     */
+    private function pageFromMeta(array $meta, array $payload): int
+    {
+        if (isset($meta['offset'], $meta['limit']) && (int) $meta['limit'] > 0) {
+            return (int) floor((int) $meta['offset'] / (int) $meta['limit']) + 1;
+        }
+
+        return (int) ($meta['current_page'] ?? $payload['page'] ?? 1);
+    }
+
+    /**
+     * @param  array<string, mixed>  $meta
+     */
+    private function lastPageFromMeta(array $meta, int $fallbackCount): int
+    {
+        if (isset($meta['total_count'], $meta['limit']) && (int) $meta['limit'] > 0) {
+            return (int) ceil((int) $meta['total_count'] / (int) $meta['limit']);
+        }
+
+        return (int) ($meta['last_page'] ?? $meta['total_pages'] ?? 1);
     }
 
     private function optionalString(mixed $value): ?string

@@ -8,6 +8,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
 import { BarChart3, Building2, Database, GitCompare, Info, Radar, Search, Sparkles } from 'lucide-react';
 import { FormEvent } from 'react';
+import { DiscoverDashboard } from './discover-dashboard';
 
 type SectionKey = 'discover' | 'companies' | 'compare' | 'research' | 'candidates';
 
@@ -175,6 +176,28 @@ export default function NusaLensPlaceholder({ section, discover, company, compar
 
     function resetComparison() {
         router.get('/bandingkan', {}, { preserveScroll: true });
+    }
+
+    if (isDiscover) {
+        return (
+            <AppLayout breadcrumbs={breadcrumbs(current.title)}>
+                <Head title={current.title} />
+                <DiscoverDashboard
+                    discover={
+                        discover ?? {
+                            filters: {
+                                keyword: '',
+                                sector: 'all',
+                                minScore: '',
+                                limit: '10',
+                            },
+                            results: fallbackCompanies,
+                            meta,
+                        }
+                    }
+                />
+            </AppLayout>
+        );
     }
 
     return (

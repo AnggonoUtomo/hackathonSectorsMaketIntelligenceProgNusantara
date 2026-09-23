@@ -48,6 +48,24 @@ class CreditReservationTest extends TestCase
         ]);
     }
 
+    public function test_it_returns_existing_reservation_for_the_same_correlation_attempt(): void
+    {
+        $user = User::factory()->create();
+
+        config([
+            'marketdata.credits.global_budget' => 1000,
+            'marketdata.credits.daily_user_quota' => 20,
+        ]);
+
+        $service = app(CreditReservationService::class);
+        $first = $service->reserve($user->id, 'companies', 1, 'corr-idempotent');
+        $second = $service->reserve($user->id, 'companies', 1, 'corr-idempotent');
+
+        $this->assertSame($first->id, $second->id);
+        $this->assertSame($first->correlationId, $second->correlationId);
+        $this->assertDatabaseCount('market_data_credit_reservations', 1);
+    }
+
     public function test_it_rejects_reservations_that_exceed_the_global_budget(): void
     {
         $user = User::factory()->create();

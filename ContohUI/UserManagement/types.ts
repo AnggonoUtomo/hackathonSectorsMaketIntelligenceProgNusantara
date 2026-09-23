@@ -1,0 +1,49 @@
+import type { Auth } from '@/types/auth';
+
+export type UserManagementUser = {
+    id: string;
+    name: string;
+    email: string;
+    status: 'active' | 'inactive' | 'suspended';
+    isProtected: boolean;
+    deletedAt: string | null;
+    roles: string[];
+    avatarUrl: string | null;
+    emailVerified: boolean;
+    lastLoginAt: string | null;
+};
+
+export type UserManagementRole = {
+    id: string;
+    name: string;
+};
+
+export type UserManagementFilters = {
+    search: string | null;
+    status: UserManagementUser['status'] | null;
+    role: string | null;
+    archive: 'all' | 'active' | 'archived';
+    page: number;
+    perPage: number;
+    sortDirection: 'asc' | 'desc';
+};
+
+export type UserManagementPagination = {
+    total: number;
+    currentPage: number;
+    lastPage: number;
+    perPage: number;
+    perPageOptions: number[];
+    defaultPerPage: number;
+};
+
+export type UserManagementPageProps = {
+    auth: Auth;
+    users: UserManagementUser[];
+    roles: UserManagementRole[];
+    filters: UserManagementFilters;
+    pagination: UserManagementPagination;
+    errors?: Record<string, string>;
+};
+
+export type UserManagementDialogMode = 'view' | 'create' | 'edit';

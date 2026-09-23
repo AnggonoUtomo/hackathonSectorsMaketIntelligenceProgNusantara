@@ -44,6 +44,6 @@ class SectorsApiClient
         $baseUrl = rtrim((string) config('services.sectors.base_url'), '/');
         $path = trim($path, '/');
 
-        return $baseUrl.'/'.$path;
+        return $baseUrl.'/'.$path.'/';
     }
 }

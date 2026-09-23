@@ -55,6 +55,8 @@ class NusaLensNavigationTest extends TestCase
 
     public function test_discover_page_receives_fake_backend_results(): void
     {
+        config(['marketdata.provider_mode' => 'fake']);
+
         $this->actingAs(User::factory()->create());
 
         $this
@@ -74,6 +76,8 @@ class NusaLensNavigationTest extends TestCase
 
     public function test_discover_page_can_return_empty_fake_results(): void
     {
+        config(['marketdata.provider_mode' => 'fake']);
+
         $this->actingAs(User::factory()->create());
 
         $this
