@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -13,6 +12,17 @@ use Tests\TestCase;
 class NusaLensNavigationTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        config(['inertia.ssr.enabled' => false, 'services.sectors.api_key' => 'test-key']);
+        Http::preventStrayRequests();
+        Http::fake(['*' => Http::response([
+            'results' => [['symbol' => 'BBCA.JK', 'company_name' => 'Bank Central Asia']],
+            'pagination' => ['total_count' => 1, 'limit' => 10, 'offset' => 0],
+        ])]);
+    }
 
     /**
      * @return array<string, array{0: string}>
@@ -53,178 +63,23 @@ class NusaLensNavigationTest extends TestCase
             ->assertRedirect(route('verification.notice', absolute: false));
     }
 
-    public function test_discover_page_receives_fake_backend_results(): void
+    public function test_discover_and_companies_show_real_directory(): void
     {
-        config(['marketdata.provider_mode' => 'fake']);
-
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->get('/temukan-saham?sector=financials&min_score=80&limit=2')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'discover')
-                ->where('discover.filters.sector', 'financials')
-                ->where('discover.filters.minScore', '80')
-                ->where('discover.results.0.symbol', 'BBCA')
-                ->has('discover.results', 1)
-                ->where('discover.meta.source', 'backend_fake')
-                ->where('discover.meta.estimatedCredits', 1)
-            );
+        foreach (['/temukan-saham', '/perusahaan'] as $path) {
+            $this->actingAs(User::factory()->create())->get($path)->assertOk()
+                ->assertInertia(fn (AssertableInertia $page) => $page
+                    ->component('nusalens/discover')
+                    ->where('result.items.0.symbol', 'BBCA')
+                    ->where('error', null));
+        }
     }
 
-    public function test_discover_page_can_return_empty_fake_results(): void
+    public function test_discover_rejects_provider_expressions_as_search_text(): void
     {
-        config(['marketdata.provider_mode' => 'fake']);
-
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->get('/temukan-saham?keyword=ZZZZ')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('discover.filters.keyword', 'ZZZZ')
-                ->has('discover.results', 0)
-                ->where('discover.meta.state', 'empty')
-            );
-    }
-
-    public function test_discover_page_rejects_invalid_fake_filter(): void
-    {
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->from('/temukan-saham')
-            ->get('/temukan-saham?sector=raw-expression')
-            ->assertRedirect('/temukan-saham')
-            ->assertSessionHasErrors('sector');
-    }
-
-    public function test_discover_page_can_use_real_mode_with_fake_http(): void
-    {
-        Cache::flush();
-        config([
-            'marketdata.provider_mode' => 'real',
-            'services.sectors.api_key' => 'test-sectors-key',
-            'services.sectors.base_url' => 'https://api.example.test/v2',
-        ]);
-        Http::fake([
-            'https://api.example.test/v2/companies*' => Http::response([
-                'data' => [
-                    [
-                        'symbol' => 'BBCA',
-                        'company_name' => 'Bank Central Asia Tbk',
-                        'sector' => 'Financials',
-                    ],
-                ],
-                'meta' => [
-                    'current_page' => 1,
-                    'per_page' => 5,
-                    'total' => 1,
-                    'last_page' => 1,
-                ],
-            ]),
-        ]);
-
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->get('/temukan-saham?sector=financials&limit=5')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'discover')
-                ->where('discover.meta.source', 'sectors_real')
-                ->where('discover.meta.liveProvider', true)
-                ->where('discover.results.0.symbol', 'BBCA')
-        );
-
-        $this->assertDatabaseCount('market_data_credit_reservations', 1);
-        $this->assertCount(1, Http::recorded(fn ($request): bool => str_contains($request->url(), 'api.example.test/v2/companies')));
-    }
-
-    public function test_discover_real_mode_cache_hit_does_not_reserve_credit_again(): void
-    {
-        Cache::flush();
-        config([
-            'marketdata.provider_mode' => 'real',
-            'services.sectors.api_key' => 'test-sectors-key',
-            'services.sectors.base_url' => 'https://api.example.test/v2',
-        ]);
-        Http::fake([
-            'https://api.example.test/v2/companies*' => Http::response([
-                'data' => [
-                    [
-                        'symbol' => 'TLKM',
-                        'company_name' => 'Telkom Indonesia Tbk',
-                        'sector' => 'Infrastructure',
-                    ],
-                ],
-                'meta' => [
-                    'current_page' => 1,
-                    'per_page' => 5,
-                    'total' => 1,
-                    'last_page' => 1,
-                ],
-            ]),
-        ]);
-
-        $this->actingAs(User::factory()->create());
-
-        $this->get('/temukan-saham?sector=infrastructure&limit=5')->assertOk();
-        $this->get('/temukan-saham?sector=infrastructure&limit=5')->assertOk();
-
-        $this->assertDatabaseCount('market_data_credit_reservations', 1);
-        $this->assertCount(1, Http::recorded(fn ($request): bool => str_contains($request->url(), 'api.example.test/v2/companies')));
-    }
-
-    public function test_company_detail_page_receives_fake_snapshot(): void
-    {
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->get('/perusahaan/BBCA')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'companies')
-                ->where('company.symbol', 'BBCA')
-                ->where('company.name', 'Bank Central Asia Tbk')
-                ->where('company.metrics.0.label', 'Nilai Prioritas Riset')
-                ->where('company.meta.source', 'backend_fake')
-            );
-    }
-
-    public function test_companies_page_receives_company_list(): void
-    {
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->get('/perusahaan')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'companies')
-                ->where('companies.0.symbol', 'BBCA')
-                ->where('companies.0.sector', 'Financials')
-            );
-    }
-
-    public function test_unknown_company_detail_returns_pending_snapshot(): void
-    {
-        $this->actingAs(User::factory()->create());
-
-        $this
-            ->get('/perusahaan/ADES')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'companies')
-                ->where('company.symbol', 'ADES')
-                ->where('company.meta.source', 'detail_pending')
-            );
+        $this->actingAs(User::factory()->create())->from('/temukan-saham')
+            ->get('/temukan-saham?'.http_build_query(['keyword' => "bank' or 1=1"]))
+            ->assertRedirect('/temukan-saham')->assertSessionHasErrors('keyword');
+        Http::assertNothingSent();
     }
 
     public function test_compare_page_receives_default_fake_payload(): void

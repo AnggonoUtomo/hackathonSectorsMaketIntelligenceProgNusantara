@@ -20,6 +20,8 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Redesain riset terpandu](redesain-riset-terpandu/README.md): desain alur UX,
+  autocomplete hingga profil real pada increment 1; grafik/wizard menyusul.
 - [Fondasi akses dan ULID](fondasi-akses-ulid/README.md): ULID users fresh
   install, akses dashboard wajib verified, Redis, dan Mailpit lokal selesai
   untuk CLI/dev.

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\MarketData\Application\Contracts\CompanyDirectory;
+use App\Modules\MarketData\Infrastructure\Sectors\SectorsCompanyDirectory;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CompanyDirectory::class, SectorsCompanyDirectory::class);
     }
 
     /**

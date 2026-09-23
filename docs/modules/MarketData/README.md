@@ -15,6 +15,20 @@ memanggil HTTP Sectors langsung atau memakai DTO vendor sebagai model bisnis.
 
 ## Public contract dan dependency
 
+Implementasi increment riset terpandu menyediakan `Application/Contracts/CompanyDirectory`
+untuk consumer `Screening/Application/SearchCompanies` dan
+`Company/Application/GetCompanyProfile`. Adapter `SectorsCompanyDirectory`
+dibinding di AppServiceProvider. Contract mengembalikan read model identitas,
+pagination/profil dan fetchedAt; exception publik `MarketDataUnavailable`
+menjaga caller tidak bergantung exception Infrastructure.
+
+Search memakai Companies terstruktur dengan `like`; profil hanya section overview.
+Payload campuran harga memakai TTL satu jam. Cache menyimpan waktu fetch asli,
+lock menahan fetch identik bersamaan, dan correlation ULID baru dibuat tiap
+cache miss yang memanggil provider. Tidak ada retry otomatis pada adapter ini.
+Logo memakai asset publik Sectors, dengan fallback frontend bila tidak tersedia.
+Rincian dan bukti: [redesain riset terpandu](../../work-items/redesain-riset-terpandu/README.md).
+
 Kontrak awal direncanakan sebagai port Application yang dikonsumsi oleh use case
 NusaLens, bukan class Infrastructure langsung. Bentuk final dibuat hanya saat
 increment implementasi membutuhkan consumer nyata.

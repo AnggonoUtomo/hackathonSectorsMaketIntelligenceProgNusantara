@@ -23,6 +23,9 @@ rekomendasi BUY/HOLD/SELL.
 
 ## Acuan pekerjaan khusus
 
+- [Redesain riset terpandu](work-items/redesain-riset-terpandu/README.md):
+  rancangan UX dan increment data real. Increment 1 menghubungkan autocomplete,
+  direktori dan profil real; grafik/wizard dijadwalkan pada increment berikutnya.
 - [Scoring](SCORING.md): metrik, bobot, peer group, data hilang, dan penjelasan nilai.
 - [Alur Data](DATA-FLOW.md): pengambilan bertahap, cache, dan anggaran credit.
 - [Model Data](DATA-MODEL.md): konsep penyimpanan dari blueprint dan batas keputusan schema.
