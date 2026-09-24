@@ -10,10 +10,23 @@ metrik, kelompok pembanding, kelengkapan, dan tanggal sumbernya.
 Bukan daftar saham yang harus dibeli. Tujuannya membantu menjawab:
 **"Perusahaan mana yang layak saya teliti lebih lanjut, dan mengapa?"**
 
-> Status: fondasi aplikasi dan spesifikasi MVP sudah tersedia. Fitur riset
-> berikut adalah target yang disepakati, belum seluruhnya diimplementasikan.
-> Login/registrasi starter tersedia; kewajiban verifikasi email untuk riset,
-> integrasi data, dan mesin penilaian masih perlu dikerjakan.
+> Status: pencarian nama/kode, direktori dan profil sudah memakai data real.
+> Detail perusahaan menyediakan grafik harga, laporan kuartalan dan valuasi.
+> Fitur riset wajib login dan verifikasi email. Wizard dan penyambungan
+> nilai/perbandingan ke data real belum selesai; halaman Compare/Research lama
+> masih memakai data contoh dan bukan hasil analisis real.
+
+## Yang sudah bisa dicoba
+
+1. Login dengan email terverifikasi, lalu buka **Temukan Saham**.
+2. Ketik nama atau kode perusahaan, lalu pilih hasil pencarian.
+3. Pada detail, buka **Harga**, **Keuangan**, atau **Valuasi** sesuai kebutuhan.
+4. Pilih rentang harga 30/90 hari atau kelompok angka keuangan. Tombol tabel
+   menampilkan angka lengkap; tooltip grafik menampilkan nilai per periode.
+
+Harga memakai rupiah; grafik keuangan memakai miliar rupiah dan tabelnya rupiah
+lengkap. Valuasi memakai rasio kali (x), bukan label murah/mahal. Tanggal sumber
+dan waktu pengambilan ditampilkan terpisah. Nilai tidak tersedia tidak diisi nol.
 
 ## Untuk siapa?
 

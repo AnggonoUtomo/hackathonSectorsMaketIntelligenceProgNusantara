@@ -25,7 +25,8 @@ rekomendasi BUY/HOLD/SELL.
 
 - [Redesain riset terpandu](work-items/redesain-riset-terpandu/README.md):
   rancangan UX dan increment data real. Increment 1 menghubungkan autocomplete,
-  direktori dan profil real; grafik/wizard dijadwalkan pada increment berikutnya.
+  direktori dan profil real; increment 2 menambahkan grafik harga/keuangan dan
+  valuasi real. Wizard dijadwalkan pada increment berikutnya.
 - [Scoring](SCORING.md): metrik, bobot, peer group, data hilang, dan penjelasan nilai.
 - [Alur Data](DATA-FLOW.md): pengambilan bertahap, cache, dan anggaran credit.
 - [Model Data](DATA-MODEL.md): konsep penyimpanan dari blueprint dan batas keputusan schema.
@@ -60,7 +61,7 @@ Dokumen aktif dan template kerja tidak membutuhkan tautan ke kedua folder itu.
 - Frontend: Inertia.js, React + TypeScript, Tailwind CSS.
 - Database: MySQL. Cache dan queue: Redis.
 - Data provider: Sectors Financial API v2.
-- Visualisasi: Recharts, belum dipasang.
+- Visualisasi: Recharts, dipakai pada detail perusahaan.
 - AI: opsional, hanya menjelaskan hasil analisis. Provider/model/budget belum
   dipilih; penjelasan berbasis aturan tetap wajib.
 

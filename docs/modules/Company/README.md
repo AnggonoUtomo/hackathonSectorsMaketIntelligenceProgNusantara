@@ -14,6 +14,12 @@ profil dan nilai yang tersedia. Null tetap null; tautan website divalidasi skema
 Route `/perusahaan` memakai direktori pencarian yang sama dengan Temukan Saham.
 Tidak ada snapshot persistence baru pada increment ini.
 
+`GetCompanyAnalytics` memakai public contract `MarketData/CompanyAnalytics`.
+Endpoint `/nusalens/companies/{symbol}/analysis?section=prices|financials|valuation`
+memuat satu tab sesuai permintaan, dengan auth, verifikasi email dan throttle.
+Frontend menyediakan Recharts dan tabel angka lengkap, periode/satuan serta
+loading, error/retry dan empty state. Tidak menghitung rekomendasi investasi.
+
 `FakeCompanySnapshot` masih diperlukan consumer Research lama. Jangan menghapus
 class ini sebelum consumer tersebut dimigrasikan; detail baru tidak memakainya.
 

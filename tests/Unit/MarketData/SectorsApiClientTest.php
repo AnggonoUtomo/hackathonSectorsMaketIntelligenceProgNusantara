@@ -11,6 +11,20 @@ use Tests\TestCase;
 
 class SectorsApiClientTest extends TestCase
 {
+    public function test_invalid_json_is_not_returned_as_an_empty_series(): void
+    {
+        config(['services.sectors.api_key' => 'test-key']);
+        Http::fakeSequence()->push('not json')->push('null')->push('123')->push('{}');
+        foreach (range(1, 4) as $attempt) {
+            try {
+                app(SectorsApiClient::class)->get('daily/BBCA');
+                $this->fail('Invalid JSON must fail.');
+            } catch (SectorsApiException $error) {
+                $this->assertSame('invalid_response', $error->reason());
+            }
+        }
+    }
+
     public function test_it_sends_authorized_get_requests_to_the_configured_base_url(): void
     {
         config([

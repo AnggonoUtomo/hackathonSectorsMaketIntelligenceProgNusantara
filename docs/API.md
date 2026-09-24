@@ -1,8 +1,24 @@
 # API dan Integrasi
 
 Dokumen ini mencatat target contract publik dan integrasi eksternal NusaLens.
-Starter auth/settings sudah tersedia; endpoint riset dan adapter Sectors belum
-diimplementasikan. Nama client/adapter berikut adalah rancangan, bukan class aktif.
+Endpoint pencarian/profil/analytics real sudah tersedia. Bagian target kontrak
+di bawah tetap rancangan kecuali disebut terimplementasi.
+
+## Endpoint analytics terimplementasi
+
+`GET /nusalens/companies/{symbol}/analysis?section=prices|financials|valuation`
+memerlukan login dan verifikasi email, throttle 60/menit. Simbol empat karakter
+alfanumerik, section wajib dari whitelist; parameter provider tidak diteruskan
+dari input bebas. Respons 200 berisi symbol, section, rows dan fetchedAt.
+Harga juga menyertakan range start/end (tanggal WIB); cache lama tanpa range
+masih didukung frontend menggunakan tanggal fetchedAt dalam WIB.
+Setiap row memiliki date (tanggal laporan/harga atau tahun valuasi), metrik
+numerik nullable. Seri diurutkan naik; periode duplikat ditolak.
+
+Error: 401 tanpa sesi, 403 belum verified, 422 input invalid, 404 emiten tidak
+tersedia, 429 kuota/rate limit, 502 provider/payload bermasalah, 503 lock timeout.
+Pesan provider mentah dan API key tidak dikirim. Empty list sah dibedakan dari
+JSON rusak. Detail endpoint/cache/biaya: [MarketData](modules/MarketData/README.md).
 
 ## Sectors API v2
 

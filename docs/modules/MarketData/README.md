@@ -29,6 +29,16 @@ cache miss yang memanggil provider. Tidak ada retry otomatis pada adapter ini.
 Logo memakai asset publik Sectors, dengan fallback frontend bila tidak tersedia.
 Rincian dan bukti: [redesain riset terpandu](../../work-items/redesain-riset-terpandu/README.md).
 
+Increment 2 menambahkan public contract `CompanyAnalytics`, dikonsumsi
+`Company/Application/GetCompanyAnalytics`. Adapter `SectorsCompanyAnalytics`
+memetakan Daily (90 hari, 1 credit), Quarterly (4 kuartal, reservasi 4 credit)
+dan Report section valuation (1 credit). TTL harga/valuasi 1 jam, kuartalan
+24 jam. `CachedSectorsRequest` dipakai bersama direktori/analytics untuk lock,
+reservasi dan error; key cache direktori tidak berubah. Tidak ada retry otomatis.
+Timestamp fetch dipertahankan pada cache hit. Tanggal duplikat, simbol berbeda,
+JSON invalid dan bentuk seri rusak ditolak, bukan diubah menjadi hasil kosong.
+Ledger mencatat estimasi konservatif; biaya aktual provider belum direkonsiliasi.
+
 Kontrak awal direncanakan sebagai port Application yang dikonsumsi oleh use case
 NusaLens, bukan class Infrastructure langsung. Bentuk final dibuat hanya saat
 increment implementasi membutuhkan consumer nyata.

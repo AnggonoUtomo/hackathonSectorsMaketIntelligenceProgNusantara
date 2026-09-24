@@ -9,7 +9,7 @@ aturan bisnis dengan detail framework atau provider.
 - Framework reusable: tidak ada pada baseline awal.
 - Module aplikasi: `app/Modules/{Module}`, sesuai rancangan NusaLens.
 - Runtime: Laravel 12, PHP 8.4+, MySQL, dan Redis.
-- Frontend: starter Inertia React di `resources/js/`; Recharts dipilih, belum dipasang.
+- Frontend: starter Inertia React di `resources/js/`; Recharts pada detail perusahaan.
 - Struktur canonical: [FOLDER-STRUCTURE.md](FOLDER-STRUCTURE.md).
 
 ## Hexagon pada setiap module

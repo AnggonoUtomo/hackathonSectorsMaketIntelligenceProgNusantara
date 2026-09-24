@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Company\Presentation\CompanyAnalyticsController;
 use App\Modules\Company\Presentation\CompanyProfileController;
 use App\Modules\Comparison\Application\FakeComparisonBuilder;
 use App\Modules\Research\Application\RuleBasedResearchExplainer;
@@ -22,6 +23,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('nusalens/companies/search', [CompanySearchController::class, 'suggestions'])
         ->middleware('throttle:60,1')->name('nusalens.companies.search');
     Route::get('perusahaan', [CompanySearchController::class, 'index'])->middleware('throttle:60,1')->name('companies');
+    Route::get('nusalens/companies/{symbol}/analysis', CompanyAnalyticsController::class)
+        ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:60,1')->name('nusalens.companies.analysis');
     Route::get('perusahaan/{symbol}', CompanyProfileController::class)
         ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:60,1')->name('companies.show');
 

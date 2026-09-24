@@ -35,8 +35,12 @@ class SectorsApiClient
             throw SectorsApiException::providerError($response->status());
         }
 
-        /** @var array<string, mixed> */
-        return $response->json() ?? [];
+        $payload = $response->json();
+        if (! is_array($payload) || ($payload === [] && ! is_array($response->object()))) {
+            throw new SectorsApiException('Sectors returned an invalid JSON payload.', 'invalid_response');
+        }
+
+        return $payload;
     }
 
     private function url(string $path): string

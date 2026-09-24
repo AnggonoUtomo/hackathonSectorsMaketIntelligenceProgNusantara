@@ -4,21 +4,11 @@ namespace App\Modules\MarketData\Infrastructure\Sectors;
 
 use App\Modules\MarketData\Application\Contracts\CompanyDirectory;
 use App\Modules\MarketData\Application\Exception\MarketDataUnavailable;
-use App\Modules\MarketData\Infrastructure\Cache\MarketDataCache;
-use App\Modules\MarketData\Infrastructure\Credit\CreditReservationException;
-use App\Modules\MarketData\Infrastructure\Credit\CreditReservationService;
-use App\Modules\MarketData\Infrastructure\Sectors\Exception\SectorsApiException;
-use Closure;
-use Illuminate\Contracts\Cache\LockTimeoutException;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class SectorsCompanyDirectory implements CompanyDirectory
 {
     public function __construct(
-        private readonly SectorsApiClient $client,
-        private readonly MarketDataCache $cache,
-        private readonly CreditReservationService $credits,
+        private readonly CachedSectorsRequest $requests,
     ) {}
 
     public function search(string $userId, string $query, int $page, int $perPage): array
@@ -32,7 +22,7 @@ class SectorsCompanyDirectory implements CompanyDirectory
             $parameters['where'] = "company_name like '%{$query}%' or symbol like '%{$query}%'";
         }
 
-        return $this->remember($userId, 'companies', $parameters, function (array $payload) use ($page, $perPage): array {
+        return $this->requests->remember($userId, 'companies', $parameters, function (array $payload) use ($page, $perPage): array {
             if (! isset($payload['results'], $payload['pagination']['total_count']) || ! is_array($payload['results'])
                 || ! is_numeric($payload['pagination']['total_count'])) {
                 throw $this->invalidPayload();
@@ -56,7 +46,7 @@ class SectorsCompanyDirectory implements CompanyDirectory
             throw new MarketDataUnavailable('not_found', 404, 'Perusahaan tidak ditemukan.');
         }
 
-        return $this->remember($userId, 'company/report/'.$symbol, ['sections' => 'overview'], function (array $payload) use ($symbol): array {
+        return $this->requests->remember($userId, 'company/report/'.$symbol, ['sections' => 'overview'], function (array $payload) use ($symbol): array {
             $identity = $this->identity($payload);
             $overview = $payload['overview'] ?? null;
             if ($identity['symbol'] !== $symbol || ! is_array($overview) || $overview === []) {
@@ -81,35 +71,6 @@ class SectorsCompanyDirectory implements CompanyDirectory
                 'indices' => array_values(array_filter(is_array($overview['indices'] ?? null) ? $overview['indices'] : [], 'is_string')),
             ];
         });
-    }
-
-    private function remember(string $userId, string $endpoint, array $parameters, Closure $map): array
-    {
-        // Cache mapped results with their original fetch time; identical in-flight calls share one fetch.
-        $key = $this->cache->key('directory-v1/'.$endpoint, $parameters);
-        if (is_array($cached = Cache::get($key))) {
-            return $cached;
-        }
-
-        try {
-            return Cache::lock($key.':lock', 30)->block(12, function () use ($key, $userId, $endpoint, $parameters, $map): array {
-                return Cache::remember($key, 3600, function () use ($userId, $endpoint, $parameters, $map): array {
-                    $this->credits->reserve($userId, $endpoint, 1, 'directory-'.Str::ulid());
-
-                    return $map($this->client->get($endpoint, $parameters)) + ['fetchedAt' => now()->toIso8601String()];
-                });
-            });
-        } catch (CreditReservationException) {
-            throw new MarketDataUnavailable('credit_limit', 429, 'Batas penggunaan data tercapai. Data tersimpan tetap dapat dibuka.');
-        } catch (LockTimeoutException) {
-            throw new MarketDataUnavailable('busy', 503, 'Data sedang dimuat. Silakan coba lagi.');
-        } catch (SectorsApiException $exception) {
-            if ($exception->providerStatus() === 404) {
-                throw new MarketDataUnavailable('not_found', 404, 'Perusahaan tidak ditemukan di sumber data.');
-            }
-            throw new MarketDataUnavailable('provider_unavailable', $exception->providerStatus() === 429 ? 429 : 502,
-                'Data Sectors belum dapat dimuat. Silakan coba lagi.');
-        }
     }
 
     private function identity(array $row): array

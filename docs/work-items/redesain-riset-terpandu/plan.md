@@ -3,7 +3,8 @@
 ## Scope
 
 Rancangan selesai dan user menginstruksikan kelanjutan implementasi increment 1.
-Increment 2-5 tetap merupakan urutan berikutnya; tidak otomatis dikerjakan.
+User menyetujui increment 2 setelah commit increment 1 (`0914215`).
+Increment 3-5 tidak otomatis dikerjakan.
 Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
@@ -41,6 +42,22 @@ Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
   cache/ledger/error; browser desktop/mobile/keyboard; smoke real terukur.
 
 ## Increment 2: Data perusahaan dan grafik real
+
+- Status: selesai; hasil verifikasi dan batas data tercatat di tasks.
+- Implementasi: tab Harga, Keuangan dan Valuasi dimuat atas permintaan;
+  overview tetap ringan. Endpoint internal tervalidasi dan wajib auth/verified.
+- Batas fetch: Daily 90 hari (1 credit), empat kuartal terbaru (4 credit),
+  Company Report hanya valuation (1 credit). Maksimal 6 credit cold per emiten
+  di luar overview; rentang 30/90 hari memakai seri sama tanpa fetch tambahan.
+- Financials memakai nilai kuartalan IDR sesuai kontrak provider, bukan TTM
+  atau pertumbuhan hasil asumsi. Neraca adalah posisi pada tanggal laporan.
+  Metrik bank dari financials_sector_metrics hanya tampil jika tersedia.
+- Cache harga/valuasi 1 jam, kuartalan 24 jam; waktu fetch tidak berubah saat hit.
+  Tidak melakukan retry otomatis berbiaya atau fallback fake.
+- Smoke terarah BBCA dan ADES maksimal 12 credit sebelum overview, quota tetap.
+- Referensi: [Daily](https://docs.sectors.app/api-references/v2/indonesia/transaction/daily),
+  [Quarterly](https://docs.sectors.app/api-references/v2/indonesia/report/quarterly-financials),
+  [Company Report](https://docs.sectors.app/api-references/v2/indonesia/report/company-report).
 
 - Hasil pengguna: memahami tren harga dan kinerja melalui Recharts serta tabel.
 - Owner: Company, MarketData, frontend.

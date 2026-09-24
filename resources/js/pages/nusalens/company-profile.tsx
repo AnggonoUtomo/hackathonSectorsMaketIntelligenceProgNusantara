@@ -1,3 +1,4 @@
+import CompanyAnalysis from '@/components/company-analysis';
 import CompanyLogo from '@/components/company-logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -100,50 +101,52 @@ export default function CompanyProfilePage({
                                     </p>
                                 </div>
                             </section>
-                            <section className="border-t pt-6">
-                                <h2 className="text-base font-semibold">Profil perusahaan</h2>
-                                <dl className="mt-4 grid gap-x-8 sm:grid-cols-2">
-                                    {[
-                                        { label: 'Sektor', value: company.sector, Icon: Building2 },
-                                        { label: 'Industri', value: company.industry, Icon: Building2 },
-                                        { label: 'Tanggal pencatatan', value: date(company.listingDate), Icon: CalendarDays },
-                                        { label: 'Papan pencatatan', value: company.board, Icon: Building2 },
-                                        { label: 'Karyawan', value: number(company.employees), Icon: Users },
-                                        { label: 'Telepon', value: company.phone, Icon: Phone },
-                                        { label: 'Alamat', value: company.address?.replaceAll('\\r\\n', '\n'), Icon: MapPin },
-                                    ].map(({ label, value, Icon }) => (
-                                        <div key={label} className="flex gap-3 border-b py-4">
-                                            <Icon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
-                                            <div className="min-w-0">
-                                                <dt className="text-muted-foreground text-xs">{label}</dt>
-                                                <dd className="mt-1 text-sm break-words whitespace-pre-line">{value ?? 'Belum tersedia'}</dd>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </dl>
-                            </section>
-                            {company.indices.length > 0 && (
+                            <CompanyAnalysis key={company.symbol} symbol={company.symbol}>
                                 <section>
-                                    <h2 className="mb-3 text-base font-semibold">Keanggotaan indeks</h2>
-                                    <div className="flex flex-wrap gap-2">
-                                        {company.indices.map((index) => (
-                                            <Badge key={index} variant="outline">
-                                                {index}
-                                            </Badge>
+                                    <h2 className="text-base font-semibold">Profil perusahaan</h2>
+                                    <dl className="mt-4 grid gap-x-8 sm:grid-cols-2">
+                                        {[
+                                            { label: 'Sektor', value: company.sector, Icon: Building2 },
+                                            { label: 'Industri', value: company.industry, Icon: Building2 },
+                                            { label: 'Tanggal pencatatan', value: date(company.listingDate), Icon: CalendarDays },
+                                            { label: 'Papan pencatatan', value: company.board, Icon: Building2 },
+                                            { label: 'Karyawan', value: number(company.employees), Icon: Users },
+                                            { label: 'Telepon', value: company.phone, Icon: Phone },
+                                            { label: 'Alamat', value: company.address?.replaceAll('\\r\\n', '\n'), Icon: MapPin },
+                                        ].map(({ label, value, Icon }) => (
+                                            <div key={label} className="flex gap-3 border-b py-4">
+                                                <Icon className="text-muted-foreground mt-0.5 size-4 shrink-0" />
+                                                <div className="min-w-0">
+                                                    <dt className="text-muted-foreground text-xs">{label}</dt>
+                                                    <dd className="mt-1 text-sm break-words whitespace-pre-line">{value ?? 'Belum tersedia'}</dd>
+                                                </div>
+                                            </div>
                                         ))}
-                                    </div>
+                                    </dl>
                                 </section>
-                            )}
-                            <footer className="text-muted-foreground border-t pt-4 text-xs leading-6">
-                                Sumber: Sectors Financial API. Data diambil{' '}
-                                {new Intl.DateTimeFormat('id-ID', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Jakarta' }).format(
-                                    new Date(company.fetchedAt),
-                                )}{' '}
-                                WIB.
-                                {company.priceDate && (
-                                    <span className="block">Harga adalah penutupan pada {date(company.priceDate)}, bukan harga real-time.</span>
+                                {company.indices.length > 0 && (
+                                    <section>
+                                        <h2 className="mb-3 text-base font-semibold">Keanggotaan indeks</h2>
+                                        <div className="flex flex-wrap gap-2">
+                                            {company.indices.map((index) => (
+                                                <Badge key={index} variant="outline">
+                                                    {index}
+                                                </Badge>
+                                            ))}
+                                        </div>
+                                    </section>
                                 )}
-                            </footer>
+                                <footer className="text-muted-foreground border-t pt-4 text-xs leading-6">
+                                    Sumber: Sectors Financial API. Data diambil{' '}
+                                    {new Intl.DateTimeFormat('id-ID', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Jakarta' }).format(
+                                        new Date(company.fetchedAt),
+                                    )}{' '}
+                                    WIB.
+                                    {company.priceDate && (
+                                        <span className="block">Harga adalah penutupan pada {date(company.priceDate)}, bukan harga real-time.</span>
+                                    )}
+                                </footer>
+                            </CompanyAnalysis>
                         </>
                     )
                 )}

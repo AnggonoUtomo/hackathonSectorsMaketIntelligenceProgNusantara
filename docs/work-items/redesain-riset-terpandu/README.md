@@ -2,12 +2,12 @@
 
 ## Status dan owner
 
-- Status: increment 0 dan 1 selesai; increment 2-5 belum dimulai.
+- Status: increment 0-2 selesai; increment 3-5 belum dimulai.
 - Tanggal: 2026-09-24.
 - Owner: lintas module Screening, Company, MarketData, Intelligence,
   Research, Comparison, dan frontend.
 - Target tahap ini: dokumentasi alur produk serta autocomplete, direktori
-  paginated dan profil perusahaan real yang dapat diuji end-to-end.
+  paginated, profil serta grafik/keuangan perusahaan real yang dapat diuji end-to-end.
 
 ## Kondisi awal
 
@@ -34,7 +34,8 @@ Rancangan sampai perbandingan tersimpan tetap dicatat sebagai target berikutnya.
 
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
-lanjutan, bukan otomatis scope MVP. Tidak ada dependency baru, commit, atau push.
+lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
+Increment 1 sudah di-commit; increment 2 belum commit dan tidak ada push.
 Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 
 ## Acceptance criteria tahap desain
@@ -74,7 +75,9 @@ struktur aplikasi pada pekerjaan ini.
   serta perbaikan lebar konten mobile. Route/nama lama dipertahankan.
 - Verifikasi: test backend, typecheck, lint, build, browser desktop/mobile,
   input keyboard, back navigation, logo dan smoke real. Rincian di [tasks](tasks.md).
-- Batas: grafik, wizard, filter sektor/tujuan, compare real dan menu ringkas belum
+- Increment 2: tab harga 30/90 hari, keuangan empat kuartal dan valuasi historis;
+  grafik Recharts, tabel lengkap, unit/periode, null, cache dan error eksplisit.
+- Batas: wizard, filter sektor/tujuan, compare real dan menu ringkas belum
   diimplementasikan. Compare/Research lama masih menggunakan sumber fake;
   Discover/Company baru tidak mengarah ke alur tersebut sebagai kelanjutan analisis.
 - Risiko: logo asset publik bukan kontrak API yang menjamin cakupan. Overview

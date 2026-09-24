@@ -32,9 +32,11 @@
 
 ## Increment 2: Detail dan grafik
 
-- [ ] Validasi periode, unit, seri harga/keuangan bank dan nonbank.
-- [ ] Implementasikan Recharts dan alternatif tabel dari data real.
-- [ ] Verifikasi grafik, mobile, data parsial, error dan credit.
+- [x] Scope, endpoint, periode, cache dan estimasi credit dicatat sebelum coding.
+- [x] Uji kontrak endpoint internal, auth, null, periode, cache dan batas credit.
+- [x] Validasi periode, unit, seri harga/keuangan bank dan nonbank.
+- [x] Implementasikan Recharts dan alternatif tabel dari data real.
+- [x] Verifikasi grafik, mobile, data parsial, error dan credit.
 
 ## Increment 3: Wizard
 
@@ -79,6 +81,40 @@
   pengujian. Script lokal sementara sudah dihapus. Data user lain tidak diubah.
 - Risiko: cakupan logo tidak dijamin; biaya tercatat berupa reservasi konservatif,
   belum rekonsiliasi billing provider. Grafik/wizard dan compare real belum dibuat.
-- Delivery: belum commit/push; folder Hackaton dan dua file LSP tidak disentuh.
+- Delivery increment 1: commit `0914215`, belum push; folder Hackaton dan dua
+  file LSP tidak disentuh. Increment 2 dilanjutkan atas instruksi user.
+
+## Hasil increment 2
+
+- Pemeriksaan final: `php artisan test --compact` lulus 115 test / 533 assertion;
+  typecheck, ESLint file berubah, build, Pint dan `git diff --check` lulus.
+  Instalasi Recharts 3.10.1 menghasilkan audit npm tanpa vulnerability.
+- Tab Profil/Harga/Keuangan/Valuasi, lazy fetch per section, Recharts line/bar,
+  rentang 30/90 hari, pilihan metrik, tooltip dan alternatif tabel angka lengkap.
+- Real BBCA/ADES: masing-masing 61 titik harga (29 Juni-23 September 2026),
+  empat kuartal (30 September 2025-30 Juni 2026), lima tahun valuasi (2022-2026).
+  Tahun berjalan diberi konteks belum final. Tidak membuat TTM, pertumbuhan,
+  rekomendasi atau rasio risiko baru dari seri ini.
+- Mapping null tetap null, utang ADES nol tetap nol; metrik bank hanya muncul
+  bila sumber menyediakan angka. Satuan harga IDR, keuangan IDR (grafik miliar),
+  rasio x. Angka tampil dua desimal. Tidak ada fallback fake.
+- Credit: smoke analytics 12 reservasi credit (Daily 2, kuartal 8, valuasi 2),
+  ditambah overview browser BBCA/ADES 2 credit. Kuota akun pengembangan
+  tercapai pada smoke; sisa validasi memakai akun QA yang sudah tersedia,
+  tanpa mengubah quota/global budget atau ledger. Cache hit tidak menambah biaya.
+  Total tambahan 14 adalah estimasi ledger, bukan rekonsiliasi billing provider.
+  Pengulangan smoke memakai cache: tambahan reservasi 0.
+- Browser: desktop 1440px, mobile 390px/320px, grafik nyata dan tooltip,
+  tabel empat kuartal, rentang 30 hari berisi 21 sesi, pilihan metrik bank,
+  nonbank tanpa opsi bank, offline error dan retry online berhasil.
+  Tidak ada horizontal overflow halaman; tabel punya scroll sendiri. Tab dapat
+  dinavigasi keyboard, label kuartal menyertakan tahun. Sidebar expanded/collapsed,
+  light/dark teruji; console halaman final tanpa warning/error.
+- Client menolak JSON rusak/null/scalar/objek kosong, bukan menganggap seri kosong;
+  test regresi ditambahkan. Shared request menjaga perilaku direktori sebelumnya.
+- Increment 2 belum commit/push. Wizard, compare real, scoring dan navigasi
+  berikutnya tidak dikerjakan. Folder Hackaton, file LSP dan data user tetap.
+- Akun QA dinonaktifkan kembali (verifikasi dicabut, password diacak, sesi
+  dihapus); ledger tetap. Script smoke/setup sementara dihapus setelah verifikasi.
 
 Jangan menambah scope ke checklist tanpa instruksi user.
