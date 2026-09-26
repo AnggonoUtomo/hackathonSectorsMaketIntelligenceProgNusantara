@@ -7,18 +7,19 @@ import CompanyAnalysisChart, {
 } from '@/components/company-analysis-chart';
 import ResearchSummaryPanel from '@/components/research-summary';
 import { Button } from '@/components/ui/button';
-import { ChartNoAxesCombined, RefreshCw, Table2 } from 'lucide-react';
+import { BarChart3, Building2, ChartNoAxesCombined, FileSearch, RefreshCw, Scale, Table2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 type Section = 'prices' | 'financials' | 'valuation';
+type TabKey = Section | 'overview' | 'research';
 type Result = { symbol: string; section: Section; rows: AnalysisRow[]; fetchedAt: string; range?: { start: string; end: string } };
 type State = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; data: Result };
 const tabs = [
-    { key: 'research', label: 'Ringkasan Riset' },
-    { key: 'overview', label: 'Profil' },
-    { key: 'prices', label: 'Harga' },
-    { key: 'financials', label: 'Keuangan' },
-    { key: 'valuation', label: 'Valuasi' },
+    { key: 'research', label: 'Ringkasan Riset', description: 'Temuan dan bukti', Icon: FileSearch },
+    { key: 'overview', label: 'Profil', description: 'Identitas dan klasifikasi', Icon: Building2 },
+    { key: 'prices', label: 'Harga', description: 'Grafik 30/90 hari', Icon: ChartNoAxesCombined },
+    { key: 'financials', label: 'Keuangan', description: 'Empat kuartal', Icon: BarChart3 },
+    { key: 'valuation', label: 'Valuasi', description: 'Rasio historis', Icon: Scale },
 ] as const;
 const metric = (key: string, label: string, color = '#0d9488'): AnalysisMetric => ({ key, label, color });
 const groups = {
@@ -41,11 +42,15 @@ const groups = {
 };
 
 export default function CompanyAnalysis({ symbol, children }: { symbol: string; children: ReactNode }) {
-    const [tab, setTab] = useState<Section | 'overview' | 'research'>('research');
+    const [tab, setTab] = useState<TabKey>('research');
     const cache = useRef<Partial<Record<Section, Result>>>({});
+    function selectTab(next: TabKey) {
+        setTab(next);
+    }
+
     return (
         <section className="min-w-0">
-            <div role="tablist" aria-label="Data perusahaan" className="mb-6 flex overflow-x-auto border-b">
+            <div role="tablist" aria-label="Data perusahaan" className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                 {tabs.map((item, index) => (
                     <button
                         key={item.key}
@@ -55,8 +60,12 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                         aria-selected={tab === item.key}
                         aria-controls="company-analysis-panel"
                         tabIndex={tab === item.key ? 0 : -1}
-                        className={`shrink-0 border-b-2 px-3 py-3 text-sm font-medium focus-visible:outline-2 focus-visible:outline-offset-[-2px] sm:px-4 ${tab === item.key ? 'border-teal-600 text-teal-700 dark:text-teal-300' : 'text-muted-foreground hover:text-foreground border-transparent'}`}
-                        onClick={() => setTab(item.key)}
+                        className={`min-h-24 rounded-lg border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                            tab === item.key
+                                ? 'border-teal-600 bg-teal-50 text-teal-950 dark:bg-teal-950/30 dark:text-teal-100'
+                                : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                        }`}
+                        onClick={() => selectTab(item.key)}
                         onKeyDown={(event) => {
                             const next =
                                 event.key === 'ArrowRight'
@@ -75,7 +84,19 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                             }
                         }}
                     >
-                        {item.label}
+                        <span className="flex items-start gap-3">
+                            <span
+                                className={`flex size-9 shrink-0 items-center justify-center rounded-md border ${
+                                    tab === item.key ? 'border-teal-600 bg-white text-teal-700 dark:bg-teal-950 dark:text-teal-200' : 'bg-background'
+                                }`}
+                            >
+                                <item.Icon className="size-4" />
+                            </span>
+                            <span className="min-w-0">
+                                <span className="block text-sm font-semibold">{item.label}</span>
+                                <span className="mt-1 block text-xs leading-5">{item.description}</span>
+                            </span>
+                        </span>
                     </button>
                 ))}
             </div>

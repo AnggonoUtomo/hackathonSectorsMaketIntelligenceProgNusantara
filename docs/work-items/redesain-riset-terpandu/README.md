@@ -2,7 +2,13 @@
 
 ## Status dan owner
 
-- Status: increment 0-2 selesai; increment 3-5 belum dimulai.
+- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai.
+- Kelanjutan 2026-09-26 UX-2: setelah menu `/perusahaan` digabung ke
+  `/temukan-saham`, user menyetujui rekomendasi untuk merapikan alur riset utama
+  sebelum masuk scoring besar. Tahap ini fokus pada Company Cockpit di detail
+  perusahaan agar data real yang sudah ada lebih mudah dibaca oleh pengguna awam.
+  Tidak menambah endpoint Sectors, tidak menjalankan fetch otomatis baru, dan
+  tidak mengubah formula.
 - Kelanjutan 2026-09-26: increment 3A Ringkasan Riset real selesai pada
   [work item Ruang Riset Berbukti](../ruang-riset-berbukti/README.md).
   Wizard/scoring lama tidak otomatis dikerjakan; 3B-5 masih menunggu gate.
@@ -38,6 +44,11 @@ Tahap awal menyusun desain; user kemudian menginstruksikan implementasi.
 Increment 1 mengganti route Discover dan Company dengan alur data real.
 Rancangan sampai perbandingan tersimpan tetap dicatat sebagai target berikutnya.
 
+UX-2A hanya menyusun ulang pengalaman membaca detail perusahaan dari data yang
+sudah tersedia: Ringkasan Riset, Profil, Harga, Keuangan, dan Valuasi. Scope ini
+tidak membuat skor prioritas, tidak menghubungkan compare real, tidak membuka
+semua data otomatis, dan tidak membuat wizard multi-langkah penuh.
+
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
 lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
@@ -54,6 +65,19 @@ Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 - [x] Ketidakpastian logo, pencarian provider, biaya, dan data ditandai.
 - [x] Increment memiliki hasil pengguna, dependency, serta verifikasi.
 - [x] User menginstruksikan "ok, lakukan bro" setelah rancangan ditulis.
+
+## Acceptance criteria UX-2A
+
+- [x] Detail perusahaan terasa sebagai cockpit riset, bukan kumpulan tab yang
+      berdiri sendiri.
+- [x] Shortcut riset mengarah ke data real yang sudah ada: ringkasan, profil,
+      harga, keuangan, dan valuasi.
+- [x] Tab lama tetap keyboard accessible dan tidak memicu fetch sebelum user
+      membuka section terkait.
+- [x] Tidak ada endpoint Sectors baru, tidak ada data fake baru, dan tidak ada
+      credit tambahan hanya karena halaman detail pertama kali dibuka.
+- [x] Browser desktop/mobile tidak overflow dan tetap menampilkan tabel/grafik
+      dengan fallback yang sudah ada.
 
 ## Dependency dan keputusan
 

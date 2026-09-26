@@ -22,13 +22,13 @@
 ## Increment 1: Search sampai detail real
 
 - [x] Validasi pencarian nama/kode, overview dan pagination live; tarif memakai
-  estimasi dokumentasi, bukan rekonsiliasi tagihan provider.
+      estimasi dokumentasi, bukan rekonsiliasi tagihan provider.
 - [x] Validasi asset logo publik; fallback tetap tersedia untuk logo yang gagal.
 - [x] Implementasikan autocomplete dan tabel hasil real dengan state lengkap.
 - [x] Hubungkan detail identitas real dan back navigation.
 - [x] Hapus pemakaian fake dari route Discover/Company dan verifikasi live.
-  Class FakeCompanySnapshot tetap diperlukan Research; fake/UI lama yang
-  tersisa tidak dipakai route Discover/Company baru. Tidak menghapus consumer lain.
+      Class FakeCompanySnapshot tetap diperlukan Research; fake/UI lama yang
+      tersisa tidak dipakai route Discover/Company baru. Tidak menghapus consumer lain.
 
 ## Increment 2: Detail dan grafik
 
@@ -43,6 +43,16 @@
 - [ ] Audit kalkulator, populasi peer dan kelengkapan input.
 - [ ] Implementasikan stepper bebas, penjelasan aturan, dan rincian bukti.
 - [ ] Verifikasi formula/threshold, waktu sumber dan alur pengguna.
+
+## UX-2A: Company Cockpit
+
+- [x] Scope cockpit ditetapkan sebelum coding: detail perusahaan saja, tanpa
+      endpoint baru dan tanpa auto-fetch section berbiaya.
+- [x] Tambahkan shortcut riset di detail perusahaan untuk Ringkasan Riset,
+      Profil, Harga, Keuangan, dan Valuasi.
+- [x] Pertahankan tab keyboard accessible dan lazy fetch data real.
+- [x] Verifikasi desktop/mobile, console, network section, typecheck dan build.
+- [x] Perbarui handoff setelah verifikasi.
 
 ## Increment 4: Eksplorasi
 
@@ -116,5 +126,25 @@
   berikutnya tidak dikerjakan. Folder Hackaton, file LSP dan data user tetap.
 - Akun QA dinonaktifkan kembali (verifikasi dicabut, password diacak, sesi
   dihapus); ledger tetap. Script smoke/setup sementara dihapus setelah verifikasi.
+
+## Hasil UX-2A
+
+- Perubahan: `CompanyAnalysis` sekarang menampilkan shortcut cockpit berupa grid
+  tab berikon untuk Ringkasan Riset, Profil, Harga, Keuangan dan Valuasi. Tab
+  tetap memakai `role=tablist`, Arrow/Home/End tetap berpindah section, dan
+  section analitik tetap lazy fetch.
+- Verifikasi otomatis: `npm run typecheck`, ESLint scoped
+  `resources/js/components/company-analysis.tsx`, `npm run build`, dan
+  `git diff --check` lulus.
+- Browser QA: harness lokal sementara dengan SQLite memory dan HTTP fake, tidak
+  menyentuh `.env`, DB user, atau credit Sectors. Desktop 1365px menampilkan
+  lima shortcut, console bersih, dan tidak ada XHR/fetch sebelum section dibuka.
+  Klik Harga baru memanggil `/nusalens/companies/BBCA/analysis?section=prices`
+  dan grafik tampil.
+- Mobile QA: viewport 320px tanpa horizontal overflow; console bersih; reload
+  awal tidak memanggil XHR/fetch section; ArrowRight dari tab Ringkasan berpindah
+  ke Profil dengan fokus tetap pada tab.
+- Cleanup: server QA dihentikan dan router sementara `storage/framework/testing/ux2-router.php`
+  dihapus. Tidak ada endpoint baru, data fake baru, atau commit/push otomatis.
 
 Jangan menambah scope ke checklist tanpa instruksi user.

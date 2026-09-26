@@ -4,7 +4,8 @@
 
 Rancangan selesai dan user menginstruksikan kelanjutan implementasi increment 1.
 User menyetujui increment 2 setelah commit increment 1 (`0914215`).
-Increment 3-5 tidak otomatis dikerjakan.
+Increment 3-5 tidak otomatis dikerjakan. Pada 2026-09-26 user menyetujui UX-2A:
+rapikan detail perusahaan menjadi Company Cockpit sebelum scoring/wizard penuh.
 Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
@@ -90,6 +91,30 @@ Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
   dapat ditelusuri; penjelasan aturan wajib, AI tidak diperlukan.
 - Verifikasi: kalkulator bank/nonbank, peer tidak cukup, threshold 70%,
   keselarasan periode, error parsial, serta alur wizard di browser.
+
+## UX-2A: Company Cockpit sebelum wizard
+
+- Status: selesai.
+- Hasil pengguna: dari halaman detail, pengguna langsung melihat jalur riset
+  ringkas dan bisa membuka Ringkasan Riset, Profil, Harga, Keuangan, atau
+  Valuasi tanpa bingung mencari tab.
+- Owner: Company, Research, MarketData dan frontend.
+- Prasyarat: increment 1-2 dan 3A sudah tersedia; UX-1 sudah menghapus duplikasi
+  menu `/perusahaan`.
+- Perubahan: tambahkan shortcut riset di area detail perusahaan, perkuat tab
+  sebagai cockpit data real, dan pertahankan lazy fetch tiap section.
+- Endpoint/credit: tidak ada endpoint baru. Overview tetap diambil saat detail
+  dibuka; Ringkasan Riset, Harga, Keuangan, dan Valuasi tetap hanya fetch saat
+  user membuka section terkait atau menekan tombol muat ringkasan.
+- Cache: tidak berubah; mengikuti cache profile, research, daily, quarterly dan
+  valuation yang sudah ada.
+- Acceptance: cockpit tidak memuat data berbayar baru secara otomatis, tab tetap
+  accessible, tidak ada data fake baru, dan mobile/desktop tidak overflow.
+- Verifikasi: typecheck, build/lint scoped bila perlu, browser desktop/mobile,
+  console/network untuk memastikan section belum terbuka tidak fetch otomatis.
+- Hasil: shortcut riset menggantikan tab tipis menjadi grid cockpit dengan ikon,
+  label dan deskripsi pendek. Ringkasan Riset tetap default dan tidak auto-fetch;
+  Harga/Keuangan/Valuasi tetap lazy fetch saat section dibuka.
 
 ## Increment 4: Eksplorasi dengan tujuan riset
 
