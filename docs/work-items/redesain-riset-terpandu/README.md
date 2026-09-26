@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai.
+- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai.
 - Kelanjutan 2026-09-26 UX-2: setelah menu `/perusahaan` digabung ke
   `/temukan-saham`, user menyetujui rekomendasi untuk merapikan alur riset utama
   sebelum masuk scoring besar. Tahap ini fokus pada Company Cockpit di detail
@@ -49,6 +49,11 @@ sudah tersedia: Ringkasan Riset, Profil, Harga, Keuangan, dan Valuasi. Scope ini
 tidak membuat skor prioritas, tidak menghubungkan compare real, tidak membuka
 semua data otomatis, dan tidak membuat wizard multi-langkah penuh.
 
+UX-2B merapikan `/temukan-saham` sebagai pintu masuk riset. Scope ini hanya
+memperjelas aksi dari hasil pencarian ke Company Cockpit dan menjaga konteks
+query balik. Tidak menambah filter, sort, endpoint Sectors, compare real, atau
+enrichment per baris.
+
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
 lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
@@ -78,6 +83,16 @@ Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
       credit tambahan hanya karena halaman detail pertama kali dibuka.
 - [x] Browser desktop/mobile tidak overflow dan tetap menampilkan tabel/grafik
       dengan fallback yang sudah ada.
+
+## Acceptance criteria UX-2B
+
+- [x] Hasil pencarian menampilkan aksi riset yang jelas menuju Company Cockpit.
+- [x] Link detail tetap membawa konteks keyword, halaman, dan limit tanpa query
+      kosong yang tidak perlu.
+- [x] Tidak ada provider call tambahan dari perubahan UI ini.
+- [x] Pola tabel tetap sesuai aturan ContohUI: padat, mudah dipindai, aksi kanan
+      berbasis ikon atau ikon+teks yang jelas.
+- [x] Typecheck, build/lint scoped, dan browser desktop/mobile lulus.
 
 ## Dependency dan keputusan
 

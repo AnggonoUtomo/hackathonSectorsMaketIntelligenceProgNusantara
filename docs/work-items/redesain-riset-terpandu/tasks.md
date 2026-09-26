@@ -54,6 +54,16 @@
 - [x] Verifikasi desktop/mobile, console, network section, typecheck dan build.
 - [x] Perbarui handoff setelah verifikasi.
 
+## UX-2B: Pintu masuk riset
+
+- [x] Scope ditetapkan: UI hasil `/temukan-saham` saja, tanpa endpoint baru dan
+      tanpa enrichment per baris.
+- [x] Ubah action hasil pencarian menjadi aksi riset/cockpit yang jelas.
+- [x] Bersihkan URL konteks balik agar keyword kosong tidak ikut dikirim.
+- [x] Verifikasi tidak ada fetch tambahan saat daftar ditampilkan.
+- [x] Jalankan typecheck, lint scoped, build dan browser QA desktop/mobile.
+- [x] Perbarui handoff setelah verifikasi.
+
 ## Increment 4: Eksplorasi
 
 - [ ] Tentukan kriteria tujuan riset dan cakupan urutan hasil.
@@ -146,5 +156,24 @@
   ke Profil dengan fokus tetap pada tab.
 - Cleanup: server QA dihentikan dan router sementara `storage/framework/testing/ux2-router.php`
   dihapus. Tidak ada endpoint baru, data fake baru, atau commit/push otomatis.
+
+## Hasil UX-2B
+
+- Perubahan: tabel `/temukan-saham` memakai kolom `Riset` dengan tombol
+  ikon+teks `Riset` menuju Company Cockpit. Link nama perusahaan tetap membuka
+  detail yang sama. URL `from` sekarang hanya menyertakan `keyword` ketika ada
+  isinya, sambil tetap membawa `page` dan `limit`.
+- Verifikasi otomatis: `npm run typecheck`, ESLint scoped
+  `resources/js/pages/nusalens/discover.tsx`, `npm run build`, dan
+  `git diff --check` lulus.
+- Browser QA: harness lokal sementara dengan SQLite memory dan HTTP fake, tidak
+  menyentuh `.env`, DB user, atau credit Sectors. Desktop 1365px menampilkan
+  kolom `Riset`, link membawa `/temukan-saham?page=1&limit=10&keyword=bank`,
+  console bersih, dan tidak ada XHR/fetch/prefetch tambahan saat daftar dibuka.
+- Mobile QA: viewport 320px tanpa horizontal overflow halaman; dua link riset
+  tersedia; console bersih; tidak ada XHR/fetch/prefetch tambahan.
+- Cleanup: server QA dihentikan dan router sementara `storage/framework/testing/ux2b-router.php`
+  dihapus. Tidak ada endpoint baru, provider call baru, commit, atau push
+  otomatis untuk UX-2B.
 
 Jangan menambah scope ke checklist tanpa instruksi user.

@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import AppLayout from '@/layouts/app-layout';
 import type { CompanyIdentity, CompanySearchResult, MarketDataError } from '@/types/company-directory';
 import { Head, Link, router, usePage, useRemember } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Building2, CheckCircle2, Eye, ListFilter, RotateCcw, Search } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Building2, CheckCircle2, Eye, FileSearch, ListFilter, RotateCcw, Search } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 interface Props {
@@ -40,7 +40,13 @@ export default function Discover({ filters, result, error }: Props) {
         );
     }
     function detailUrl(company: CompanyIdentity, term = filters.keyword) {
-        const from = `/temukan-saham?${new URLSearchParams({ keyword: term.trim(), page: String(term === filters.keyword ? filters.page : 1), limit: String(filters.limit) })}`;
+        const fromParams = new URLSearchParams({
+            page: String(term === filters.keyword ? filters.page : 1),
+            limit: String(filters.limit),
+        });
+        if (term.trim()) fromParams.set('keyword', term.trim());
+        const from = `/temukan-saham?${fromParams}`;
+
         return `/perusahaan/${company.symbol}?${new URLSearchParams({ from })}`;
     }
 
@@ -183,7 +189,7 @@ export default function Discover({ filters, result, error }: Props) {
                                     <tr>
                                         <th className="px-3 py-3 font-medium">Perusahaan</th>
                                         <th className="w-24 px-3 py-3 font-medium">Kode</th>
-                                        <th className="w-16 px-3 py-3 text-right font-medium">Detail</th>
+                                        <th className="w-28 px-3 py-3 text-right font-medium">Riset</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y">
@@ -204,13 +210,14 @@ export default function Discover({ filters, result, error }: Props) {
                                             <td className="px-3 py-3 text-right">
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
-                                                        <Button asChild size="icon" variant="ghost">
-                                                            <Link aria-label={`Buka ${company.name}`} href={detailUrl(company)}>
-                                                                <ArrowRight className="size-4" />
+                                                        <Button asChild size="sm" variant="outline">
+                                                            <Link aria-label={`Buka cockpit riset ${company.name}`} href={detailUrl(company)}>
+                                                                <FileSearch className="size-4" />
+                                                                Riset
                                                             </Link>
                                                         </Button>
                                                     </TooltipTrigger>
-                                                    <TooltipContent>Buka perusahaan</TooltipContent>
+                                                    <TooltipContent>Buka cockpit riset</TooltipContent>
                                                 </Tooltip>
                                             </td>
                                         </tr>

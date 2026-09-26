@@ -6,7 +6,9 @@ Rancangan selesai dan user menginstruksikan kelanjutan implementasi increment 1.
 User menyetujui increment 2 setelah commit increment 1 (`0914215`).
 Increment 3-5 tidak otomatis dikerjakan. Pada 2026-09-26 user menyetujui UX-2A:
 rapikan detail perusahaan menjadi Company Cockpit sebelum scoring/wizard penuh.
-Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
+Setelah UX-2A di-commit, UX-2B dilanjutkan untuk memperjelas aksi riset pada
+`/temukan-saham`. Formula, auth, persistence snapshot, dan batas module tetap
+mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
 
@@ -115,6 +117,27 @@ Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
 - Hasil: shortcut riset menggantikan tab tipis menjadi grid cockpit dengan ikon,
   label dan deskripsi pendek. Ringkasan Riset tetap default dan tidak auto-fetch;
   Harga/Keuangan/Valuasi tetap lazy fetch saat section dibuka.
+
+## UX-2B: Pintu masuk riset dari Temukan Saham
+
+- Status: selesai setelah UX-2A di-commit.
+- Hasil pengguna: dari hasil pencarian, pengguna melihat aksi "Riset" yang jelas
+  untuk membuka Company Cockpit perusahaan terpilih.
+- Owner: Screening, Company dan frontend.
+- Prasyarat: UX-1 alias route selesai; UX-2A cockpit tersedia.
+- Perubahan: ubah bahasa/action table dari detail generik menjadi riset/cockpit,
+  bersihkan URL `from` agar hanya membawa keyword saat ada isinya, dan pertahankan
+  pagination/limit.
+- Endpoint/credit: tidak ada endpoint atau provider call baru. Pencarian tetap
+  memakai request yang sama; detail tetap mengambil overview saat user membuka
+  perusahaan.
+- Acceptance: aksi kanan jelas, link nama tetap dapat dibuka, URL balik bersih,
+  tabel tetap padat dan mobile tetap memiliki overflow internal.
+- Verifikasi: typecheck, ESLint scoped, build, browser desktop/mobile dan network
+  untuk memastikan tidak ada fetch tambahan saat hanya melihat daftar.
+- Hasil: kolom kanan berubah menjadi aksi `Riset` menuju Company Cockpit,
+  tooltip dan `aria-label` menjelaskan tujuan aksi, serta query `from` tidak
+  mengirim `keyword` kosong.
 
 ## Increment 4: Eksplorasi dengan tujuan riset
 
