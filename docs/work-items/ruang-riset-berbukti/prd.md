@@ -4,6 +4,8 @@
 
 Increment 3A dilanjutkan atas instruksi user, 2026-09-25. Rincian implementasi
 dan batas data ada di [plan](plan.md); increment 3B-5 tetap memerlukan review.
+Tambahan 2026-09-26: dokumentasi kesiapan 3B dan navigasi UX-1 atas masukan user.
+UX-1 disetujui dan selesai diimplementasikan; gate 3B tetap menunggu review.
 
 ## Masalah, tujuan, dan pengguna
 
@@ -65,6 +67,40 @@ Ringkasan ditampilkan lebih dahulu; tahapan terpandu boleh dibuka sesuai
 kebutuhan tanpa memaksa pengguna melewati banyak layar. Ini usulan perubahan
 wizard lama yang perlu persetujuan. URL dan akses fitur existing dipertahankan
 sampai ada audit consumer serta persetujuan perubahan navigasi.
+
+### UX-1: satu pintu pencarian
+
+Masukan user 2026-09-26: `/temukan-saham` dan `/perusahaan` terasa sama dan
+membingungkan. Inspeksi [routes](../../../routes/web.php) mengonfirmasi keduanya
+memanggil `CompanySearchController::index`, merender `nusalens/discover`, dan
+menggunakan pencarian/dataset yang sama. Ini bukan dua fungsi yang berbeda.
+Temuan awal bersumber dari kode. Setelah persetujuan, implementasi diverifikasi
+melalui feature test dan browser terisolasi; hasil ada pada [tasks](tasks.md).
+
+| Konteks | Perilaku terimplementasi |
+| --- | --- |
+| Sidebar | Satu menu **Temukan Saham** menuju `/temukan-saham`; menu **Perusahaan** dihapus dari sidebar. |
+| Dashboard | Pertahankan satu shortcut pencarian. Shortcut **Detail Perusahaan** yang kini menuju daftar `/perusahaan` tidak diduplikasi. |
+| URL `/perusahaan` | Tetap tersedia sebagai redirect 302 ke `/temukan-saham`; pertahankan keyword/page/limit yang valid. |
+| Detail `/perusahaan/{symbol}` | Tetap halaman detail/ringkasan perusahaan yang dipilih. URL dan nama route tidak berubah. |
+| Kembali ke hasil | Pertahankan filter dan halaman asal; fallback menuju `/temukan-saham`, bukan direktori duplikat. |
+| Status menu aktif | Temukan Saham tetap aktif pada hasil dengan query URL dan detail perusahaan, termasuk saat sidebar diciutkan/drawer mobile. |
+
+Alur: **Temukan Saham -> pilih perusahaan -> Ringkasan Riset ->
+buka bukti/detail bila dibutuhkan**. Pengguna tidak harus memilih antara dua
+menu dengan isi yang sama. Nama module Company tetap; menu tidak harus mencerminkan
+setiap module backend.
+
+Nama route `discover`, `companies`, dan `companies.show` tetap dipertahankan.
+Redirect tidak mengambil data provider atau membuat reservasi credit; halaman
+tujuan menjalankan query normal satu kali. Login, verifikasi, validasi query,
+dan throttle tetap berlaku. Prefetch navigasi tidak boleh memicu pengambilan
+provider berbiaya sebelum tindakan pengguna.
+
+Scope ini tidak menghapus `/jelaskan-nilai`, merombak seluruh sidebar, atau
+mengubah compare/kandidat. Temuan kebingungan lain dicatat untuk review terpisah.
+Acceptance: satu pintu pencarian terlihat, bookmark lama tetap berfungsi,
+detail tetap bisa dibuka, dan kembali ke daftar tidak kehilangan konteks.
 
 ### Isi Ringkasan Riset
 

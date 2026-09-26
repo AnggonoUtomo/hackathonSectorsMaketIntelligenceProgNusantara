@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: kajian dan implementasi increment 3A selesai; evaluasi pengguna menunggu.
+- Status: implementasi 3A dan UX-1 selesai; dokumentasi kesiapan 3B tersedia.
 - Tanggal: kajian 2026-09-25; handoff implementasi 2026-09-26.
 - Owner: lintas module Research, Company, MarketData, Intelligence, Comparison,
   Screening, dan frontend.
@@ -11,6 +11,16 @@
 Instruksi lanjut user pada 2026-09-25 mengaktifkan increment 3A setelah kajian
 login Sectors dihentikan. Bagian kajian di bawah adalah catatan tahap sebelumnya;
 increment 3B-5 belum diotorisasi. Tidak ada commit/push otomatis.
+
+Instruksi 2026-09-26 mengaktifkan dokumentasi tahap berikutnya, bukan coding.
+User menemukan dua pintu pencarian yang membingungkan. Inspeksi source mengonfirmasi
+`/temukan-saham` dan `/perusahaan` memakai controller/halaman yang sama, tetapi
+ditampilkan sebagai dua menu dan dua shortcut Dashboard. **UX-1: satu pintu
+pencarian** pada [PRD](prd.md) dan [plan](plan.md) kemudian disetujui user dan
+diimplementasikan pada tanggal yang sama. Sidebar/shortcut duplikat dihapus,
+alias `/perusahaan` mengalihkan ke `/temukan-saham`, detail tetap dipertahankan.
+Rincian kesiapan 3B ada di [work item peer/scoring](../kesiapan-peer-scoring/README.md).
+Urutan berikutnya: evaluasi navigasi oleh user, lalu review gate audit kelayakan 3B.
 
 ## Kondisi awal
 

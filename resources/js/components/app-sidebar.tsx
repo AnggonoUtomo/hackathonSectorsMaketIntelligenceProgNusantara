@@ -3,8 +3,8 @@ import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Building2, Folder, GitCompare, LayoutGrid, Radar, Search, Sparkles } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, Folder, GitCompare, LayoutGrid, Radar, Search, Sparkles } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -17,11 +17,7 @@ const mainNavItems: NavItem[] = [
         title: 'Temukan Saham',
         url: '/temukan-saham',
         icon: Search,
-    },
-    {
-        title: 'Perusahaan',
-        url: '/perusahaan',
-        icon: Building2,
+        prefetch: false,
     },
     {
         title: 'Bandingkan',
@@ -54,6 +50,16 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { url } = usePage();
+    const pathname = new URL(url, 'http://localhost').pathname;
+    const items = mainNavItems.map((item) => ({
+        ...item,
+        isActive:
+            item.url === '/temukan-saham'
+                ? pathname === '/temukan-saham' || pathname === '/perusahaan' || /^\/perusahaan\/[a-z0-9]{4}$/i.test(pathname)
+                : undefined,
+    }));
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -69,7 +75,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={items} />
             </SidebarContent>
 
             <SidebarFooter>

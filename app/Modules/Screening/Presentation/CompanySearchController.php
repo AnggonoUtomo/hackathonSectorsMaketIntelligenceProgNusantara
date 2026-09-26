@@ -11,11 +11,7 @@ class CompanySearchController
 {
     public function index(Request $request, SearchCompanies $search)
     {
-        $filters = $request->validate([
-            'keyword' => ['nullable', 'string', 'min:2', 'max:100', 'regex:/\A[\pL\pN .&-]+\z/u'],
-            'page' => ['nullable', 'integer', 'min:1', 'max:10000'],
-            'limit' => ['nullable', 'integer', 'min:1', 'max:25'],
-        ]);
+        $filters = $this->directoryFilters($request);
         $keyword = trim($filters['keyword'] ?? '');
         $page = (int) ($filters['page'] ?? 1);
         $limit = (int) ($filters['limit'] ?? 10);
@@ -30,6 +26,20 @@ class CompanySearchController
         return Inertia::render('nusalens/discover', [
             'filters' => ['keyword' => $keyword, 'page' => $page, 'limit' => $limit],
             'result' => $result, 'error' => $error,
+        ]);
+    }
+
+    public function redirectToDiscover(Request $request)
+    {
+        return redirect()->route('discover', $this->directoryFilters($request));
+    }
+
+    private function directoryFilters(Request $request): array
+    {
+        return $request->validate([
+            'keyword' => ['nullable', 'string', 'min:2', 'max:100', 'regex:/\A[\pL\pN .&-]+\z/u'],
+            'page' => ['nullable', 'integer', 'min:1', 'max:10000'],
+            'limit' => ['nullable', 'integer', 'min:1', 'max:25'],
         ]);
     }
 

@@ -27,7 +27,7 @@ export default function CompanyProfilePage({
         <AppLayout
             breadcrumbs={[
                 { title: 'Temukan Saham', href: returnTo },
-                { title: company?.symbol ?? 'Perusahaan', href: company ? `/perusahaan/${company.symbol}` : '/perusahaan' },
+                { title: company?.symbol ?? 'Perusahaan', href: company ? `/perusahaan/${company.symbol}` : returnTo },
             ]}
         >
             <Head title={company?.name ?? 'Perusahaan'} />

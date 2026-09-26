@@ -7,6 +7,9 @@ Scope aktif adalah increment 3A. Nomor 3A dan seterusnya mengacu pada
 kelanjutan increment 0-2 redesain riset terpandu, bukan restart proyek.
 Increment 3B-5 tetap usulan, bukan otorisasi implementasi sekaligus.
 
+Pada 2026-09-26 user meminta dokumentasi lanjutan dan melaporkan duplikasi menu,
+lalu menyetujui implementasi UX-1. UX-1 selesai; scope 3B masih dokumentasi.
+
 ## Tahap 0: Kajian dan rancangan
 
 - Perubahan: inventaris referensi, PRD, plan, tasks, serta tautan indeks.
@@ -72,7 +75,53 @@ Increment 3B-5 tetap usulan, bukan otorisasi implementasi sekaligus.
 - Batas berhenti: handoff satu alur end-to-end, evaluasi pengguna, lalu review
   hasil sebelum increment berikutnya.
 
+## Increment UX-1: Satu pintu pencarian, selesai
+
+User menyetujui implementasi UX-1 pada 2026-09-26. Scope tetap navigasi;
+audit live dan implementasi scoring 3B belum diotorisasi. Tidak commit/push otomatis.
+
+- Tujuan: hilangkan pilihan menu yang identik, tanpa mengubah akses detail atau
+  rumus. Increment kecil ini dapat dikerjakan sebelum audit scoring 3B.
+- Bukti source: dua route menuju `CompanySearchController::index` dan
+  `nusalens/discover`; sidebar memiliki dua entry; Dashboard memiliki shortcut
+  Temukan Saham dan Detail Perusahaan yang sama-sama menuju daftar.
+- Perubahan yang diusulkan: satu entry/sidebar dan shortcut Temukan Saham;
+  `/perusahaan` menjadi redirect 302 protected ke `/temukan-saham`. Pertahankan
+  nama route existing, detail `/perusahaan/{symbol}`, dan consumer detail.
+- Query: whitelist keyword/page/limit dengan validasi yang konsisten pada daftar.
+  Tidak meneruskan target redirect eksternal atau query arbitrer. Redirect tidak
+  menjalankan use case pencarian atau reservasi credit.
+- Consumer audit: `app-sidebar.tsx`, `nav-main.tsx`, `pages/dashboard.tsx`,
+  `pages/nusalens/company-profile.tsx`, `discover.tsx`, `research-start.tsx`,
+  serta link detail legacy. Sesuaikan fallback breadcrumb/back; pertahankan
+  parameter `from` yang sudah divalidasi untuk kembali ke hasil.
+- Active state: gunakan pathname terurai, bukan persamaan seluruh URL termasuk
+  query. Kenali daftar canonical dan segmen detail yang tepat; jangan memakai
+  prefix longgar yang mengaktifkan route tidak terkait.
+- Audit prefetch pada entry pencarian dan alias agar hover/render tidak memicu
+  fetch berbiaya; batasi perubahan pada consumer terkait, bukan refactor navigasi umum.
+- Ownership: Presentation route dan frontend. Tidak mengubah module Company,
+  contract MarketData, schema, autentikasi, atau kebijakan pencarian.
+- Endpoint/credit/cache: tidak ada endpoint Sectors baru. Redirect nol call;
+  halaman tujuan memakai adapter/cache/quota yang sudah ada. Tidak menjanjikan
+  seluruh kunjungan nol credit bila data tujuan memang cache miss.
+- Test: ubah ekspektasi dua halaman identik pada `NusaLensNavigationTest`
+  menjadi canonical render + redirect; uji query valid/invalid, auth/verified,
+  tidak ada fetch pada redirect, serta detail 200/404 dan whitelist return URL.
+- Browser: expanded/collapsed sidebar, mobile drawer, keyboard, active state
+  dengan query, Dashboard, back/forward dan kembali ke hasil. Pastikan hanya
+  satu pintu daftar dan tidak ada fetch akibat prefetch navigasi.
+- Acceptance: alur PRD berjalan, bookmark kompatibel, filter/page terjaga,
+  tidak ada API call tambahan dari alias. Verifikasi typecheck, lint/build,
+  feature test terarah dan browser; default HTTP fake terisolasi.
+- Batas berhenti: review dan persetujuan sebelum coding; handoff UX-1 sebelum
+  memulai increment lain. Tidak menghapus route/detail atau file user.
+
 ## Increment 3B: Peer dan nilai yang dapat dijelaskan
+
+Rincian audit, ownership/persistence, biaya, dan increment 3B.0-3B.2 ada pada
+[Kesiapan Peer dan Scoring](../kesiapan-peer-scoring/README.md). Dokumentasinya
+diaktifkan 2026-09-26; audit live dan implementasi belum diotorisasi.
 
 - Prasyarat: audit ketersediaan endpoint/entitlement, biaya semua peer, basis
   data dan rumus sesuai SCORING. Module Intelligence belum ada: pembuatan module
@@ -127,7 +176,8 @@ Increment 3B-5 tetap usulan, bukan otorisasi implementasi sekaligus.
 
 ## Batas berhenti dan pemulihan
 
-Tahap sekarang berhenti setelah increment 3A dan handoff. Tidak commit/push
-atau menjalankan increment berikutnya secara otomatis. Pada implementasi,
+Tahap terbaru berhenti setelah implementasi UX-1, verifikasi dan handoff;
+dokumentasi kesiapan 3B tetap tersedia. Tidak commit/push atau menjalankan audit live
+dan implementasi berikutnya secara otomatis. Pada implementasi,
 pertahankan perubahan kecil, URL/consumer, dan data existing; tidak ada reset
 database atau rollback file user. Risiko di luar scope dilaporkan terpisah.

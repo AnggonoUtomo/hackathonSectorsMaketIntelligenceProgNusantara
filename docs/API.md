@@ -4,6 +4,20 @@ Dokumen ini mencatat target contract publik dan integrasi eksternal NusaLens.
 Endpoint pencarian/profil/analytics real sudah tersedia. Bagian target kontrak
 di bawah tetap rancangan kecuali disebut terimplementasi.
 
+## Navigasi pencarian terimplementasi
+
+`GET /temukan-saham` (nama route `discover`) adalah daftar pencarian canonical.
+`GET /perusahaan` (nama `companies`) menjadi redirect 302 ke daftar tersebut,
+bukan halaman daftar kedua. Keduanya wajib login/verified dan throttle 60/menit.
+Alias hanya meneruskan keyword/page/limit yang lolos validasi yang sama dengan
+daftar; query lainnya diabaikan. Alias tidak memanggil provider atau membuat
+reservasi credit. Pengambilan data hanya terjadi pada halaman tujuan sesuai cache.
+
+`GET /perusahaan/{symbol}` (nama `companies.show`) tetap detail perusahaan.
+Kembali ke hasil mempertahankan konteks pencarian yang valid; fallback menuju
+`/temukan-saham`. Sidebar dan shortcut Dashboard tidak lagi menawarkan direktori
+Perusahaan yang duplikat. Hover link pencarian tidak melakukan prefetch berbiaya.
+
 ## Endpoint analytics terimplementasi
 
 `GET /nusalens/companies/{symbol}/analysis?section=prices|financials|valuation`

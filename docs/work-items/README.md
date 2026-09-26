@@ -20,8 +20,12 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Kesiapan Peer dan Scoring](kesiapan-peer-scoring/README.md): dokumentasi
+  increment 3B, audit data/biaya yang direncanakan, ownership bukti dan task;
+  belum ada audit live atau implementasi.
 - [Ruang Riset Berbukti](ruang-riset-berbukti/README.md): kajian pembeda terhadap
-  tool Sectors dan implementasi Ringkasan Riset real 3A; tahap berikutnya menunggu.
+  tool Sectors dan implementasi Ringkasan Riset real 3A; UX-1 menghilangkan
+  menu pencarian duplikat dengan alias URL kompatibel. Tahap berikutnya menunggu.
 - [Redesain riset terpandu](redesain-riset-terpandu/README.md): desain alur UX,
   autocomplete/profil real pada increment 1 dan grafik real pada increment 2;
   increment berikutnya perlu review bersama proposal Ruang Riset Berbukti.

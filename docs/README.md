@@ -23,10 +23,15 @@ rekomendasi BUY/HOLD/SELL.
 
 ## Acuan pekerjaan khusus
 
+- [Kesiapan Peer dan Scoring](work-items/kesiapan-peer-scoring/README.md):
+  dokumentasi 3B, gap sumber, gate data/credit, bukti immutable dan task increment.
+  Audit live dan coding belum diotorisasi.
 - [Ruang Riset Berbukti](work-items/ruang-riset-berbukti/README.md): kajian tool
   Sectors dan Ringkasan Riset real satu perusahaan (3A selesai). Temuan,
   bukti, grafik, dan keterbatasan tersedia; scoring/peer serta versi manual
-  tetap menunggu gate berikutnya. Keputusan formula MVP tidak berubah.
+  tetap menunggu gate berikutnya. UX-1 selesai: satu menu Temukan Saham,
+  alias `/perusahaan` mengalihkan ke pencarian, detail tetap tersedia.
+  Keputusan formula MVP tidak berubah.
 - [Redesain riset terpandu](work-items/redesain-riset-terpandu/README.md):
   rancangan UX dan increment data real. Increment 1 menghubungkan autocomplete,
   direktori dan profil real; increment 2 menambahkan grafik harga/keuangan dan

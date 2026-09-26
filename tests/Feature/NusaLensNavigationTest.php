@@ -49,6 +49,13 @@ class NusaLensNavigationTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
+        if ($path === '/perusahaan') {
+            $this->get($path)->assertRedirect('/temukan-saham');
+            Http::assertNothingSent();
+
+            return;
+        }
+
         $this->get($path)->assertOk();
     }
 
@@ -63,15 +70,73 @@ class NusaLensNavigationTest extends TestCase
             ->assertRedirect(route('verification.notice', absolute: false));
     }
 
-    public function test_discover_and_companies_show_real_directory(): void
+    public function test_discover_shows_real_directory(): void
     {
-        foreach (['/temukan-saham', '/perusahaan'] as $path) {
-            $this->actingAs(User::factory()->create())->get($path)->assertOk()
-                ->assertInertia(fn (AssertableInertia $page) => $page
-                    ->component('nusalens/discover')
-                    ->where('result.items.0.symbol', 'BBCA')
-                    ->where('error', null));
+        $this->actingAs(User::factory()->create())->get('/temukan-saham')->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/discover')
+                ->where('result.items.0.symbol', 'BBCA')
+                ->where('error', null));
+    }
+
+    public function test_companies_alias_preserves_only_valid_search_filters_without_fetching(): void
+    {
+        $filters = ['keyword' => 'Bank Central Asia', 'page' => 2, 'limit' => 8];
+        $query = $filters + ['from' => 'https://example.com', 'sections' => 'all'];
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('companies', $query, absolute: false))
+            ->assertStatus(302)
+            ->assertRedirect(route('discover', $filters));
+
+        Http::assertNothingSent();
+        $this->assertDatabaseCount('market_data_credit_reservations', 0);
+        $this->assertSame('/perusahaan/ADES', route('companies.show', ['symbol' => 'ADES'], absolute: false));
+    }
+
+    public function test_following_companies_alias_loads_directory_once(): void
+    {
+        $this->actingAs(User::factory()->create());
+        $response = $this->get('/perusahaan?keyword=Bank&page=1&limit=10');
+        $response->assertRedirect(route('discover', ['keyword' => 'Bank', 'page' => 1, 'limit' => 10]));
+        Http::assertNothingSent();
+
+        $this->get($response->headers->get('Location'))->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page
+                ->component('nusalens/discover')
+                ->where('filters.keyword', 'Bank')
+                ->where('filters.page', 1)
+                ->where('filters.limit', 10));
+        Http::assertSentCount(1);
+        $this->assertDatabaseCount('market_data_credit_reservations', 1);
+    }
+
+    public static function invalidDirectoryFilters(): array
+    {
+        return [
+            'expression' => [['keyword' => "bank' or 1=1"], 'keyword'],
+            'short keyword' => [['keyword' => 'B'], 'keyword'],
+            'array keyword' => [['keyword' => ['Bank']], 'keyword'],
+            'zero page' => [['page' => 0], 'page'],
+            'large page' => [['page' => 10001], 'page'],
+            'fractional page' => [['page' => 1.5], 'page'],
+            'zero limit' => [['limit' => 0], 'limit'],
+            'large limit' => [['limit' => 26], 'limit'],
+        ];
+    }
+
+    #[DataProvider('invalidDirectoryFilters')]
+    public function test_directory_alias_and_canonical_share_validation(array $filters, string $field): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        foreach (['/perusahaan', '/temukan-saham'] as $path) {
+            $this->getJson($path.'?'.http_build_query($filters))
+                ->assertUnprocessable()->assertJsonValidationErrors($field);
         }
+
+        Http::assertNothingSent();
+        $this->assertDatabaseCount('market_data_credit_reservations', 0);
     }
 
     public function test_discover_rejects_provider_expressions_as_search_text(): void

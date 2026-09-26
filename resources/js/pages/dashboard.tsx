@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, BarChart3, Database, GitCompare, Search, ShieldCheck, WalletCards } from 'lucide-react';
+import { ArrowRight, Database, GitCompare, Search, ShieldCheck, WalletCards } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,8 +21,7 @@ const metrics = [
 ];
 
 const flows = [
-    { title: 'Temukan Saham', href: '/temukan-saham', icon: Search, text: 'Filter kandidat dengan structured screener dan pagination.' },
-    { title: 'Detail Perusahaan', href: '/perusahaan', icon: BarChart3, text: 'Profil, ringkasan metrik, freshness, dan bukti data.' },
+    { title: 'Temukan Saham', href: '/temukan-saham', icon: Search, text: 'Perusahaan tercatat di Bursa Efek Indonesia.' },
     { title: 'Bandingkan', href: '/bandingkan', icon: GitCompare, text: 'Bandingkan maksimal 3 saham dengan snapshot privat.' },
 ];
 
@@ -32,27 +31,27 @@ export default function Dashboard() {
             <Head title="Dashboard" />
             <div className="flex flex-1 flex-col gap-4 p-4">
                 <section className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-                    <div className="rounded-lg border bg-card p-5 text-card-foreground">
+                    <div className="bg-card text-card-foreground rounded-lg border p-5">
                         <div className="flex flex-wrap items-start justify-between gap-3">
                             <div className="max-w-2xl">
                                 <Badge variant="outline">MVP Workspace</Badge>
                                 <h1 className="mt-3 text-2xl font-semibold">NusaLens Market Intelligence</h1>
-                                <p className="mt-2 text-sm text-muted-foreground">
+                                <p className="text-muted-foreground mt-2 text-sm">
                                     Ruang kerja untuk menyaring, membandingkan, dan memahami saham Indonesia yang layak diteliti lebih lanjut.
                                 </p>
                             </div>
                             <Button asChild>
-                                <Link href="/temukan-saham" prefetch>
+                                <Link href="/temukan-saham">
                                     Mulai riset <ArrowRight />
                                 </Link>
                             </Button>
                         </div>
                         <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                             {metrics.map((metric) => (
-                                <div key={metric.label} className="rounded-md border bg-background p-3">
-                                    <div className="text-xs text-muted-foreground">{metric.label}</div>
+                                <div key={metric.label} className="bg-background rounded-md border p-3">
+                                    <div className="text-muted-foreground text-xs">{metric.label}</div>
                                     <div className="mt-2 text-xl font-semibold">{metric.value}</div>
-                                    <div className="mt-1 text-xs text-muted-foreground">{metric.note}</div>
+                                    <div className="text-muted-foreground mt-1 text-xs">{metric.note}</div>
                                 </div>
                             ))}
                         </div>
@@ -80,7 +79,7 @@ export default function Dashboard() {
                     </Card>
                 </section>
 
-                <section className="grid gap-4 md:grid-cols-3">
+                <section className="grid gap-4 md:grid-cols-2">
                     {flows.map((flow) => (
                         <Card key={flow.title}>
                             <CardHeader>
@@ -92,7 +91,7 @@ export default function Dashboard() {
                             </CardHeader>
                             <CardContent>
                                 <Button asChild variant="outline" size="sm">
-                                    <Link href={flow.href} prefetch>
+                                    <Link href={flow.href} prefetch={flow.href !== '/temukan-saham'}>
                                         Buka <ArrowRight />
                                     </Link>
                                 </Button>
