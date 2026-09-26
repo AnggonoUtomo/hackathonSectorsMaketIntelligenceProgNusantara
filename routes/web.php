@@ -3,7 +3,7 @@
 use App\Modules\Company\Presentation\CompanyAnalyticsController;
 use App\Modules\Company\Presentation\CompanyProfileController;
 use App\Modules\Comparison\Application\FakeComparisonBuilder;
-use App\Modules\Research\Application\RuleBasedResearchExplainer;
+use App\Modules\Research\Presentation\ResearchSummaryController;
 use App\Modules\Screening\Presentation\CompanySearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:60,1')->name('nusalens.companies.analysis');
     Route::get('perusahaan/{symbol}', CompanyProfileController::class)
         ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:60,1')->name('companies.show');
+    Route::get('nusalens/companies/{symbol}/research', ResearchSummaryController::class)
+        ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:60,1')->name('nusalens.companies.research');
 
     Route::get('bandingkan', function (Request $request, FakeComparisonBuilder $comparison) {
         $validated = $request->validate([
@@ -47,23 +49,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('compare');
 
-    Route::get('jelaskan-nilai', function (Request $request, RuleBasedResearchExplainer $explainer) {
+    Route::get('jelaskan-nilai', function (Request $request) {
         $validated = $request->validate([
-            'symbol' => ['nullable', 'string', 'max:12'],
+            'symbol' => ['nullable', 'string', 'regex:/\A[A-Za-z0-9]{4}(?:\.JK)?\z/i'],
         ]);
 
-        try {
-            $research = $explainer->explain($validated['symbol'] ?? null);
-        } catch (InvalidArgumentException $exception) {
-            throw ValidationException::withMessages([
-                'symbol' => $exception->getMessage(),
-            ]);
+        if (! empty($validated['symbol'])) {
+            $symbol = preg_replace('/\.JK$/i', '', strtoupper($validated['symbol']));
+
+            return redirect()->route('companies.show', ['symbol' => $symbol]);
         }
 
-        return Inertia::render('nusalens/placeholder', [
-            'section' => 'research',
-            'research' => $research,
-        ]);
+        return Inertia::render('nusalens/research-start');
     })->name('research');
 
     Route::get('kandidat-menarik', function () {

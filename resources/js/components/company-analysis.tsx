@@ -5,6 +5,7 @@ import CompanyAnalysisChart, {
     type AnalysisMetric,
     type AnalysisRow,
 } from '@/components/company-analysis-chart';
+import ResearchSummaryPanel from '@/components/research-summary';
 import { Button } from '@/components/ui/button';
 import { ChartNoAxesCombined, RefreshCw, Table2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -13,6 +14,7 @@ type Section = 'prices' | 'financials' | 'valuation';
 type Result = { symbol: string; section: Section; rows: AnalysisRow[]; fetchedAt: string; range?: { start: string; end: string } };
 type State = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; data: Result };
 const tabs = [
+    { key: 'research', label: 'Ringkasan Riset' },
     { key: 'overview', label: 'Profil' },
     { key: 'prices', label: 'Harga' },
     { key: 'financials', label: 'Keuangan' },
@@ -39,7 +41,7 @@ const groups = {
 };
 
 export default function CompanyAnalysis({ symbol, children }: { symbol: string; children: ReactNode }) {
-    const [tab, setTab] = useState<Section | 'overview'>('overview');
+    const [tab, setTab] = useState<Section | 'overview' | 'research'>('research');
     const cache = useRef<Partial<Record<Section, Result>>>({});
     return (
         <section className="min-w-0">
@@ -78,7 +80,10 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                 ))}
             </div>
             <div id="company-analysis-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} tabIndex={0} className="min-w-0 space-y-6">
-                {tab === 'overview' ? (
+                <div hidden={tab !== 'research'}>
+                    <ResearchSummaryPanel symbol={symbol} active={tab === 'research'} />
+                </div>
+                {tab === 'research' ? null : tab === 'overview' ? (
                     children
                 ) : (
                     <AnalysisPanel

@@ -3,6 +3,12 @@
 ## Status dan owner
 
 - Status: increment 0-2 selesai; increment 3-5 belum dimulai.
+- Kelanjutan 2026-09-26: increment 3A Ringkasan Riset real selesai pada
+  [work item Ruang Riset Berbukti](../ruang-riset-berbukti/README.md).
+  Wizard/scoring lama tidak otomatis dikerjakan; 3B-5 masih menunggu gate.
+- Review lanjutan 2026-09-25: rencana increment 3-5 perlu ditinjau bersama
+  [proposal Ruang Riset Berbukti](../ruang-riset-berbukti/README.md) sebelum coding.
+  Detail proposal belum menggantikan keputusan accepted tanpa persetujuan user.
 - Tanggal: 2026-09-24.
 - Owner: lintas module Screening, Company, MarketData, Intelligence,
   Research, Comparison, dan frontend.
@@ -35,7 +41,8 @@ Rancangan sampai perbandingan tersimpan tetap dicatat sebagai target berikutnya.
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
 lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
-Increment 1 sudah di-commit; increment 2 belum commit dan tidak ada push.
+Increment 1 sudah di-commit; increment 2 di-commit sebagai `4a1571c`.
+Belum ada push untuk rangkaian commit lokal tersebut pada handoff kajian ini.
 Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 
 ## Acceptance criteria tahap desain

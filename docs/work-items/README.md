@@ -20,8 +20,11 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Ruang Riset Berbukti](ruang-riset-berbukti/README.md): kajian pembeda terhadap
+  tool Sectors dan implementasi Ringkasan Riset real 3A; tahap berikutnya menunggu.
 - [Redesain riset terpandu](redesain-riset-terpandu/README.md): desain alur UX,
-  autocomplete hingga profil real pada increment 1; grafik/wizard menyusul.
+  autocomplete/profil real pada increment 1 dan grafik real pada increment 2;
+  increment berikutnya perlu review bersama proposal Ruang Riset Berbukti.
 - [Fondasi akses dan ULID](fondasi-akses-ulid/README.md): ULID users fresh
   install, akses dashboard wajib verified, Redis, dan Mailpit lokal selesai
   untuk CLI/dev.

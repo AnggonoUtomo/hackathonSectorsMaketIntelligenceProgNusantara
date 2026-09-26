@@ -23,10 +23,15 @@ rekomendasi BUY/HOLD/SELL.
 
 ## Acuan pekerjaan khusus
 
+- [Ruang Riset Berbukti](work-items/ruang-riset-berbukti/README.md): kajian tool
+  Sectors dan Ringkasan Riset real satu perusahaan (3A selesai). Temuan,
+  bukti, grafik, dan keterbatasan tersedia; scoring/peer serta versi manual
+  tetap menunggu gate berikutnya. Keputusan formula MVP tidak berubah.
 - [Redesain riset terpandu](work-items/redesain-riset-terpandu/README.md):
   rancangan UX dan increment data real. Increment 1 menghubungkan autocomplete,
   direktori dan profil real; increment 2 menambahkan grafik harga/keuangan dan
-  valuasi real. Wizard dijadwalkan pada increment berikutnya.
+  valuasi real. Rencana wizard berikutnya perlu ditinjau bersama proposal
+  Ruang Riset Berbukti sebelum implementasi dilanjutkan.
 - [Scoring](SCORING.md): metrik, bobot, peer group, data hilang, dan penjelasan nilai.
 - [Alur Data](DATA-FLOW.md): pengambilan bertahap, cache, dan anggaran credit.
 - [Model Data](DATA-MODEL.md): konsep penyimpanan dari blueprint dan batas keputusan schema.

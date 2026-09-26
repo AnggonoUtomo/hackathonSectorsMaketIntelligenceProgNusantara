@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\Company\Application\Contracts\CompanyResearchData;
+use App\Modules\Company\Application\GetCompanyResearchData;
 use App\Modules\MarketData\Application\Contracts\CompanyAnalytics;
 use App\Modules\MarketData\Application\Contracts\CompanyDirectory;
 use App\Modules\MarketData\Infrastructure\Sectors\SectorsCompanyAnalytics;
@@ -15,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind(CompanyResearchData::class, GetCompanyResearchData::class);
         $this->app->bind(CompanyDirectory::class, SectorsCompanyDirectory::class);
         $this->app->bind(CompanyAnalytics::class, SectorsCompanyAnalytics::class);
     }

@@ -160,7 +160,7 @@ class NusaLensNavigationTest extends TestCase
             ->assertSessionHasErrors('symbols');
     }
 
-    public function test_research_page_receives_default_rule_based_explainer(): void
+    public function test_research_page_starts_with_search_without_fake_facts_or_provider_calls(): void
     {
         $this->actingAs(User::factory()->create());
 
@@ -168,29 +168,20 @@ class NusaLensNavigationTest extends TestCase
             ->get('/jelaskan-nilai')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'research')
-                ->where('research.symbol', 'BBCA')
-                ->where('research.company.name', 'Bank Central Asia Tbk')
-                ->where('research.meta.state', 'ready')
-                ->where('research.meta.aiEnabled', false)
+                ->component('nusalens/research-start')
+                ->missing('research')
             );
+        Http::assertNothingSent();
     }
 
-    public function test_research_page_receives_pending_explainer_for_real_symbol(): void
+    public function test_research_symbol_links_to_real_company_without_fetch_on_redirect(): void
     {
         $this->actingAs(User::factory()->create());
 
         $this
             ->get('/jelaskan-nilai?symbol=ADES')
-            ->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'research')
-                ->where('research.symbol', 'ADES')
-                ->where('research.meta.state', 'pending')
-                ->where('research.metrics.0.value', '-')
-            );
+            ->assertRedirect('/perusahaan/ADES');
+        Http::assertNothingSent();
     }
 
     public function test_research_page_rejects_invalid_symbol_format(): void

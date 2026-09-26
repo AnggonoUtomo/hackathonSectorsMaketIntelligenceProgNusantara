@@ -20,8 +20,14 @@ memuat satu tab sesuai permintaan, dengan auth, verifikasi email dan throttle.
 Frontend menyediakan Recharts dan tabel angka lengkap, periode/satuan serta
 loading, error/retry dan empty state. Tidak menghitung rekomendasi investasi.
 
-`FakeCompanySnapshot` masih diperlukan consumer Research lama. Jangan menghapus
-class ini sebelum consumer tersebut dimigrasikan; detail baru tidak memakainya.
+Public contract `Application/Contracts/CompanyResearchData` digunakan Research
+untuk memperoleh profil dan financials. `GetCompanyResearchData` menggabungkan
+port MarketData existing dan menyertakan basis field yang terverifikasi.
+Tidak memanggil endpoint/section tambahan atau menghitung nilai Research.
+
+`FakeCompanySnapshot` dan explainer lama masih ada sebagai source legacy;
+route research aktif sudah dimigrasikan dan tidak memakainya. Pembersihan
+class legacy menunggu audit consumer terpisah, bukan bagian dari increment 3A.
 
 ## Verifikasi
 

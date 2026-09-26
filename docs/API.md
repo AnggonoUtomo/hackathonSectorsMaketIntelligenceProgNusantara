@@ -20,6 +20,23 @@ tersedia, 429 kuota/rate limit, 502 provider/payload bermasalah, 503 lock timeou
 Pesan provider mentah dan API key tidak dikirim. Empty list sah dibedakan dari
 JSON rusak. Detail endpoint/cache/biaya: [MarketData](modules/MarketData/README.md).
 
+## Endpoint ringkasan riset terimplementasi
+
+`GET /nusalens/companies/{symbol}/research` wajib login/verified, throttle
+60/menit, simbol empat karakter alfanumerik. Respons 200 memiliki symbol,
+ruleVersion, companyKind, classification, period, state (`ready`, `empty`,
+`unavailable`), sources, findings, checks, chartRows, dan score null.
+
+Finding mencantumkan nilai, unit, aturan, input evidence (field/unit/basis/
+periode/sourceId), keterbatasan, serta pemeriksaan berikutnya. Sources memuat
+endpoint/section dan fetchedAt asli. Ready berarti ada fakta, bukan riset lengkap.
+State empty hanya untuk respons laporan kosong yang sah. Error provider tidak
+menjadi 200 empty; error menggunakan status/pesan aman seperti analytics.
+
+Input overview dan empat laporan quarterly berbagi cache existing. Tidak ada
+query provider bebas, AI, nilai v1, atau penyimpanan laporan baru. Lihat
+[Research](modules/Research/README.md) untuk batas interpretasi dan biaya.
+
 ## Sectors API v2
 
 Sectors Financial API v2 adalah sumber data inti NusaLens.
