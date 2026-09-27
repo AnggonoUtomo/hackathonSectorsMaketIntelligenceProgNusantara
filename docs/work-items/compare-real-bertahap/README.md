@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: increment 0 selesai; increment 1 selesai.
+- Status: increment 0 selesai; increment 1 selesai; increment 2 selesai.
 - Owner: lintas module Comparison, Company, MarketData, Intelligence, dan frontend.
 - Target: route `/bandingkan`, kontrak payload compare, dan UI compare real.
 
@@ -50,7 +50,7 @@ Non-scope tahap awal:
 - [x] Query symbol valid membuka halaman compare dengan daftar saham terpilih,
       tanpa metric palsu.
 - [x] Query lebih dari tiga symbol atau format invalid tetap ditolak.
-- [ ] Profil ringkas memakai data real/cache internal dan menampilkan freshness.
+- [x] Profil ringkas memakai data real/cache internal dan menampilkan freshness.
 - [ ] Kelompok harga, keuangan, dan valuasi dimuat on-demand dengan estimasi
       credit serta status per kelompok.
 - [x] Total cold load awal untuk tiga saham tidak melebihi 3 credit sebelum user
@@ -73,24 +73,41 @@ Halaman compare memiliki empat area utama:
 - Visualisasi: grafik Recharts untuk harga dan mini bar per metric keuangan atau
   valuasi bila data cukup; tabel tetap menjadi alternatif utama.
 
-Payload route setelah increment 1:
+Payload route setelah increment 2:
 
 ```text
 comparison: {
   symbols: string[],
-  companies: [],
+  companies: [
+    {
+      symbol,
+      name,
+      logoUrl,
+      sector,
+      subSector,
+      industry,
+      price,
+      priceDate,
+      fetchedAt,
+      freshness,
+      status: "ready|error",
+      error
+    }
+  ],
   metrics: [],
   meta: {
-    source: "selection",
-    state: "empty|selected",
+    source: "profile",
+    state: "empty|ready|partial",
     limit: 3,
-    liveProvider: false
+    liveProvider,
+    estimatedCredits
   }
 }
 ```
 
-Section yang belum dimuat mengembalikan status `not_loaded`, bukan metric fake.
-Error provider tampil eksplisit dengan opsi coba lagi jika kuota/cache mengizinkan.
+Section harga, keuangan, valuasi, dan scoring tetap belum dimuat dan tidak
+diisi metric fake. Error provider pada profil tampil per saham; saham lain yang
+berhasil tetap ditampilkan.
 
 ## Dependency dan keputusan
 
@@ -104,11 +121,12 @@ Error provider tampil eksplisit dengan opsi coba lagi jika kuota/cache mengizink
 
 ## Handoff
 
-- Perubahan: proposal compare real bertahap ditulis dan increment 1
-  menghilangkan default/matrix fake. `/bandingkan` kini dimulai dari selection
-  state; autocomplete real dipakai untuk memilih maksimal tiga saham.
+- Perubahan: proposal compare real bertahap ditulis; increment 1 menghilangkan
+  default/matrix fake; increment 2 memuat profil ringkas real/cache untuk saham
+  terpilih dan menampilkan error per saham.
 - Verifikasi: source compare fake, route, frontend dashboard, keputusan, scoring,
   dan alur data sudah dibaca. Unit/feature compare, typecheck, lint scoped, build,
-  dan diff check dijalankan pada increment 1.
-- Risiko terbuka: profil ringkas, matrix data real, snapshot, dan scoring belum
-  masuk increment 1. Browser smoke belum dijalankan bila tool browser tidak tersedia.
+  dan diff check dijalankan pada increment 1. Focused test profil compare,
+  unit builder, dan typecheck lulus pada increment 2.
+- Risiko terbuka: matrix harga/keuangan/valuasi real, snapshot, dan scoring belum
+  masuk increment 2. Browser smoke belum dijalankan bila tool browser tidak tersedia.

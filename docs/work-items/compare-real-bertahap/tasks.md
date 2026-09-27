@@ -29,11 +29,13 @@
 
 ## Increment 2: Profil ringkas compare real
 
-- [ ] Tulis test fake HTTP untuk tiga symbol valid cold cache.
-- [ ] Ambil profil ringkas lewat adapter/cache internal.
-- [ ] Tampilkan logo, nama, sektor/subsektor, freshness, dan error per saham.
-- [ ] Pastikan cache hit tidak menambah ledger credit.
-- [ ] Verifikasi partial failure tidak menghapus saham lain.
+- [x] Tulis test fake HTTP untuk tiga symbol valid cold cache.
+- [x] Ambil profil ringkas lewat adapter/cache internal.
+- [x] Tampilkan logo, nama, sektor/subsektor, freshness, dan error per saham.
+- [x] Pastikan cache hit tidak menambah ledger credit.
+- [x] Verifikasi partial failure tidak menghapus saham lain.
+- [x] Kontrak payload: `companies[]` berisi status per saham, `meta.state`
+      menjadi `ready|partial|empty`, dan `metrics` tetap kosong.
 
 ## Increment 3: Section data on-demand
 
@@ -60,15 +62,18 @@
 
 - [x] Proposal dokumentasi selesai.
 - [x] Increment 1 selesai.
+- [x] Increment 2 selesai.
 - Perubahan: work item compare real bertahap dibuat; `/bandingkan` tidak lagi
   memakai default fake atau matrix skor contoh. Builder baru bernama
   `ComparisonSelectionBuilder`; UI memakai autocomplete real dan chip pilihan.
+  Increment 2 menambahkan profil ringkas real/cache, freshness, estimasi cold
+  credit profil, dan error per saham.
 - Verifikasi: source compare fake, frontend compare, test compare, route, dan
   dokumen keputusan/data/scoring sudah dibaca. RED test gagal pada builder lama,
   lalu `php artisan test --compact tests\Unit\Comparison\ComparisonSelectionBuilderTest.php`,
   `php artisan test --compact --filter='compare_page'`, typecheck, lint scoped,
-  build dan `git diff --check` lulus.
-- Risiko: profil ringkas dan matrix data real belum masuk increment 1. Browser QA
-  belum dijalankan bila tool browser tidak tersedia.
+  build dan `git diff --check` lulus pada increment 1. Increment 2 menambahkan
+  test `tests\Feature\Comparison\CompareProfileTest.php` untuk success/cache/partial.
+- Risiko: matrix harga, keuangan, valuasi, dan scoring real belum masuk increment 2. Browser QA belum dijalankan bila tool browser tidak tersedia.
 
 Jangan menambah scope baru ke checklist tanpa instruksi user.

@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
 
         try {
-            $payload = $comparison->build($validated['symbols'] ?? null);
+            $payload = $comparison->build((string) $request->user()->id, $validated['symbols'] ?? null);
         } catch (InvalidArgumentException $exception) {
             throw ValidationException::withMessages([
                 'symbols' => $exception->getMessage(),

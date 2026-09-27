@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -16,12 +17,16 @@ class NusaLensNavigationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Cache::flush();
         config(['inertia.ssr.enabled' => false, 'services.sectors.api_key' => 'test-key']);
         Http::preventStrayRequests();
-        Http::fake(['*' => Http::response([
-            'results' => [['symbol' => 'BBCA.JK', 'company_name' => 'Bank Central Asia']],
-            'pagination' => ['total_count' => 1, 'limit' => 10, 'offset' => 0],
-        ])]);
+        Http::fake(fn ($request) => str_contains($request->url(), '/company/report/')
+            ? Http::response($this->companyProfilePayload($this->symbolFromReportUrl($request->url()).'.JK', $this->symbolFromReportUrl($request->url()).' Company'))
+            : Http::response([
+                'results' => [['symbol' => 'BBCA.JK', 'company_name' => 'Bank Central Asia']],
+                'pagination' => ['total_count' => 1, 'limit' => 10, 'offset' => 0],
+            ]));
     }
 
     /**
@@ -158,7 +163,7 @@ class NusaLensNavigationTest extends TestCase
                 ->component('nusalens/placeholder')
                 ->where('section', 'compare')
                 ->where('comparison.meta.state', 'empty')
-                ->where('comparison.meta.source', 'selection')
+                ->where('comparison.meta.source', 'profile')
                 ->where('comparison.meta.limit', 3)
                 ->where('comparison.symbols', [])
                 ->where('comparison.companies', [])
@@ -178,9 +183,12 @@ class NusaLensNavigationTest extends TestCase
                 ->where('section', 'compare')
                 ->where('comparison.symbols.0', 'BBCA')
                 ->where('comparison.symbols.1', 'TLKM')
-                ->where('comparison.companies', [])
+                ->where('comparison.companies.0.symbol', 'BBCA')
+                ->where('comparison.companies.0.status', 'ready')
+                ->where('comparison.companies.1.symbol', 'TLKM')
+                ->where('comparison.companies.1.status', 'ready')
                 ->where('comparison.metrics', [])
-                ->where('comparison.meta.state', 'selected')
+                ->where('comparison.meta.state', 'ready')
             );
     }
 
@@ -196,9 +204,12 @@ class NusaLensNavigationTest extends TestCase
                 ->where('section', 'compare')
                 ->where('comparison.symbols.0', 'ADES')
                 ->where('comparison.symbols.1', 'AADI')
-                ->where('comparison.companies', [])
+                ->where('comparison.companies.0.symbol', 'ADES')
+                ->where('comparison.companies.0.status', 'ready')
+                ->where('comparison.companies.1.symbol', 'AADI')
+                ->where('comparison.companies.1.status', 'ready')
                 ->where('comparison.metrics', [])
-                ->where('comparison.meta.state', 'selected')
+                ->where('comparison.meta.state', 'ready')
             );
     }
 
@@ -264,5 +275,30 @@ class NusaLensNavigationTest extends TestCase
             ->assertRedirect('/temukan-saham');
         Http::assertNothingSent();
         $this->assertSame('/kandidat-menarik', route('candidates', absolute: false));
+    }
+
+    private function companyProfilePayload(
+        string $symbol,
+        string $name,
+        ?string $sector = 'Financials',
+        ?string $subSector = 'Banks',
+    ): array {
+        return [
+            'symbol' => $symbol,
+            'company_name' => $name,
+            'overview' => [
+                'sector' => $sector,
+                'sub_sector' => $subSector,
+                'last_close_price' => 6200,
+                'latest_close_date' => '2026-09-23',
+            ],
+        ];
+    }
+
+    private function symbolFromReportUrl(string $url): string
+    {
+        preg_match('~/company/report/([A-Z0-9]{4})/~', $url, $matches);
+
+        return $matches[1] ?? 'BBCA';
     }
 }

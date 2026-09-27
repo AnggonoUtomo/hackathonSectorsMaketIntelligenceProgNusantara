@@ -82,8 +82,19 @@ interface ComparisonPayload {
     companies: Array<{
         symbol: string;
         name: string;
-        sector: string;
+        logoUrl: string | null;
+        sector: string | null;
+        subSector: string | null;
+        industry: string | null;
+        price: number | null;
+        priceDate: string | null;
+        fetchedAt: string | null;
         freshness: string;
+        status: 'ready' | 'error';
+        error: {
+            reason: string;
+            message: string;
+        } | null;
     }>;
     metrics: Array<{
         label: string;
@@ -91,10 +102,11 @@ interface ComparisonPayload {
         notes: Record<string, string>;
     }>;
     meta: {
-        source: 'selection';
-        state: 'empty' | 'selected';
+        source: 'profile';
+        state: 'empty' | 'ready' | 'partial';
         limit: number;
         liveProvider: boolean;
+        estimatedCredits: number;
     };
 }
 

@@ -9,12 +9,14 @@ Draft untuk selection-first comparison flow.
 Comparison membantu pengguna membandingkan maksimal 3 saham dalam satu tampilan
 agar angka utama, kelengkapan data, freshness, dan catatan riset mudah dipindai.
 
-Scope implementasi awal:
+Scope implementasi saat ini:
 
 - route dan UI Bandingkan memulai dari pilihan saham pengguna;
 - validasi query `symbols` maksimal 3 ticker;
 - autocomplete perusahaan untuk membantu user awam memilih saham;
-- payload awal tanpa matriks fake agar tidak mencampur contoh dengan data real;
+- profil ringkas real/cache untuk setiap symbol terpilih;
+- error provider ditampilkan per saham, bukan menghapus semua pilihan;
+- payload tetap tanpa matriks fake agar tidak mencampur contoh dengan data real;
 - link dari detail perusahaan menuju Bandingkan dengan symbol terpilih.
 
 Non-scope implementasi awal:
@@ -32,10 +34,12 @@ Non-scope implementasi awal:
 - Inbound adapter: route Inertia saat ini di `routes/web.php`; controller
   Presentation dapat diekstrak saat behavior bertambah.
 - Use case: `ComparisonSelectionBuilder` di Application untuk normalisasi dan
-  validasi pilihan saham.
+  validasi pilihan saham serta memuat profil ringkas lewat contract
+  `CompanyDirectory`.
 - Aturan Domain: maksimal 3 saham pada MVP; tidak ada rekomendasi beli/jual.
-- Outbound port: belum dibuat sampai ada consumer data nyata.
-- Outbound adapter: belum ada.
+- Outbound port: memakai contract `CompanyDirectory` dari MarketData sebagai
+  boundary data provider internal.
+- Outbound adapter: adapter Sectors/cache/ledger milik MarketData.
 - Composition root: Laravel container auto-resolve class sederhana.
 
 ## Contract dan data
@@ -49,10 +53,11 @@ Input awal:
 Output Inertia awal:
 
 - `comparison.symbols`: symbol yang diminta setelah normalisasi;
-- `comparison.companies`: kosong pada selection increment;
-- `comparison.metrics`: kosong pada selection increment;
-- `comparison.meta`: source `selection`, limit `3`, state `selected|empty`,
-  `liveProvider: false`.
+- `comparison.companies`: kartu profil ringkas per saham dengan `status`
+  `ready|error`;
+- `comparison.metrics`: kosong sampai section harga/keuangan/valuasi real dibuat;
+- `comparison.meta`: source `profile`, limit `3`, state `ready|partial|empty`,
+  `liveProvider`, dan `estimatedCredits`.
 
 Unknown symbol tidak disamarkan sebagai data kosong global. Untuk increment
 awal, unknown symbol ditolak sebagai validation/session error agar input buruk
@@ -65,29 +70,33 @@ Route Bandingkan wajib `auth` dan `verified`. UI menampilkan:
 - autocomplete perusahaan;
 - batas maksimal 3 saham;
 - chip saham terpilih dengan logo bila tersedia;
+- kartu profil berisi logo, nama, sektor/subsektor, harga terakhir, freshness,
+  dan link ke Company Cockpit;
 - empty state saat belum memilih saham;
-- placeholder eksplisit bahwa matriks real belum dimuat pada increment ini;
+- placeholder eksplisit bahwa harga historis, keuangan, valuasi, dan scoring
+  belum dimuat pada increment ini;
 - disclaimer bahwa hasil bukan rekomendasi investasi.
 
 ## Dependency
 
-Selection flow memakai pencarian perusahaan internal yang sudah tersedia. Integrasi
-matriks nyata nanti harus menggunakan data Company/Intelligence internal, bukan
-JSON vendor langsung.
+Selection flow memakai pencarian perusahaan internal yang sudah tersedia. Profil
+ringkas memakai `CompanyDirectory::profile()` sehingga cache dan ledger tetap
+ditangani MarketData. Integrasi matriks nyata nanti harus menggunakan data
+Company/Intelligence internal, bukan JSON vendor langsung.
 
 ## Acceptance dan verifikasi
 
-- [ ] Verified user dapat membuka halaman Bandingkan tanpa symbol dan melihat
+- [x] Verified user dapat membuka halaman Bandingkan tanpa symbol dan melihat
       empty state.
-- [ ] Verified user dapat membuka `?symbols=BBCA,TLKM` dan melihat pilihan
-      saham tanpa matrix fake.
-- [ ] Lebih dari 3 symbol ditolak.
-- [ ] Format symbol buruk ditolak secara eksplisit.
-- [ ] UI dari detail perusahaan dapat menuju Bandingkan dengan symbol terkait.
-- [ ] Automated test tidak melakukan live Sectors call.
+- [x] Verified user dapat membuka `?symbols=BBCA,TLKM` dan melihat profil
+      ringkas real/cache tanpa matrix fake.
+- [x] Lebih dari 3 symbol ditolak.
+- [x] Format symbol buruk ditolak secara eksplisit.
+- [x] UI dari detail perusahaan dapat menuju Bandingkan dengan symbol terkait.
+- [x] Automated test tidak melakukan live Sectors call.
 
 ## Risiko dan keputusan terbuka
 
 - Desain persistence perbandingan manual privat belum dikerjakan.
 - Format snapshot/versioning final menunggu model Company dan Intelligence.
-- Matriks real profil/harga/keuangan/valuasi belum dikerjakan.
+- Matriks real harga/keuangan/valuasi belum dikerjakan.

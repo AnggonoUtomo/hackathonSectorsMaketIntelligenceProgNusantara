@@ -2,33 +2,43 @@
 
 namespace App\Modules\Comparison\Application;
 
+use App\Modules\MarketData\Application\Contracts\CompanyDirectory;
+use App\Modules\MarketData\Application\Exception\MarketDataUnavailable;
 use InvalidArgumentException;
 
 class ComparisonSelectionBuilder
 {
     private const LIMIT = 3;
 
+    public function __construct(private readonly CompanyDirectory $directory) {}
+
     /**
      * @return array{
      *     symbols: list<string>,
-     *     companies: list<array{symbol: string, name: string, sector: string, freshness: string}>,
+     *     companies: list<array<string, mixed>>,
      *     metrics: list<array{label: string, values: array<string, string>, notes: array<string, string>}>,
-     *     meta: array{source: string, state: string, limit: int, liveProvider: bool}
+     *     meta: array{source: string, state: string, limit: int, liveProvider: bool, estimatedCredits: int}
      * }
      */
-    public function build(?string $symbols): array
+    public function build(string $userId, ?string $symbols): array
     {
         $requested = $this->parseSymbols($symbols);
+        $companies = [];
+
+        foreach ($requested as $symbol) {
+            $companies[] = $this->profileCard($userId, $symbol);
+        }
 
         return [
             'symbols' => $requested,
-            'companies' => [],
+            'companies' => $companies,
             'metrics' => [],
             'meta' => [
-                'source' => 'selection',
-                'state' => $requested === [] ? 'empty' : 'selected',
+                'source' => 'profile',
+                'state' => $this->state($companies),
                 'limit' => self::LIMIT,
-                'liveProvider' => false,
+                'liveProvider' => $requested !== [],
+                'estimatedCredits' => count($requested),
             ],
         ];
     }
@@ -58,5 +68,73 @@ class ComparisonSelectionBuilder
         }
 
         return $parsed;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function profileCard(string $userId, string $symbol): array
+    {
+        try {
+            $profile = $this->directory->profile($userId, $symbol);
+
+            return [
+                'symbol' => $symbol,
+                'name' => $this->text($profile['name'] ?? null) ?? $symbol,
+                'logoUrl' => $this->text($profile['logoUrl'] ?? null),
+                'sector' => $this->text($profile['sector'] ?? null),
+                'subSector' => $this->text($profile['subSector'] ?? null),
+                'industry' => $this->text($profile['industry'] ?? null),
+                'price' => $this->number($profile['price'] ?? null),
+                'priceDate' => $this->text($profile['priceDate'] ?? null),
+                'fetchedAt' => $this->text($profile['fetchedAt'] ?? null),
+                'freshness' => $this->text($profile['fetchedAt'] ?? null) ?? 'Cache aktif',
+                'status' => 'ready',
+                'error' => null,
+            ];
+        } catch (MarketDataUnavailable $exception) {
+            return [
+                'symbol' => $symbol,
+                'name' => $symbol,
+                'logoUrl' => null,
+                'sector' => null,
+                'subSector' => null,
+                'industry' => null,
+                'price' => null,
+                'priceDate' => null,
+                'fetchedAt' => null,
+                'freshness' => 'Tidak tersedia',
+                'status' => 'error',
+                'error' => $exception->details(),
+            ];
+        }
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $companies
+     */
+    private function state(array $companies): string
+    {
+        if ($companies === []) {
+            return 'empty';
+        }
+
+        foreach ($companies as $company) {
+            if (($company['status'] ?? null) === 'error') {
+                return 'partial';
+            }
+        }
+
+        return 'ready';
+    }
+
+    private function text(mixed $value): ?string
+    {
+        return is_string($value) && trim($value) !== '' ? trim($value) : null;
+    }
+
+    private function number(mixed $value): ?float
+    {
+        return is_numeric($value) && is_finite((float) $value) ? (float) $value : null;
     }
 }

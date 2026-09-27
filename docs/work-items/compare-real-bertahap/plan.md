@@ -35,6 +35,7 @@ seluruh endpoint provider.
 
 ## Increment 2: Profil ringkas compare real
 
+- Status: selesai.
 - Perubahan: route compare mengambil identitas/profil ringkas untuk symbol yang
   dipilih, memakai cache dan adapter internal. Tampilkan logo, nama, sektor,
   subsektor, freshness, dan status error per saham.
@@ -46,6 +47,10 @@ seluruh endpoint provider.
 - Acceptance: deep link tiga saham menampilkan profil real tanpa metric fake;
   error satu saham tidak menghapus saham lain; cache hit tidak menambah ledger.
 - Verifikasi: fake HTTP untuk success/partial/error/cache dan browser matrix.
+- Hasil: `ComparisonSelectionBuilder` memakai contract `CompanyDirectory` untuk
+  memuat overview real/cache maksimal tiga saham. Payload company memuat
+  `status: ready|error`, profil ringkas, harga terakhir, tanggal harga,
+  `fetchedAt`, dan error per saham. `metrics` tetap kosong.
 
 ## Increment 3: Section harga/keuangan/valuasi on-demand
 
