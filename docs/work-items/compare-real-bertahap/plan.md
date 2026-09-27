@@ -68,6 +68,9 @@ seluruh endpoint provider.
   tersedia.
 - Verifikasi: fake HTTP untuk partial data, null, stale/cache, quota exceeded,
   typecheck, lint, build, dan browser desktop/mobile.
+- Slice 3A: harga memakai endpoint analitik existing
+  `/nusalens/companies/{symbol}/analysis?section=prices` dari frontend setelah
+  user klik. Section keuangan dan valuasi belum masuk slice ini.
 
 ## Increment 4: Save snapshot manual
 

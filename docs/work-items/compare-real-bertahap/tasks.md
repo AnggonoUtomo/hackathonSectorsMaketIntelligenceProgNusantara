@@ -39,10 +39,11 @@
 
 ## Increment 3: Section data on-demand
 
-- [ ] Tentukan endpoint internal atau reuse contract analytics existing.
+- [x] Tentukan endpoint internal atau reuse contract analytics existing.
+- [x] Slice 3A: tambah kontrol "Muat harga" on-demand dengan estimasi credit.
+- [x] Slice 3A: render Recharts harga dan tabel alternatif.
 - [ ] Tulis test section harga, keuangan, valuasi dengan fake HTTP.
-- [ ] Tambah kontrol "Muat data" per section dengan estimasi credit.
-- [ ] Render Recharts dan tabel alternatif.
+- [ ] Tambah kontrol "Muat data" per section keuangan dan valuasi dengan estimasi credit.
 - [ ] Verifikasi null, angka nol valid, error quota, dan stale cache.
 
 ## Increment 4: Snapshot manual

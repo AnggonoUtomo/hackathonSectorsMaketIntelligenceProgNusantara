@@ -118,6 +118,8 @@ berhasil tetap ditampilkan.
 - Scoring v1 dan peer minimal 5 lainnya mengikuti [Scoring](../../SCORING.md),
   tetapi belum masuk tahap compare real awal.
 - Recharts sudah dipakai di detail perusahaan dan boleh dipakai ulang.
+- Slice Increment 3A memakai endpoint analitik existing untuk harga agar tidak
+  menambah contract backend baru sebelum pola UX on-demand terbukti nyaman.
 
 ## Handoff
 
