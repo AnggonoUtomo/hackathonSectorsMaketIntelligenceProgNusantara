@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { ResearchSummary } from '@/types/research-summary';
 import { ArrowRight, ChartNoAxesCombined, ChevronDown, FileSearch, LoaderCircle, RefreshCw, Table2 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 type State = { status: 'idle' | 'loading' } | { status: 'error'; message: string } | { status: 'ready'; data: ResearchSummary };
 const metrics = [
@@ -15,7 +15,7 @@ const timestamp = (value: string | null) =>
         ? `${new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Jakarta' }).format(new Date(value))} WIB`
         : 'Waktu belum tersedia';
 
-export default function ResearchSummaryPanel({ symbol, active }: { symbol: string; active: boolean }) {
+export default function ResearchSummaryPanel({ symbol, active, actions }: { symbol: string; active: boolean; actions?: ReactNode }) {
     const [state, setState] = useState<State>({ status: 'idle' });
     const [expired, setExpired] = useState(false);
     const [view, setView] = useState<'chart' | 'table'>('chart');
@@ -243,6 +243,15 @@ export default function ResearchSummaryPanel({ symbol, active }: { symbol: strin
                             ))}
                         </div>
                     </section>
+                    {actions && (
+                        <section className="flex flex-col gap-3 border-t pt-5 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h3 className="text-sm font-medium">Lanjutkan riset</h3>
+                                <p className="text-muted-foreground mt-1 text-xs">Buka data real lain sebelum menarik kesimpulan.</p>
+                            </div>
+                            {actions}
+                        </section>
+                    )}
                     <footer className="text-muted-foreground space-y-2 border-t pt-4 text-xs leading-6">
                         <p>
                             Klasifikasi sumber: {state.data.classification.sector ?? 'Belum tersedia'} /{' '}

@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai; UX-2D selesai; UX-2E selesai.
+- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai; UX-2D selesai; UX-2E selesai; UX-2F selesai.
 - Kelanjutan 2026-09-26 UX-2: setelah menu `/perusahaan` digabung ke
   `/temukan-saham`, user menyetujui rekomendasi untuk merapikan alur riset utama
   sebelum masuk scoring besar. Tahap ini fokus pada Company Cockpit di detail
@@ -65,6 +65,11 @@ ke `/temukan-saham`, sementara `?symbol=` tetap mengarah ke detail perusahaan.
 UX-2E merapikan entry legacy `/kandidat-menarik` agar tidak membuka placeholder.
 Route lama tetap dipertahankan, tetapi diarahkan ke `/temukan-saham` sampai
 eksplorasi tujuan riset real tersedia.
+
+UX-2F merapikan Company Cockpit agar setelah membaca Ringkasan Riset pengguna
+melihat langkah lanjutan yang nyata: cek Harga, Keuangan, Valuasi, Profil, atau
+kembali mencari pembanding. Scope ini tidak mempromosikan compare fake dan tidak
+menghitung Nilai Prioritas Riset final.
 
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
@@ -134,6 +139,18 @@ Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 - [x] Guest dan unverified user tetap mengikuti proteksi auth/verified.
 - [x] Tidak ada endpoint Sectors, provider call, atau route baru.
 - [x] Test navigasi NusaLens lulus.
+
+## Acceptance criteria UX-2F
+
+- [x] Company Cockpit menampilkan jalur langkah lanjut yang jelas dari satu saham.
+- [x] Aksi lanjut hanya mengarah ke data real yang sudah tersedia: Profil, Harga,
+      Keuangan, Valuasi, dan kembali ke Temukan Saham.
+- [x] Ringkasan Riset tetap default dan tidak auto-fetch sebelum user menekan
+      tombol buka ringkasan.
+- [x] Membuka aksi Harga/Keuangan/Valuasi tetap lazy fetch sesuai section yang
+      dipilih, tanpa endpoint baru.
+- [x] UI tetap keyboard accessible lewat button/link native dan tablist existing.
+- [x] Typecheck, lint scoped, build, dan diff check lulus.
 
 ## Dependency dan keputusan
 

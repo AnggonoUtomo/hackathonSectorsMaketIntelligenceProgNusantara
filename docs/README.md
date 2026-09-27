@@ -20,6 +20,8 @@ rekomendasi BUY/HOLD/SELL.
 6. Pilih pemeriksaan dari [Quality](QUALITY.md) sesuai risiko.
 7. Baca [Keputusan](DECISIONS.md) saat menyentuh keputusan aktif.
 8. Baca [API](API.md) saat mengubah endpoint publik atau integrasi.
+9. Baca [User Guide Sementara](USER-GUIDE.md) untuk memahami alur penggunaan
+   aplikasi yang sudah tersedia dan gap UX berikutnya.
 
 ## Acuan pekerjaan khusus
 
@@ -37,6 +39,9 @@ rekomendasi BUY/HOLD/SELL.
   direktori dan profil real; increment 2 menambahkan grafik harga/keuangan dan
   valuasi real. Rencana wizard berikutnya perlu ditinjau bersama proposal
   Ruang Riset Berbukti sebelum implementasi dilanjutkan.
+- [Compare Real Bertahap](work-items/compare-real-bertahap/README.md): proposal
+  mengganti `/bandingkan` dari matrix fake menjadi compare real hemat credit
+  dengan autocomplete, profil awal, dan section data on-demand.
 - [Scoring](SCORING.md): metrik, bobot, peer group, data hilang, dan penjelasan nilai.
 - [Alur Data](DATA-FLOW.md): pengambilan bertahap, cache, dan anggaran credit.
 - [Model Data](DATA-MODEL.md): konsep penyimpanan dari blueprint dan batas keputusan schema.

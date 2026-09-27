@@ -91,8 +91,8 @@ interface ComparisonPayload {
         notes: Record<string, string>;
     }>;
     meta: {
-        source: 'backend_fake';
-        state: 'ready' | 'empty';
+        source: 'selection';
+        state: 'empty' | 'selected';
         limit: number;
         liveProvider: boolean;
     };
@@ -158,7 +158,14 @@ const sections = {
 const fallbackCompanies = [
     { symbol: 'BBCA', name: 'Bank Central Asia Tbk', sector: 'Financials', score: '82,45', completeness: '91,00', freshness: 'Cache 42 menit' },
     { symbol: 'TLKM', name: 'Telkom Indonesia Tbk', sector: 'Infrastructure', score: '78,20', completeness: '86,50', freshness: 'Cache 18 menit' },
-    { symbol: 'ICBP', name: 'Indofood CBP Sukses Makmur Tbk', sector: 'Consumer Non-Cyclicals', score: '74,85', completeness: '88,00', freshness: 'Cache 51 menit' },
+    {
+        symbol: 'ICBP',
+        name: 'Indofood CBP Sukses Makmur Tbk',
+        sector: 'Consumer Non-Cyclicals',
+        score: '74,85',
+        completeness: '88,00',
+        freshness: 'Cache 51 menit',
+    },
 ];
 
 const breadcrumbs = (title: string): BreadcrumbItem[] => [
@@ -186,9 +193,6 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
         min_score: discover?.filters.minScore ?? '',
         limit: discover?.filters.limit ?? '10',
     });
-    const comparisonForm = useForm({
-        symbols: comparison?.symbols.join(',') ?? '',
-    });
 
     function submitDiscover(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -201,19 +205,6 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
 
     function resetDiscover() {
         router.get('/temukan-saham', {}, { preserveScroll: true });
-    }
-
-    function submitComparison(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-
-        comparisonForm.get('/bandingkan', {
-            preserveScroll: true,
-            preserveState: true,
-        });
-    }
-
-    function resetComparison() {
-        router.get('/bandingkan', {}, { preserveScroll: true });
     }
 
     if (isDiscover) {
@@ -269,7 +260,7 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
         <AppLayout breadcrumbs={breadcrumbs(current.title)}>
             <Head title={current.title} />
             <div className="flex flex-1 flex-col gap-4 p-4">
-                <section className="rounded-lg border bg-card p-5 text-card-foreground">
+                <section className="bg-card text-card-foreground rounded-lg border p-5">
                     <div className="flex flex-wrap items-start justify-between gap-4">
                         <div className="max-w-3xl">
                             <Badge variant="outline">{current.eyebrow}</Badge>
@@ -277,9 +268,9 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                                 <Icon className="size-6" />
                                 <h1 className="text-2xl font-semibold">{current.title}</h1>
                             </div>
-                            <p className="mt-2 text-sm text-muted-foreground">{company?.summary ?? current.description}</p>
+                            <p className="text-muted-foreground mt-2 text-sm">{company?.summary ?? current.description}</p>
                         </div>
-                        <div className="rounded-md border bg-background px-3 py-2 text-sm">
+                        <div className="bg-background rounded-md border px-3 py-2 text-sm">
                             {isCompanyDetail ? (
                                 <>
                                     <span className="text-muted-foreground">Freshness:</span> {company.meta.freshness}
@@ -312,10 +303,10 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                             <CardContent>
                                 <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                                     {company.metrics.map((metric) => (
-                                        <div key={metric.label} className="rounded-md border bg-background p-3">
-                                            <div className="text-xs text-muted-foreground">{metric.label}</div>
+                                        <div key={metric.label} className="bg-background rounded-md border p-3">
+                                            <div className="text-muted-foreground text-xs">{metric.label}</div>
                                             <div className="mt-2 text-xl font-semibold tabular-nums">{metric.value}</div>
-                                            <div className="mt-1 text-xs text-muted-foreground">{metric.note}</div>
+                                            <div className="text-muted-foreground mt-1 text-xs">{metric.note}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -329,7 +320,7 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                                     Sumber {company.meta.source}; live provider {company.meta.liveProvider ? 'aktif' : 'nonaktif'}.
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-3 text-sm text-muted-foreground">
+                            <CardContent className="text-muted-foreground space-y-3 text-sm">
                                 <p>Snapshot ini masih contoh internal untuk menguji alur dari screener ke detail perusahaan.</p>
                                 <Button asChild variant="outline" size="sm">
                                     <Link href="/temukan-saham" prefetch>
@@ -346,31 +337,80 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                     </section>
                 )}
 
-                {isCompare && comparison !== undefined && (
+                {!isCompanyDetail && !isCompare && (
                     <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
                         <Card>
                             <CardHeader>
-                                <CardTitle className="text-base">Pilih Saham</CardTitle>
-                                <CardDescription>Maksimal {comparison.meta.limit} ticker, pisahkan dengan koma.</CardDescription>
+                                <CardTitle className="text-base">{isDiscover ? 'Filter Backend Fake' : 'Filter Placeholder'}</CardTitle>
+                                <CardDescription>
+                                    {isDiscover
+                                        ? 'Submit filter ke Laravel, hasil masih dari provider fake internal.'
+                                        : 'Belum mengirim request ke Sectors API.'}
+                                </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <form className="space-y-3" onSubmit={submitComparison}>
+                                <form className="space-y-3" onSubmit={submitDiscover}>
                                     <div className="space-y-1.5">
-                                        <label className="text-sm font-medium" htmlFor="compare-symbols">
-                                            Ticker
+                                        <label className="text-sm font-medium" htmlFor="keyword">
+                                            Ticker atau nama
                                         </label>
                                         <Input
-                                            id="compare-symbols"
-                                            placeholder="BBCA,TLKM,ICBP"
-                                            value={comparisonForm.data.symbols}
-                                            onChange={(event) => comparisonForm.setData('symbols', event.target.value)}
+                                            id="keyword"
+                                            placeholder="BBCA, TLKM, ICBP"
+                                            value={form.data.keyword}
+                                            onChange={(event) => form.setData('keyword', event.target.value)}
+                                            disabled={!isDiscover}
                                         />
                                     </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-sm font-medium">Sektor</label>
+                                        <Select
+                                            value={form.data.sector}
+                                            onValueChange={(value) => form.setData('sector', value)}
+                                            disabled={!isDiscover}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Pilih sektor" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">Semua sektor</SelectItem>
+                                                <SelectItem value="financials">Financials</SelectItem>
+                                                <SelectItem value="consumer">Consumer Non-Cyclicals</SelectItem>
+                                                <SelectItem value="infrastructure">Infrastructure</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium" htmlFor="min-score">
+                                                Nilai min
+                                            </label>
+                                            <Input
+                                                id="min-score"
+                                                placeholder="70,00"
+                                                value={form.data.min_score}
+                                                onChange={(event) => form.setData('min_score', event.target.value)}
+                                                disabled={!isDiscover}
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="text-sm font-medium" htmlFor="max-items">
+                                                Limit
+                                            </label>
+                                            <Input
+                                                id="max-items"
+                                                placeholder="10"
+                                                value={form.data.limit}
+                                                onChange={(event) => form.setData('limit', event.target.value)}
+                                                disabled={!isDiscover}
+                                            />
+                                        </div>
+                                    </div>
                                     <div className="grid grid-cols-2 gap-2">
-                                        <Button type="submit" disabled={comparisonForm.processing}>
-                                            Bandingkan
+                                        <Button type="submit" disabled={!isDiscover || form.processing}>
+                                            Terapkan
                                         </Button>
-                                        <Button type="button" variant="outline" disabled={comparisonForm.processing} onClick={resetComparison}>
+                                        <Button type="button" variant="outline" disabled={!isDiscover || form.processing} onClick={resetDiscover}>
                                             Reset
                                         </Button>
                                     </div>
@@ -382,62 +422,62 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                             <CardHeader>
                                 <div className="flex flex-wrap items-start justify-between gap-3">
                                     <div>
-                                        <CardTitle className="text-base">Matrix Perbandingan</CardTitle>
+                                        <CardTitle className="text-base">Shortlist Contoh</CardTitle>
                                         <CardDescription>
-                                            Sumber {comparison.meta.source}; live provider {comparison.meta.liveProvider ? 'aktif' : 'nonaktif'}.
+                                            {isDiscover
+                                                ? `Sumber ${meta.source}; live provider ${meta.liveProvider ? 'aktif' : 'nonaktif'}; cache ${meta.cachePolicy}.`
+                                                : 'Angka berikut hanya data contoh untuk mempelajari layout.'}
                                         </CardDescription>
                                     </div>
-                                    <Badge variant="secondary">Maks {comparison.meta.limit} saham</Badge>
+                                    <Badge variant="secondary">2 desimal</Badge>
                                 </div>
                             </CardHeader>
                             <CardContent>
-                                {comparison.companies.length === 0 ? (
+                                {companies.length === 0 ? (
                                     <div role="status" className="rounded-md border border-dashed p-8 text-center">
-                                        <div className="text-sm font-medium">Belum ada saham untuk dibandingkan</div>
-                                        <p className="mt-1 text-sm text-muted-foreground">
-                                            Masukkan ticker dari dataset fake: BBCA, TLKM, atau ICBP.
+                                        <div className="text-sm font-medium">Belum ada kandidat cocok</div>
+                                        <p className="text-muted-foreground mt-1 text-sm">
+                                            Coba longgarkan filter ticker, sektor, atau nilai minimum.
                                         </p>
                                     </div>
                                 ) : (
                                     <div className="overflow-x-auto rounded-md border">
-                                        <table className="w-full min-w-[760px] text-sm">
+                                        <table className="w-full min-w-[720px] text-sm">
                                             <thead className="bg-muted/50 text-left">
                                                 <tr>
-                                                    <th className="px-3 py-2 font-medium">Metrik</th>
-                                                    {comparison.companies.map((item) => (
-                                                        <th key={item.symbol} className="px-3 py-2 font-medium">
-                                                            <div>{item.symbol}</div>
-                                                            <div className="text-xs font-normal text-muted-foreground">{item.name}</div>
-                                                        </th>
-                                                    ))}
+                                                    <th className="px-3 py-2 font-medium">Ticker</th>
+                                                    <th className="px-3 py-2 font-medium">Perusahaan</th>
+                                                    <th className="px-3 py-2 font-medium">Sektor</th>
+                                                    <th className="px-3 py-2 text-right font-medium">Nilai</th>
+                                                    <th className="px-3 py-2 text-right font-medium">Kelengkapan</th>
+                                                    <th className="px-3 py-2 font-medium">Freshness</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr className="border-t">
-                                                    <td className="px-3 py-3 font-medium">Sektor</td>
-                                                    {comparison.companies.map((item) => (
-                                                        <td key={item.symbol} className="px-3 py-3 text-muted-foreground">
-                                                            {item.sector}
+                                                {companies.map((company) => (
+                                                    <tr key={company.symbol} className="border-t">
+                                                        <td className="px-3 py-3 font-semibold">
+                                                            <Link
+                                                                className="underline-offset-4 hover:underline"
+                                                                href={`/perusahaan/${company.symbol}`}
+                                                                prefetch
+                                                            >
+                                                                {company.symbol}
+                                                            </Link>
                                                         </td>
-                                                    ))}
-                                                </tr>
-                                                <tr className="border-t">
-                                                    <td className="px-3 py-3 font-medium">Freshness</td>
-                                                    {comparison.companies.map((item) => (
-                                                        <td key={item.symbol} className="px-3 py-3 text-muted-foreground">
-                                                            {item.freshness}
+                                                        <td className="px-3 py-3">
+                                                            <Link
+                                                                className="underline-offset-4 hover:underline"
+                                                                href={`/perusahaan/${company.symbol}`}
+                                                                prefetch
+                                                            >
+                                                                {company.name}
+                                                            </Link>
                                                         </td>
-                                                    ))}
-                                                </tr>
-                                                {comparison.metrics.map((metric) => (
-                                                    <tr key={metric.label} className="border-t">
-                                                        <td className="px-3 py-3 font-medium">{metric.label}</td>
-                                                        {comparison.symbols.map((symbol) => (
-                                                            <td key={symbol} className="px-3 py-3">
-                                                                <div className="font-semibold tabular-nums">{metric.values[symbol]}</div>
-                                                                <div className="mt-1 text-xs text-muted-foreground">{metric.notes[symbol]}</div>
-                                                            </td>
-                                                        ))}
+                                                        <td className="text-muted-foreground px-3 py-3">{company.sector}</td>
+                                                        <td className="px-3 py-3 text-right tabular-nums">{company.score}</td>
+                                                        <td className="px-3 py-3 text-right tabular-nums">{company.completeness}%</td>
+                                                        <td className="text-muted-foreground px-3 py-3">{company.freshness}</td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -449,140 +489,6 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                     </section>
                 )}
 
-                {!isCompanyDetail && !isCompare && <section className="grid gap-4 xl:grid-cols-[320px_1fr]">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">{isDiscover ? 'Filter Backend Fake' : 'Filter Placeholder'}</CardTitle>
-                            <CardDescription>
-                                {isDiscover ? 'Submit filter ke Laravel, hasil masih dari provider fake internal.' : 'Belum mengirim request ke Sectors API.'}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <form className="space-y-3" onSubmit={submitDiscover}>
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-medium" htmlFor="keyword">
-                                    Ticker atau nama
-                                </label>
-                                <Input
-                                    id="keyword"
-                                    placeholder="BBCA, TLKM, ICBP"
-                                    value={form.data.keyword}
-                                    onChange={(event) => form.setData('keyword', event.target.value)}
-                                    disabled={!isDiscover}
-                                />
-                            </div>
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-medium">Sektor</label>
-                                <Select value={form.data.sector} onValueChange={(value) => form.setData('sector', value)} disabled={!isDiscover}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Pilih sektor" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">Semua sektor</SelectItem>
-                                        <SelectItem value="financials">Financials</SelectItem>
-                                        <SelectItem value="consumer">Consumer Non-Cyclicals</SelectItem>
-                                        <SelectItem value="infrastructure">Infrastructure</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                                <div className="space-y-1.5">
-                                    <label className="text-sm font-medium" htmlFor="min-score">
-                                        Nilai min
-                                    </label>
-                                    <Input
-                                        id="min-score"
-                                        placeholder="70,00"
-                                        value={form.data.min_score}
-                                        onChange={(event) => form.setData('min_score', event.target.value)}
-                                        disabled={!isDiscover}
-                                    />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <label className="text-sm font-medium" htmlFor="max-items">
-                                        Limit
-                                    </label>
-                                    <Input
-                                        id="max-items"
-                                        placeholder="10"
-                                        value={form.data.limit}
-                                        onChange={(event) => form.setData('limit', event.target.value)}
-                                        disabled={!isDiscover}
-                                    />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                <Button type="submit" disabled={!isDiscover || form.processing}>
-                                    Terapkan
-                                </Button>
-                                <Button type="button" variant="outline" disabled={!isDiscover || form.processing} onClick={resetDiscover}>
-                                    Reset
-                                </Button>
-                            </div>
-                            </form>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                                <div>
-                                    <CardTitle className="text-base">Shortlist Contoh</CardTitle>
-                                    <CardDescription>
-                                        {isDiscover
-                                            ? `Sumber ${meta.source}; live provider ${meta.liveProvider ? 'aktif' : 'nonaktif'}; cache ${meta.cachePolicy}.`
-                                            : 'Angka berikut hanya data contoh untuk mempelajari layout.'}
-                                    </CardDescription>
-                                </div>
-                                <Badge variant="secondary">2 desimal</Badge>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            {companies.length === 0 ? (
-                                <div role="status" className="rounded-md border border-dashed p-8 text-center">
-                                    <div className="text-sm font-medium">Belum ada kandidat cocok</div>
-                                    <p className="mt-1 text-sm text-muted-foreground">Coba longgarkan filter ticker, sektor, atau nilai minimum.</p>
-                                </div>
-                            ) : (
-                                <div className="overflow-x-auto rounded-md border">
-                                <table className="w-full min-w-[720px] text-sm">
-                                    <thead className="bg-muted/50 text-left">
-                                        <tr>
-                                            <th className="px-3 py-2 font-medium">Ticker</th>
-                                            <th className="px-3 py-2 font-medium">Perusahaan</th>
-                                            <th className="px-3 py-2 font-medium">Sektor</th>
-                                            <th className="px-3 py-2 text-right font-medium">Nilai</th>
-                                            <th className="px-3 py-2 text-right font-medium">Kelengkapan</th>
-                                            <th className="px-3 py-2 font-medium">Freshness</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {companies.map((company) => (
-                                            <tr key={company.symbol} className="border-t">
-                                                <td className="px-3 py-3 font-semibold">
-                                                    <Link className="underline-offset-4 hover:underline" href={`/perusahaan/${company.symbol}`} prefetch>
-                                                        {company.symbol}
-                                                    </Link>
-                                                </td>
-                                                <td className="px-3 py-3">
-                                                    <Link className="underline-offset-4 hover:underline" href={`/perusahaan/${company.symbol}`} prefetch>
-                                                        {company.name}
-                                                    </Link>
-                                                </td>
-                                                <td className="px-3 py-3 text-muted-foreground">{company.sector}</td>
-                                                <td className="px-3 py-3 text-right tabular-nums">{company.score}</td>
-                                                <td className="px-3 py-3 text-right tabular-nums">{company.completeness}%</td>
-                                                <td className="px-3 py-3 text-muted-foreground">{company.freshness}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </section>}
-
                 <section className="grid gap-4 md:grid-cols-3">
                     <Card>
                         <CardHeader>
@@ -591,7 +497,7 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                                 <CardTitle className="text-base">Data Policy</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="text-sm text-muted-foreground">
+                        <CardContent className="text-muted-foreground text-sm">
                             Cache hit tidak menambah ledger credit. Refresh live nanti tetap on-demand dan bertahap.
                         </CardContent>
                     </Card>
@@ -602,7 +508,7 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                                 <CardTitle className="text-base">Scoring</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="text-sm text-muted-foreground">
+                        <CardContent className="text-muted-foreground text-sm">
                             Nilai ditampilkan dua angka di belakang koma dan tidak memakai label BUY/HOLD/SELL.
                         </CardContent>
                     </Card>
@@ -613,7 +519,7 @@ export default function NusaLensPlaceholder({ section, discover, companies: comp
                                 <CardTitle className="text-base">Batas Riset</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="text-sm text-muted-foreground">
+                        <CardContent className="text-muted-foreground text-sm">
                             NusaLens adalah alat informasi dan riset, bukan penasihat investasi atau broker.
                         </CardContent>
                     </Card>

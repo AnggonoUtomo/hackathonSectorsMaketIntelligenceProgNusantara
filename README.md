@@ -18,6 +18,8 @@ Bukan daftar saham yang harus dibeli. Tujuannya membantu menjawab:
 
 ## Yang sudah bisa dicoba
 
+Panduan alur lengkap sementara tersedia di [User Guide](docs/USER-GUIDE.md).
+
 1. Login dengan email terverifikasi, lalu buka **Temukan Saham**.
 2. Ketik nama atau kode perusahaan, lalu pilih hasil pencarian.
 3. Pada detail, buka **Harga**, **Keuangan**, atau **Valuasi** sesuai kebutuhan.
@@ -36,13 +38,13 @@ Cakupan MVP meliputi perusahaan bank dan nonbank di Indonesia.
 
 ## Fungsi utama
 
-| Fitur MVP | Manfaat |
-| --- | --- |
-| Temukan Saham | Menyaring dan mengurutkan kandidat melalui kriteria terstruktur. |
-| Detail Perusahaan | Melihat profil, metrik keuangan/pasar, lima komponen nilai, dan sumbernya. |
-| Bandingkan | Menyandingkan maksimal 3 saham beserta angka asli dan posisi terhadap peer. |
-| Jelaskan Nilai | Menelusuri rumus, bobot, kontribusi metrik, dan data yang belum tersedia. |
-| Temukan Kandidat | Menjelajahi kandidat menurut aspek bisnis, pertumbuhan, valuasi, atau pasar. |
+| Fitur MVP              | Manfaat                                                                             |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| Temukan Saham          | Menyaring dan mengurutkan kandidat melalui kriteria terstruktur.                    |
+| Detail Perusahaan      | Melihat profil, metrik keuangan/pasar, lima komponen nilai, dan sumbernya.          |
+| Bandingkan             | Menyandingkan maksimal 3 saham beserta angka asli dan posisi terhadap peer.         |
+| Jelaskan Nilai         | Menelusuri rumus, bobot, kontribusi metrik, dan data yang belum tersedia.           |
+| Temukan Kandidat       | Menjelajahi kandidat menurut aspek bisnis, pertumbuhan, valuasi, atau pasar.        |
 | Perbandingan Tersimpan | Menyimpan manual, memberi nama, membuka kembali, dan menghapus perbandingan privat. |
 
 ## Cara penggunaan yang direncanakan
@@ -63,13 +65,13 @@ aktivitas secara otomatis dan belum menyediakan tautan berbagi publik.
 
 Sistem menghitung lima komponen pada skala **0-100**. AI tidak menentukan nilainya.
 
-| Komponen | Bobot | Metrik MVP |
-| --- | --- | --- |
-| Kesehatan Bisnis | 30% | ROE dan ROA tahunan. |
-| Pertumbuhan | 25% | Pertumbuhan pendapatan dan laba kuartalan dibanding kuartal yang sama tahun lalu. |
-| Harga Saham | 20% | PE TTM dan PB berdasarkan kuartal terbaru. |
-| Kekuatan Pasar | 15% | Perubahan harga selama 20 sesi bursa, dengan konsistensi harga terverifikasi. |
-| Keamanan Keuangan | 10% | Bank: CAR dan NPL. Perusahaan nonkeuangan: DER dan current ratio. |
+| Komponen          | Bobot | Metrik MVP                                                                        |
+| ----------------- | ----- | --------------------------------------------------------------------------------- |
+| Kesehatan Bisnis  | 30%   | ROE dan ROA tahunan.                                                              |
+| Pertumbuhan       | 25%   | Pertumbuhan pendapatan dan laba kuartalan dibanding kuartal yang sama tahun lalu. |
+| Harga Saham       | 20%   | PE TTM dan PB berdasarkan kuartal terbaru.                                        |
+| Kekuatan Pasar    | 15%   | Perubahan harga selama 20 sesi bursa, dengan konsistensi harga terverifikasi.     |
+| Keamanan Keuangan | 10%   | Bank: CAR dan NPL. Perusahaan nonkeuangan: DER dan current ratio.                 |
 
 Perusahaan keuangan nonbank, seperti asuransi, tidak dipaksakan memakai rasio
 risiko perusahaan nonkeuangan. Komponen risiko belum tersedia untuk kelompok
@@ -152,12 +154,12 @@ Spesifikasi lengkap: [Perhitungan v1](docs/SCORING.md).
 
 ## Pengembangan berikutnya
 
-| Tahap | Rencana | Status |
-| --- | --- | --- |
-| Fondasi MVP | Verifikasi email untuk riset, ULID, dan kesiapan penyimpanan/cache. | Disepakati; implementasi berikutnya perlu plan. |
-| Alur riset inti | Integrasi Sectors, screener, skor v1, detail, perbandingan privat, dan penjelasan aturan. | Scope MVP yang disepakati. |
-| Pelengkap demo | AI explainer setelah alur inti stabil. | Opsional; provider, model, dan budget belum dipilih. |
-| Pasca-MVP | Paket berbayar dan/atau API key milik pengguna sendiri (BYOK). | Arah pengembangan; belum ada desain paket, harga, atau jadwal. |
+| Tahap           | Rencana                                                                                   | Status                                                         |
+| --------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Fondasi MVP     | Verifikasi email untuk riset, ULID, dan kesiapan penyimpanan/cache.                       | Disepakati; implementasi berikutnya perlu plan.                |
+| Alur riset inti | Integrasi Sectors, screener, skor v1, detail, perbandingan privat, dan penjelasan aturan. | Scope MVP yang disepakati.                                     |
+| Pelengkap demo  | AI explainer setelah alur inti stabil.                                                    | Opsional; provider, model, dan budget belum dipilih.           |
+| Pasca-MVP       | Paket berbayar dan/atau API key milik pengguna sendiri (BYOK).                            | Arah pengembangan; belum ada desain paket, harga, atau jadwal. |
 
 Watchlist, riwayat screener otomatis, laporan tersimpan terpisah, dan sharing
 publik **di luar MVP dan belum menjadi komitmen pengembangan**. Rencana rinci,

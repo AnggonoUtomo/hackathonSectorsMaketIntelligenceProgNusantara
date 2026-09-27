@@ -1,4 +1,4 @@
-# Tasks: Comparison Fake Flow
+# Tasks: Comparison Flow
 
 ## Sebelum mulai
 
@@ -9,7 +9,7 @@
 ## Dokumentasi
 
 - [x] Buat README module Comparison.
-- [x] Buat specification module Comparison untuk fake flow.
+- [x] Buat specification module Comparison untuk flow awal.
 - [x] Buat plan increment.
 - [x] Buat work item `fake-comparison-flow`.
 
@@ -27,12 +27,22 @@
 - [x] Detail perusahaan memiliki link ke `/bandingkan?symbols={symbol}`.
 - [x] Typecheck, lint, build, full test, whitespace, dan sensitive-data scan lulus.
 
+## Increment 4: Selection-first cleanup
+
+- [x] Ganti fake comparison payload menjadi `ComparisonSelectionBuilder`.
+- [x] Halaman Bandingkan mulai kosong tanpa default `BBCA, TLKM, ICBP`.
+- [x] Gunakan autocomplete perusahaan dan chip pilihan maksimal 3 saham.
+- [x] Hapus matrix/metrik fake dari payload compare.
+- [x] Unit dan feature test mengunci state `empty|selected`.
+
 ## Hasil
 
-- [ ] Scope selesai dan dokumentasi diperbarui.
-- Perubahan: backend fake comparison, validasi query, UI matrix, dan link dari
-  Detail Perusahaan ke Bandingkan selesai.
+- [x] Scope awal selesai dan dokumentasi diperbarui.
+- Perubahan awal: backend fake comparison, validasi query, UI matrix, dan link
+  dari Detail Perusahaan ke Bandingkan selesai.
+- Perubahan terbaru: compare dibersihkan menjadi selection-first tanpa data fake,
+  dengan autocomplete dan payload kosong untuk increment real berikutnya.
 - Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
   whitespace, dan sensitive-data scan lulus.
-- Risiko: persistence perbandingan privat dan versioning snapshot belum masuk
-  fake flow.
+- Risiko: matriks real, persistence perbandingan privat, dan versioning snapshot
+  belum masuk flow ini.

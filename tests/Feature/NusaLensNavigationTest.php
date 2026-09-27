@@ -147,7 +147,7 @@ class NusaLensNavigationTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_compare_page_receives_default_fake_payload(): void
+    public function test_compare_page_starts_empty_without_default_fake_payload(): void
     {
         $this->actingAs(User::factory()->create());
 
@@ -157,16 +157,16 @@ class NusaLensNavigationTest extends TestCase
             ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('nusalens/placeholder')
                 ->where('section', 'compare')
-                ->where('comparison.meta.state', 'ready')
+                ->where('comparison.meta.state', 'empty')
+                ->where('comparison.meta.source', 'selection')
                 ->where('comparison.meta.limit', 3)
-                ->where('comparison.symbols.0', 'BBCA')
-                ->where('comparison.symbols.1', 'TLKM')
-                ->where('comparison.symbols.2', 'ICBP')
-                ->has('comparison.companies', 3)
+                ->where('comparison.symbols', [])
+                ->where('comparison.companies', [])
+                ->where('comparison.metrics', [])
             );
     }
 
-    public function test_compare_page_receives_fake_matrix_for_symbols(): void
+    public function test_compare_page_receives_selection_without_fake_metrics_for_symbols(): void
     {
         $this->actingAs(User::factory()->create());
 
@@ -178,14 +178,13 @@ class NusaLensNavigationTest extends TestCase
                 ->where('section', 'compare')
                 ->where('comparison.symbols.0', 'BBCA')
                 ->where('comparison.symbols.1', 'TLKM')
-                ->where('comparison.companies.0.name', 'Bank Central Asia Tbk')
-                ->where('comparison.metrics.0.label', 'Nilai Prioritas Riset')
-                ->where('comparison.metrics.0.values.BBCA', '82,45')
-                ->where('comparison.meta.state', 'ready')
+                ->where('comparison.companies', [])
+                ->where('comparison.metrics', [])
+                ->where('comparison.meta.state', 'selected')
             );
     }
 
-    public function test_compare_page_receives_pending_matrix_for_real_symbols(): void
+    public function test_compare_page_receives_real_symbol_selection_without_pending_fake_matrix(): void
     {
         $this->actingAs(User::factory()->create());
 
@@ -197,9 +196,9 @@ class NusaLensNavigationTest extends TestCase
                 ->where('section', 'compare')
                 ->where('comparison.symbols.0', 'ADES')
                 ->where('comparison.symbols.1', 'AADI')
-                ->where('comparison.companies.0.name', 'ADES - data detail belum dimuat')
-                ->where('comparison.metrics.0.values.ADES', '-')
-                ->where('comparison.meta.state', 'ready')
+                ->where('comparison.companies', [])
+                ->where('comparison.metrics', [])
+                ->where('comparison.meta.state', 'selected')
             );
     }
 

@@ -12,8 +12,9 @@ entry utama yang masih fake/placeholder dari navigasi. Setelah UX-2C di-commit,
 UX-2D merapikan deep link `/jelaskan-nilai` tanpa symbol agar kembali ke
 `/temukan-saham` dan tidak menjadi halaman pencarian kedua. UX-2E melanjutkan
 pola yang sama untuk `/kandidat-menarik`, karena halaman itu masih placeholder
-dan belum punya data real. Formula, auth, persistence snapshot, dan batas module
-tetap mengikuti baseline.
+dan belum punya data real. UX-2F merapikan Company Cockpit agar user mendapat
+langkah lanjut setelah Ringkasan Riset tanpa masuk ke compare/scoring fake.
+Formula, auth, persistence snapshot, dan batas module tetap mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
 
@@ -201,6 +202,29 @@ tetap mengikuti baseline.
   NusaLens.
 - Hasil: `/kandidat-menarik` redirect ke `/temukan-saham` tanpa provider call
   dan tanpa menghapus route bernama `candidates`.
+
+## UX-2F: Langkah lanjut Company Cockpit
+
+- Status: selesai.
+- Hasil pengguna: setelah membuka satu perusahaan dan membaca Ringkasan Riset,
+  pengguna melihat aksi lanjutan yang jelas untuk memeriksa data real atau
+  kembali mencari pembanding.
+- Owner: Company, Research, MarketData dan frontend.
+- Prasyarat: UX-2A sampai UX-2E selesai; Ringkasan Riset dan section analitik
+  real sudah tersedia.
+- Perubahan: tambahkan panel langkah lanjut pada Company Cockpit dan action row
+  pada Ringkasan Riset. Aksi internal mengganti tab ke Profil, Harga, Keuangan,
+  atau Valuasi; aksi eksternal kembali ke Temukan Saham.
+- Endpoint/credit: tidak ada endpoint baru. Ringkasan tetap hanya fetch saat
+  tombol buka ditekan; Harga/Keuangan/Valuasi tetap lazy fetch saat section
+  dipilih.
+- Acceptance: pengguna tidak mentok setelah Ringkasan Riset, tidak ada promosi
+  compare fake, tidak ada auto-fetch baru, dan UI tetap accessible/mobile-safe.
+- Verifikasi: typecheck, ESLint scoped, build, diff check, serta browser smoke
+  bila tool tersedia.
+- Hasil: Company Cockpit menampilkan panel langkah berikutnya dan Ringkasan
+  Riset menampilkan action row setelah checks. Aksi menuju Profil, Harga,
+  Keuangan, Valuasi, dan Temukan Saham; compare fake tidak dipromosikan.
 
 ## Increment 4: Eksplorasi dengan tujuan riset
 

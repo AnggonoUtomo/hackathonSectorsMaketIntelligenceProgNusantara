@@ -93,6 +93,18 @@
 - [x] Jalankan test navigasi NusaLens dan diff check.
 - [x] Perbarui handoff setelah verifikasi.
 
+## UX-2F: Langkah lanjut Company Cockpit
+
+- [x] Scope ditetapkan: Company Cockpit saja, tanpa endpoint baru, tanpa scoring
+      final, dan tanpa promosi compare fake.
+- [x] Tambahkan panel langkah lanjut menuju Profil, Harga, Keuangan, Valuasi,
+      dan Temukan Saham.
+- [x] Tambahkan action row pada Ringkasan Riset agar user bisa lanjut setelah
+      membaca bukti.
+- [x] Pastikan Ringkasan Riset dan section analitik tetap lazy fetch.
+- [x] Jalankan typecheck, lint scoped, build dan diff check.
+- [x] Perbarui handoff setelah verifikasi.
+
 ## Increment 4: Eksplorasi
 
 - [ ] Tentukan kriteria tujuan riset dan cakupan urutan hasil.
@@ -250,5 +262,22 @@
 - Batas: `/bandingkan` masih route legacy yang memakai payload fake/placeholder.
   Itu sengaja tidak diubah pada UX-2E karena compare real membutuhkan desain data
   dan acceptance terpisah.
+
+## Hasil UX-2F
+
+- Perubahan: `CompanyAnalysis` menampilkan panel "Langkah berikutnya" di Company
+  Cockpit dengan aksi Profil, Harga, Keuangan, Valuasi, dan Cari pembanding.
+  `ResearchSummaryPanel` menerima action row yang sama setelah bagian "Yang masih
+  perlu diperiksa", sehingga user bisa lanjut setelah membaca bukti.
+- Perilaku data: tidak ada endpoint baru. Ringkasan Riset tetap idle sampai user
+  menekan tombol buka ringkasan. Harga/Keuangan/Valuasi tetap lazy fetch saat tab
+  dipilih. Aksi Cari pembanding kembali ke `/temukan-saham?keyword={symbol}`.
+- Batas: tombol compare real dan Nilai Prioritas Riset final belum ditampilkan
+  karena compare/scoring real belum siap. Ini menjaga UI dari promosi fitur fake.
+- Verifikasi otomatis: `npm run typecheck`, ESLint scoped
+  `resources/js/components/company-analysis.tsx resources/js/components/research-summary.tsx`,
+  `npm run build`, dan `git diff --check` lulus.
+- Browser smoke: belum dijalankan; Chrome DevTools MCP tidak tersedia pada turn
+  ini dan Playwright lokal tidak dipakai.
 
 Jangan menambah scope ke checklist tanpa instruksi user.

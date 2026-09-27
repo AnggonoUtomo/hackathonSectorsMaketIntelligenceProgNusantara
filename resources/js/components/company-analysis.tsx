@@ -7,7 +7,8 @@ import CompanyAnalysisChart, {
 } from '@/components/company-analysis-chart';
 import ResearchSummaryPanel from '@/components/research-summary';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Building2, ChartNoAxesCombined, FileSearch, RefreshCw, Scale, Table2 } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { ArrowRight, BarChart3, Building2, ChartNoAxesCombined, FileSearch, RefreshCw, Scale, Search, Table2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 type Section = 'prices' | 'financials' | 'valuation';
@@ -47,6 +48,7 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
     function selectTab(next: TabKey) {
         setTab(next);
     }
+    const nextStepActions = <CockpitNextActions symbol={symbol} current={tab} onSelect={selectTab} />;
 
     return (
         <section className="min-w-0">
@@ -100,9 +102,20 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                     </button>
                 ))}
             </div>
+            <section className="bg-muted/20 mb-6 rounded-lg border p-4" aria-label="Langkah riset berikutnya">
+                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
+                    <div className="min-w-0">
+                        <h2 className="text-sm font-semibold">Langkah berikutnya</h2>
+                        <p className="text-muted-foreground mt-1 text-xs leading-5">
+                            Periksa bukti utama, lalu lanjut ke data harga, keuangan, atau valuasi sebelum mencari pembanding.
+                        </p>
+                    </div>
+                    {nextStepActions}
+                </div>
+            </section>
             <div id="company-analysis-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} tabIndex={0} className="min-w-0 space-y-6">
                 <div hidden={tab !== 'research'}>
-                    <ResearchSummaryPanel symbol={symbol} active={tab === 'research'} />
+                    <ResearchSummaryPanel symbol={symbol} active={tab === 'research'} actions={nextStepActions} />
                 </div>
                 {tab === 'research' ? null : tab === 'overview' ? (
                     children
@@ -119,6 +132,40 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                 )}
             </div>
         </section>
+    );
+}
+
+function CockpitNextActions({ symbol, current, onSelect }: { symbol: string; current: TabKey; onSelect: (tab: TabKey) => void }) {
+    const actions = [
+        { key: 'overview', label: 'Profil', Icon: Building2 },
+        { key: 'prices', label: 'Harga', Icon: ChartNoAxesCombined },
+        { key: 'financials', label: 'Keuangan', Icon: BarChart3 },
+        { key: 'valuation', label: 'Valuasi', Icon: Scale },
+    ] as const;
+
+    return (
+        <div className="flex flex-wrap gap-2">
+            {actions.map(({ key, label, Icon }) => (
+                <Button
+                    key={key}
+                    type="button"
+                    variant={current === key ? 'secondary' : 'outline'}
+                    size="sm"
+                    aria-pressed={current === key}
+                    onClick={() => onSelect(key)}
+                >
+                    <Icon className="size-4" />
+                    {label}
+                </Button>
+            ))}
+            <Button asChild variant="ghost" size="sm">
+                <Link href={`/temukan-saham?keyword=${encodeURIComponent(symbol)}`}>
+                    <Search className="size-4" />
+                    Cari pembanding
+                    <ArrowRight className="size-4" />
+                </Link>
+            </Button>
+        </div>
     );
 }
 

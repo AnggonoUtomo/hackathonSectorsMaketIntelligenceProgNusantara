@@ -29,6 +29,9 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 - [Redesain riset terpandu](redesain-riset-terpandu/README.md): desain alur UX,
   autocomplete/profil real pada increment 1 dan grafik real pada increment 2;
   increment berikutnya perlu review bersama proposal Ruang Riset Berbukti.
+- [Compare Real Bertahap](compare-real-bertahap/README.md): proposal mengganti
+  `/bandingkan` dari matrix fake menjadi compare real hemat credit dengan
+  autocomplete, profil awal, dan section data on-demand.
 - [Fondasi akses dan ULID](fondasi-akses-ulid/README.md): ULID users fresh
   install, akses dashboard wajib verified, Redis, dan Mailpit lokal selesai
   untuk CLI/dev.

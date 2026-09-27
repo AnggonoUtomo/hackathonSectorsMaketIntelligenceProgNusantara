@@ -2,7 +2,7 @@
 
 use App\Modules\Company\Presentation\CompanyAnalyticsController;
 use App\Modules\Company\Presentation\CompanyProfileController;
-use App\Modules\Comparison\Application\FakeComparisonBuilder;
+use App\Modules\Comparison\Application\ComparisonSelectionBuilder;
 use App\Modules\Research\Presentation\ResearchSummaryController;
 use App\Modules\Screening\Presentation\CompanySearchController;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('nusalens/companies/{symbol}/research', ResearchSummaryController::class)
         ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:60,1')->name('nusalens.companies.research');
 
-    Route::get('bandingkan', function (Request $request, FakeComparisonBuilder $comparison) {
+    Route::get('bandingkan', function (Request $request, ComparisonSelectionBuilder $comparison) {
         $validated = $request->validate([
             'symbols' => ['nullable', 'string', 'max:64'],
         ]);
