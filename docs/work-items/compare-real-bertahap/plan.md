@@ -71,6 +71,10 @@ seluruh endpoint provider.
 - Slice 3A: harga memakai endpoint analitik existing
   `/nusalens/companies/{symbol}/analysis?section=prices` dari frontend setelah
   user klik. Section keuangan dan valuasi belum masuk slice ini.
+- Slice 3B: keuangan memakai endpoint analitik existing
+  `/nusalens/companies/{symbol}/analysis?section=financials` dari frontend
+  setelah user klik. Data empat kuartal ditampilkan sebagai grafik batang per
+  metrik dan tabel pembanding. Section valuasi belum masuk slice ini.
 
 ## Increment 4: Save snapshot manual
 

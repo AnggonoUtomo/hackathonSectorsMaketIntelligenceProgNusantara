@@ -120,6 +120,9 @@ berhasil tetap ditampilkan.
 - Recharts sudah dipakai di detail perusahaan dan boleh dipakai ulang.
 - Slice Increment 3A memakai endpoint analitik existing untuk harga agar tidak
   menambah contract backend baru sebelum pola UX on-demand terbukti nyaman.
+- Slice Increment 3B memakai endpoint analitik existing untuk keuangan empat
+  kuartal, tetap on-demand karena cold cache dapat memakan sampai 4 credit per
+  saham.
 
 ## Handoff
 
