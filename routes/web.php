@@ -64,7 +64,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('research');
 
     Route::get('kandidat-menarik', function () {
-        return Inertia::render('nusalens/placeholder', ['section' => 'candidates']);
+        return redirect()->route('discover');
     })->name('candidates');
 });
 

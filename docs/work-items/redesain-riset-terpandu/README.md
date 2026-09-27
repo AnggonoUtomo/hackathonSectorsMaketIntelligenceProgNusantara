@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai; UX-2D selesai.
+- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai; UX-2D selesai; UX-2E selesai.
 - Kelanjutan 2026-09-26 UX-2: setelah menu `/perusahaan` digabung ke
   `/temukan-saham`, user menyetujui rekomendasi untuk merapikan alur riset utama
   sebelum masuk scoring besar. Tahap ini fokus pada Company Cockpit di detail
@@ -62,6 +62,10 @@ UX-2D merapikan entry legacy `/jelaskan-nilai` tanpa symbol agar tidak membuka
 halaman pencarian kedua yang mirip `/temukan-saham`. Entry tanpa symbol diarahkan
 ke `/temukan-saham`, sementara `?symbol=` tetap mengarah ke detail perusahaan.
 
+UX-2E merapikan entry legacy `/kandidat-menarik` agar tidak membuka placeholder.
+Route lama tetap dipertahankan, tetapi diarahkan ke `/temukan-saham` sampai
+eksplorasi tujuan riset real tersedia.
+
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
 lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
@@ -120,6 +124,14 @@ Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 - [x] `/jelaskan-nilai?symbol=ADES` tetap redirect ke `/perusahaan/ADES` tanpa
       provider call.
 - [x] Validasi symbol invalid tetap mengembalikan error seperti sebelumnya.
+- [x] Tidak ada endpoint Sectors, provider call, atau route baru.
+- [x] Test navigasi NusaLens lulus.
+
+## Acceptance criteria UX-2E
+
+- [x] `/kandidat-menarik` redirect ke `/temukan-saham`.
+- [x] Route bernama `candidates` tetap ada untuk kompatibilitas deep link.
+- [x] Guest dan unverified user tetap mengikuti proteksi auth/verified.
 - [x] Tidak ada endpoint Sectors, provider call, atau route baru.
 - [x] Test navigasi NusaLens lulus.
 

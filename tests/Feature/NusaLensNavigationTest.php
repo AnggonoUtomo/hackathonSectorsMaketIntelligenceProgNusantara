@@ -49,7 +49,7 @@ class NusaLensNavigationTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        if (in_array($path, ['/perusahaan', '/jelaskan-nilai'], true)) {
+        if (in_array($path, ['/perusahaan', '/jelaskan-nilai', '/kandidat-menarik'], true)) {
             $this->get($path)->assertRedirect('/temukan-saham');
             Http::assertNothingSent();
 
@@ -254,5 +254,16 @@ class NusaLensNavigationTest extends TestCase
             ->get('/jelaskan-nilai?symbol=raw-expression')
             ->assertRedirect('/jelaskan-nilai')
             ->assertSessionHasErrors('symbol');
+    }
+
+    public function test_candidates_entry_redirects_to_discover_without_fake_facts_or_provider_calls(): void
+    {
+        $this->actingAs(User::factory()->create());
+
+        $this
+            ->get('/kandidat-menarik')
+            ->assertRedirect('/temukan-saham');
+        Http::assertNothingSent();
+        $this->assertSame('/kandidat-menarik', route('candidates', absolute: false));
     }
 }

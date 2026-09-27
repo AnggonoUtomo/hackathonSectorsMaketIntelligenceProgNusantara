@@ -83,6 +83,16 @@
 - [x] Jalankan test navigasi NusaLens dan diff check.
 - [x] Perbarui handoff setelah verifikasi.
 
+## UX-2E: Entry legacy kandidat tanpa placeholder
+
+- [x] Scope ditetapkan: route kandidat saja, tanpa endpoint/provider call baru.
+- [x] Reproduksi perilaku lama dengan test RED: `/kandidat-menarik` masih
+      merender placeholder.
+- [x] Redirect `/kandidat-menarik` ke `/temukan-saham`.
+- [x] Pertahankan proteksi auth/verified dan route name.
+- [x] Jalankan test navigasi NusaLens dan diff check.
+- [x] Perbarui handoff setelah verifikasi.
+
 ## Increment 4: Eksplorasi
 
 - [ ] Tentukan kriteria tujuan riset dan cakupan urutan hasil.
@@ -225,5 +235,20 @@
   lulus 35 test / 227 assertion.
 - Batas: halaman `resources/js/pages/nusalens/research-start.tsx` belum dihapus
   pada increment ini agar tidak mencampur redirect legacy dengan cleanup asset.
+
+## Hasil UX-2E
+
+- Perubahan: `/kandidat-menarik` sekarang redirect ke `/temukan-saham`, sehingga
+  pengguna tidak lagi melihat placeholder kandidat. Route bernama `candidates`
+  tetap tersedia untuk kompatibilitas deep link.
+- Regresi: guest tetap redirect login, unverified tetap redirect verifikasi,
+  dan route redirect tidak mengirim request provider.
+- Verifikasi: test RED sempat gagal dengan status 200 dari placeholder lama;
+  setelah implementasi, `php artisan test --compact --filter=test_candidates_entry_redirects_to_discover_without_fake_facts_or_provider_calls`
+  lulus 1 test / 4 assertion dan `php artisan test --compact --filter=NusaLensNavigationTest`
+  lulus 36 test / 233 assertion.
+- Batas: `/bandingkan` masih route legacy yang memakai payload fake/placeholder.
+  Itu sengaja tidak diubah pada UX-2E karena compare real membutuhkan desain data
+  dan acceptance terpisah.
 
 Jangan menambah scope ke checklist tanpa instruksi user.

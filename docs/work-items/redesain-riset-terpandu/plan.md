@@ -10,8 +10,10 @@ Setelah UX-2A di-commit, UX-2B dilanjutkan untuk memperjelas aksi riset pada
 `/temukan-saham`. Setelah UX-2B di-commit, UX-2C dilanjutkan untuk menyembunyikan
 entry utama yang masih fake/placeholder dari navigasi. Setelah UX-2C di-commit,
 UX-2D merapikan deep link `/jelaskan-nilai` tanpa symbol agar kembali ke
-`/temukan-saham` dan tidak menjadi halaman pencarian kedua. Formula, auth,
-persistence snapshot, dan batas module tetap mengikuti baseline.
+`/temukan-saham` dan tidak menjadi halaman pencarian kedua. UX-2E melanjutkan
+pola yang sama untuk `/kandidat-menarik`, karena halaman itu masih placeholder
+dan belum punya data real. Formula, auth, persistence snapshot, dan batas module
+tetap mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
 
@@ -182,6 +184,23 @@ persistence snapshot, dan batas module tetap mengikuti baseline.
 - Hasil: `/jelaskan-nilai` tanpa symbol redirect ke `/temukan-saham`, sementara
   symbol valid tetap redirect ke detail perusahaan dan invalid symbol tetap
   memakai validasi route sebelumnya.
+
+## UX-2E: Entry legacy kandidat tanpa placeholder
+
+- Status: selesai.
+- Hasil pengguna: deep link `/kandidat-menarik` membawa pengguna ke daftar saham
+  real yang dapat dicari, bukan ke placeholder kandidat yang belum berbasis data.
+- Owner: Screening route contract dan frontend navigation contract.
+- Prasyarat: UX-2C selesai dan route lama tetap dipertahankan.
+- Perubahan: redirect `/kandidat-menarik` ke route `discover`; tidak menghapus
+  route bernama `candidates`.
+- Endpoint/credit: tidak ada endpoint, adapter, atau provider call baru.
+- Acceptance: route redirect ke `/temukan-saham`, auth/verified tetap berlaku,
+  route name tetap ada, dan test navigasi lulus.
+- Verifikasi: RED/GREEN test feature untuk route candidates dan regresi route
+  NusaLens.
+- Hasil: `/kandidat-menarik` redirect ke `/temukan-saham` tanpa provider call
+  dan tanpa menghapus route bernama `candidates`.
 
 ## Increment 4: Eksplorasi dengan tujuan riset
 
