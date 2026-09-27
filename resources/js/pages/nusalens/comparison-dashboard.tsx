@@ -3,8 +3,23 @@ import CompanyLogo from '@/components/company-logo';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { CompanyIdentity } from '@/types/company-directory';
+import type { FormDataConvertible } from '@inertiajs/core';
 import { Link, router } from '@inertiajs/react';
-import { AlertTriangle, Building2, ChartNoAxesCombined, ExternalLink, GitCompare, Info, RefreshCw, RotateCcw, Search, Table2, X } from 'lucide-react';
+import {
+    AlertTriangle,
+    BookmarkPlus,
+    Building2,
+    ChartNoAxesCombined,
+    ExternalLink,
+    GitCompare,
+    Info,
+    RefreshCw,
+    RotateCcw,
+    Scale,
+    Search,
+    Table2,
+    X,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
@@ -94,6 +109,32 @@ type FinancialState = { status: 'idle' } | { status: 'loading' } | { status: 're
 
 type FinancialMetricKey = keyof Omit<FinancialRow, 'date'>;
 
+type ValuationRow = {
+    date: string;
+    pe: number | null;
+    pb: number | null;
+    ps: number | null;
+    pcf: number | null;
+    enterprise_to_ebitda: number | null;
+};
+
+type ValuationResult = {
+    symbol: string;
+    section: 'valuation';
+    rows: ValuationRow[];
+    fetchedAt: string;
+};
+
+type ValuationState = { status: 'idle' } | { status: 'loading' } | { status: 'ready'; data: ValuationResult } | { status: 'error'; message: string };
+
+type ValuationMetricKey = keyof Omit<ValuationRow, 'date'>;
+
+type SnapshotSections = {
+    prices?: Record<string, PriceResult>;
+    financials?: Record<string, FinancialResult>;
+    valuation?: Record<string, ValuationResult>;
+};
+
 const fallbackCompany = (symbol: string): CompanyIdentity => ({
     symbol,
     name: symbol,
@@ -142,9 +183,18 @@ const financialMetrics: Array<{ key: FinancialMetricKey; label: string }> = [
     { key: 'gross_loan', label: 'Kredit bruto' },
     { key: 'total_deposit', label: 'Simpanan nasabah' },
 ];
+const valuationMetrics: Array<{ key: ValuationMetricKey; label: string }> = [
+    { key: 'pe', label: 'P/E' },
+    { key: 'pb', label: 'P/B' },
+    { key: 'ps', label: 'P/S' },
+    { key: 'pcf', label: 'P/CF' },
+    { key: 'enterprise_to_ebitda', label: 'EV/EBITDA' },
+];
 
 export function ComparisonDashboard({ comparison }: Props) {
     const [query, setQuery] = useState('');
+    const [saving, setSaving] = useState(false);
+    const [snapshotSections, setSnapshotSections] = useState<SnapshotSections>({});
     const [selected, setSelected] = useState<CompanyIdentity[]>(() =>
         comparison.symbols.map((symbol) => comparison.companies.find((company) => company.symbol === symbol) ?? fallbackCompany(symbol)),
     );
@@ -201,6 +251,37 @@ export function ComparisonDashboard({ comparison }: Props) {
         if (keyword !== '') {
             router.get('/temukan-saham', { keyword }, { preserveScroll: true });
         }
+    }
+
+    function rememberSection(section: keyof SnapshotSections, symbol: string, data: PriceResult | FinancialResult | ValuationResult) {
+        setSnapshotSections((current) => ({
+            ...current,
+            [section]: {
+                ...(current[section] ?? {}),
+                [symbol]: data,
+            },
+        }));
+    }
+
+    function saveSnapshot() {
+        setSaving(true);
+        const payload = {
+            companies: comparison.companies,
+            sections: snapshotSections,
+        } as unknown as FormDataConvertible;
+
+        router.post(
+            '/bandingkan/snapshots',
+            {
+                title: `Perbandingan ${comparison.symbols.join(', ')}`,
+                symbols: comparison.symbols,
+                payload,
+            },
+            {
+                preserveScroll: true,
+                onFinish: () => setSaving(false),
+            },
+        );
     }
 
     return (
@@ -263,6 +344,9 @@ export function ComparisonDashboard({ comparison }: Props) {
                         <span>{comparison.meta.liveProvider ? 'Profil real/cache aktif' : 'Belum memuat provider'}</span>
                         <span>Cold cache profil: sampai {comparison.meta.estimatedCredits} credit.</span>
                         <span>Harga, keuangan, valuasi, dan skor tetap on-demand.</span>
+                        <Link className="text-foreground underline-offset-4 hover:underline" href="/bandingkan/snapshots">
+                            Snapshot tersimpan
+                        </Link>
                     </div>
                 </div>
 
@@ -297,6 +381,19 @@ export function ComparisonDashboard({ comparison }: Props) {
                                     </Button>
                                 </div>
                             ))}
+                        </div>
+
+                        <div className="flex flex-col gap-3 rounded-lg border p-4 md:flex-row md:items-center md:justify-between">
+                            <div>
+                                <h2 className="font-semibold">Simpan riset ini</h2>
+                                <p className="text-muted-foreground mt-1 text-sm">
+                                    Snapshot menyimpan profil dan section yang sudah dimuat. Menyimpan snapshot tidak melakukan refresh provider.
+                                </p>
+                            </div>
+                            <Button type="button" onClick={saveSnapshot} disabled={saving || comparison.symbols.length === 0}>
+                                <BookmarkPlus className="size-4" />
+                                {saving ? 'Menyimpan...' : 'Simpan Snapshot'}
+                            </Button>
                         </div>
 
                         <div className="grid gap-3 lg:grid-cols-3">
@@ -376,8 +473,18 @@ export function ComparisonDashboard({ comparison }: Props) {
                             </div>
                         </div>
 
-                        <ComparePricesPanel companies={comparison.companies.filter((company) => company.status === 'ready')} />
-                        <CompareFinancialsPanel companies={comparison.companies.filter((company) => company.status === 'ready')} />
+                        <ComparePricesPanel
+                            companies={comparison.companies.filter((company) => company.status === 'ready')}
+                            onReady={(symbol, data) => rememberSection('prices', symbol, data)}
+                        />
+                        <CompareFinancialsPanel
+                            companies={comparison.companies.filter((company) => company.status === 'ready')}
+                            onReady={(symbol, data) => rememberSection('financials', symbol, data)}
+                        />
+                        <CompareValuationPanel
+                            companies={comparison.companies.filter((company) => company.status === 'ready')}
+                            onReady={(symbol, data) => rememberSection('valuation', symbol, data)}
+                        />
                     </div>
                 )}
             </section>
@@ -385,7 +492,7 @@ export function ComparisonDashboard({ comparison }: Props) {
     );
 }
 
-function ComparePricesPanel({ companies }: { companies: ComparisonCompany[] }) {
+function ComparePricesPanel({ companies, onReady }: { companies: ComparisonCompany[]; onReady: (symbol: string, data: PriceResult) => void }) {
     const [states, setStates] = useState<Record<string, PriceState>>({});
     const [view, setView] = useState<'chart' | 'table'>('chart');
     const symbols = useMemo(() => companies.map((company) => company.symbol), [companies]);
@@ -422,6 +529,7 @@ function ComparePricesPanel({ companies }: { companies: ComparisonCompany[] }) {
                         throw new Error('Format harga belum dapat dibaca.');
                     }
 
+                    onReady(symbol, data);
                     setStates((current) => ({ ...current, [symbol]: { status: 'ready', data } }));
                 } catch (error) {
                     setStates((current) => ({
@@ -667,7 +775,13 @@ function ComparePriceTable({ symbols, rows }: { symbols: string[]; rows: Record<
     );
 }
 
-function CompareFinancialsPanel({ companies }: { companies: ComparisonCompany[] }) {
+function CompareFinancialsPanel({
+    companies,
+    onReady,
+}: {
+    companies: ComparisonCompany[];
+    onReady: (symbol: string, data: FinancialResult) => void;
+}) {
     const [states, setStates] = useState<Record<string, FinancialState>>({});
     const [view, setView] = useState<'chart' | 'table'>('chart');
     const [metric, setMetric] = useState<FinancialMetricKey>('revenue');
@@ -712,6 +826,7 @@ function CompareFinancialsPanel({ companies }: { companies: ComparisonCompany[] 
                         throw new Error('Format keuangan belum dapat dibaca.');
                     }
 
+                    onReady(symbol, data);
                     setStates((current) => ({ ...current, [symbol]: { status: 'ready', data } }));
                 } catch (error) {
                     setStates((current) => ({
@@ -977,4 +1092,308 @@ function formatQuarter(date: string) {
     }
 
     return `Q${Math.ceil(Number(date.slice(5, 7)) / 3)} ${date.slice(0, 4)}`;
+}
+
+function CompareValuationPanel({ companies, onReady }: { companies: ComparisonCompany[]; onReady: (symbol: string, data: ValuationResult) => void }) {
+    const [states, setStates] = useState<Record<string, ValuationState>>({});
+    const [view, setView] = useState<'chart' | 'table'>('chart');
+    const [metric, setMetric] = useState<ValuationMetricKey>('pe');
+    const symbols = useMemo(() => companies.map((company) => company.symbol), [companies]);
+    const loaded = symbols.filter((symbol) => states[symbol]?.status === 'ready');
+    const loading = symbols.some((symbol) => states[symbol]?.status === 'loading');
+    const estimatedCredits = symbols.filter((symbol) => states[symbol]?.status !== 'ready').length;
+    const chartRows = buildValuationRows(symbols, states, metric);
+    const availableMetrics = useMemo(() => valuationMetrics.filter((item) => hasValuationMetric(states, item.key)), [states]);
+
+    useEffect(() => {
+        setStates((current) => Object.fromEntries(symbols.map((symbol) => [symbol, current[symbol] ?? { status: 'idle' }])));
+    }, [symbols]);
+
+    useEffect(() => {
+        if (availableMetrics.length > 0 && !availableMetrics.some((item) => item.key === metric)) {
+            setMetric(availableMetrics[0].key);
+        }
+    }, [availableMetrics, metric]);
+
+    async function loadValuation() {
+        const nextSymbols = symbols.filter((symbol) => states[symbol]?.status !== 'ready');
+
+        setStates((current) => ({
+            ...current,
+            ...Object.fromEntries(nextSymbols.map((symbol) => [symbol, { status: 'loading' as const }])),
+        }));
+
+        await Promise.all(
+            nextSymbols.map(async (symbol) => {
+                try {
+                    const response = await fetch(`/nusalens/companies/${encodeURIComponent(symbol)}/analysis?section=valuation`, {
+                        headers: { Accept: 'application/json' },
+                    });
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message ?? 'Valuasi belum dapat dimuat.');
+                    }
+
+                    if (data.symbol !== symbol || data.section !== 'valuation' || !Array.isArray(data.rows)) {
+                        throw new Error('Format valuasi belum dapat dibaca.');
+                    }
+
+                    onReady(symbol, data);
+                    setStates((current) => ({ ...current, [symbol]: { status: 'ready', data } }));
+                } catch (error) {
+                    setStates((current) => ({
+                        ...current,
+                        [symbol]: {
+                            status: 'error',
+                            message:
+                                error instanceof TypeError
+                                    ? 'Koneksi terputus. Silakan coba lagi.'
+                                    : error instanceof Error
+                                      ? error.message
+                                      : 'Valuasi belum dapat dimuat.',
+                        },
+                    }));
+                }
+            }),
+        );
+    }
+
+    if (companies.length === 0) {
+        return null;
+    }
+
+    return (
+        <section className="rounded-lg border">
+            <div className="flex flex-col gap-3 border-b p-4 xl:flex-row xl:items-start xl:justify-between">
+                <div>
+                    <div className="flex items-center gap-2">
+                        <Scale className="size-5 text-amber-700" />
+                        <h2 className="font-semibold">Valuasi on-demand</h2>
+                    </div>
+                    <p className="text-muted-foreground mt-1 text-sm leading-6">
+                        Muat rasio valuasi historis hanya saat diperlukan. Cold cache sampai {estimatedCredits} credit untuk saham yang belum dimuat.
+                    </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {loaded.length > 0 ? (
+                        <>
+                            <select
+                                aria-label="Metrik valuasi"
+                                value={metric}
+                                onChange={(event) => setMetric(event.target.value as ValuationMetricKey)}
+                                className="bg-background max-w-full rounded-md border px-3 py-2 text-sm"
+                            >
+                                {(availableMetrics.length > 0 ? availableMetrics : valuationMetrics).map((item) => (
+                                    <option key={item.key} value={item.key}>
+                                        {item.label}
+                                    </option>
+                                ))}
+                            </select>
+                            <div role="group" aria-label="Tampilan valuasi" className="flex gap-1">
+                                {(
+                                    [
+                                        { key: 'chart', label: 'Grafik', Icon: ChartNoAxesCombined },
+                                        { key: 'table', label: 'Tabel', Icon: Table2 },
+                                    ] as const
+                                ).map(({ key, label, Icon }) => (
+                                    <Button
+                                        key={key}
+                                        size="icon"
+                                        variant={view === key ? 'secondary' : 'ghost'}
+                                        title={label}
+                                        aria-label={label}
+                                        aria-pressed={view === key}
+                                        onClick={() => setView(key)}
+                                    >
+                                        <Icon className="size-4" />
+                                    </Button>
+                                ))}
+                            </div>
+                        </>
+                    ) : null}
+                    <Button
+                        type="button"
+                        variant={loaded.length > 0 ? 'outline' : 'default'}
+                        onClick={loadValuation}
+                        disabled={loading || estimatedCredits === 0}
+                    >
+                        <RefreshCw className={`size-4 ${loading ? 'animate-spin' : ''}`} />
+                        {loaded.length > 0 ? 'Muat ulang error' : 'Muat valuasi'}
+                    </Button>
+                </div>
+            </div>
+
+            <div className="space-y-4 p-4">
+                <div className="flex flex-wrap gap-2">
+                    {symbols.map((symbol, index) => {
+                        const state = states[symbol] ?? { status: 'idle' };
+
+                        return (
+                            <Badge
+                                key={symbol}
+                                variant={state.status === 'error' ? 'destructive' : state.status === 'ready' ? 'secondary' : 'outline'}
+                            >
+                                <span
+                                    className="mr-1 inline-block size-2 rounded-full"
+                                    style={{ backgroundColor: priceColors[index % priceColors.length] }}
+                                />
+                                {symbol}:{' '}
+                                {state.status === 'idle'
+                                    ? 'belum dimuat'
+                                    : state.status === 'loading'
+                                      ? 'memuat'
+                                      : state.status === 'ready'
+                                        ? 'siap'
+                                        : 'error'}
+                            </Badge>
+                        );
+                    })}
+                </div>
+
+                {symbols.some((symbol) => states[symbol]?.status === 'error') ? (
+                    <div className="grid gap-2 md:grid-cols-3">
+                        {symbols
+                            .filter((symbol) => states[symbol]?.status === 'error')
+                            .map((symbol) => (
+                                <div key={symbol} role="alert" className="border-destructive/30 bg-destructive/5 rounded-md border p-3 text-sm">
+                                    <p className="font-medium">{symbol}</p>
+                                    <p className="text-muted-foreground mt-1">{states[symbol].status === 'error' ? states[symbol].message : ''}</p>
+                                </div>
+                            ))}
+                    </div>
+                ) : null}
+
+                {loaded.length === 0 ? (
+                    <div role="status" className="rounded-lg border border-dashed p-8 text-center">
+                        <Scale className="text-muted-foreground mx-auto mb-3 size-8" />
+                        <p className="font-medium">Valuasi belum dimuat</p>
+                        <p className="text-muted-foreground mx-auto mt-2 max-w-xl text-sm">
+                            Klik Muat valuasi untuk mengambil rasio historis real/cache. Rasio rendah tidak otomatis berarti murah dan perlu
+                            dibandingkan dengan sektor serta kondisi laba.
+                        </p>
+                    </div>
+                ) : view === 'table' ? (
+                    <CompareValuationTable symbols={symbols} states={states} metric={metric} />
+                ) : chartRows.length === 0 ? (
+                    <p role="status" className="text-muted-foreground py-12 text-center text-sm">
+                        Metrik ini belum tersedia pada saham yang dimuat.
+                    </p>
+                ) : (
+                    <div className="h-80 w-full min-w-0">
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                            <LineChart data={chartRows} margin={{ top: 16, right: 12, bottom: 12, left: 0 }} accessibilityLayer>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+                                <XAxis dataKey="date" minTickGap={28} tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
+                                <YAxis
+                                    width={72}
+                                    tickFormatter={(value) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 }).format(value)}
+                                    tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }}
+                                />
+                                <Tooltip
+                                    formatter={(value, name) => [`${formatNumber(typeof value === 'number' ? value : null)}x`, name]}
+                                    contentStyle={{
+                                        background: 'var(--background)',
+                                        color: 'var(--foreground)',
+                                        borderColor: 'var(--border)',
+                                        borderRadius: 6,
+                                    }}
+                                />
+                                <Legend wrapperStyle={{ fontSize: 12, paddingTop: 12 }} />
+                                {symbols.map((symbol, index) => (
+                                    <Line
+                                        key={symbol}
+                                        dataKey={symbol}
+                                        name={symbol}
+                                        stroke={priceColors[index % priceColors.length]}
+                                        strokeWidth={2}
+                                        dot
+                                        activeDot={{ r: 5 }}
+                                        connectNulls={false}
+                                        isAnimationActive={false}
+                                    />
+                                ))}
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
+                )}
+
+                {loaded.length > 0 ? (
+                    <p className="text-muted-foreground border-t pt-3 text-xs leading-6">
+                        Sectors Financial API. Rasio valuasi ditampilkan dalam kali (x). P/E, P/B, P/S, P/CF dan EV/EBITDA perlu dibaca bersama
+                        kualitas laba, sektor, dan periode data.
+                    </p>
+                ) : null}
+            </div>
+        </section>
+    );
+}
+
+function hasValuationMetric(states: Record<string, ValuationState>, metric: ValuationMetricKey) {
+    return Object.values(states).some((state) => state.status === 'ready' && state.data.rows.some((row) => typeof row[metric] === 'number'));
+}
+
+function buildValuationRows(symbols: string[], states: Record<string, ValuationState>, metric: ValuationMetricKey) {
+    const rows = new Map<string, Record<string, string | number | null>>();
+
+    for (const symbol of symbols) {
+        const state = states[symbol];
+        if (state?.status !== 'ready') {
+            continue;
+        }
+
+        for (const row of state.data.rows) {
+            const current = rows.get(row.date) ?? { date: row.date };
+            current[symbol] = row[metric];
+            rows.set(row.date, current);
+        }
+    }
+
+    return Array.from(rows.values()).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+}
+
+function CompareValuationTable({
+    symbols,
+    states,
+    metric,
+}: {
+    symbols: string[];
+    states: Record<string, ValuationState>;
+    metric: ValuationMetricKey;
+}) {
+    const rows = buildValuationRows(symbols, states, metric);
+
+    return (
+        <div className="max-h-96 overflow-auto rounded-md border">
+            <table className="w-full min-w-[640px] text-sm">
+                <caption className="text-muted-foreground p-3 text-left text-xs">Rasio valuasi historis dalam kali (x)</caption>
+                <thead className="bg-muted sticky top-0 text-xs uppercase">
+                    <tr>
+                        <th scope="col" className="p-3 text-left">
+                            Tahun
+                        </th>
+                        {symbols.map((symbol) => (
+                            <th scope="col" key={symbol} className="p-3 text-right">
+                                {symbol}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {[...rows].reverse().map((row) => (
+                        <tr key={String(row.date)} className="hover:bg-muted/50 border-t">
+                            <th scope="row" className="p-3 text-left font-normal whitespace-nowrap">
+                                {row.date}
+                            </th>
+                            {symbols.map((symbol) => (
+                                <td key={symbol} className="p-3 text-right whitespace-nowrap tabular-nums">
+                                    {typeof row[symbol] === 'number' ? `${formatNumber(row[symbol])}x` : 'Belum tersedia'}
+                                </td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }

@@ -44,16 +44,18 @@
 - [x] Slice 3A: render Recharts harga dan tabel alternatif.
 - [x] Slice 3B: tambah kontrol "Muat keuangan" on-demand dengan estimasi credit.
 - [x] Slice 3B: render Recharts keuangan dan tabel alternatif.
-- [ ] Tulis test section harga, keuangan, valuasi dengan fake HTTP.
-- [ ] Tambah kontrol "Muat data" section valuasi dengan estimasi credit.
-- [ ] Verifikasi null, angka nol valid, error quota, dan stale cache.
+- [x] Slice 3C: tambah kontrol "Muat valuasi" on-demand dengan estimasi credit.
+- [x] Slice 3C: render Recharts valuasi dan tabel alternatif.
+- [x] Tulis test section harga, keuangan, valuasi dengan fake HTTP.
+- [x] Verifikasi null, angka nol valid, error quota, dan stale cache.
 
 ## Increment 4: Snapshot manual
 
-- [ ] Rancang schema snapshot privat dan versioning.
-- [ ] Tulis migration dan feature test ownership.
-- [ ] Simpan snapshot tanpa refresh provider otomatis.
-- [ ] Tampilkan daftar snapshot milik user bila scope disetujui.
+- [x] Rancang schema snapshot privat dan versioning.
+- [x] Dokumentasikan gate approval sebelum migration.
+- [x] Tulis migration dan feature test ownership.
+- [x] Simpan snapshot tanpa refresh provider otomatis.
+- [x] Tampilkan daftar snapshot milik user bila scope disetujui.
 
 ## Increment 5: Score comparison
 
@@ -66,17 +68,27 @@
 - [x] Proposal dokumentasi selesai.
 - [x] Increment 1 selesai.
 - [x] Increment 2 selesai.
+- [x] Increment 3 selesai.
+- [x] Increment 4 proposal selesai.
+- [x] Increment 4 selesai.
 - Perubahan: work item compare real bertahap dibuat; `/bandingkan` tidak lagi
   memakai default fake atau matrix skor contoh. Builder baru bernama
   `ComparisonSelectionBuilder`; UI memakai autocomplete real dan chip pilihan.
   Increment 2 menambahkan profil ringkas real/cache, freshness, estimasi cold
-  credit profil, dan error per saham.
+  credit profil, dan error per saham. Increment 3 menambahkan section harga,
+  keuangan, dan valuasi on-demand. Increment 4 menambahkan snapshot manual
+  privat, daftar snapshot, detail read-only, dan versioning.
 - Verifikasi: source compare fake, frontend compare, test compare, route, dan
   dokumen keputusan/data/scoring sudah dibaca. RED test gagal pada builder lama,
   lalu `php artisan test --compact tests\Unit\Comparison\ComparisonSelectionBuilderTest.php`,
   `php artisan test --compact --filter='compare_page'`, typecheck, lint scoped,
   build dan `git diff --check` lulus pada increment 1. Increment 2 menambahkan
   test `tests\Feature\Comparison\CompareProfileTest.php` untuk success/cache/partial.
-- Risiko: matrix harga, keuangan, valuasi, dan scoring real belum masuk increment 2. Browser QA belum dijalankan bila tool browser tidak tersedia.
+  Increment 3 diverifikasi dengan `tests\Feature\MarketData\CompanyAnalyticsTest.php`
+  dan focused compare route test. Increment 4 diverifikasi dengan
+  `tests\Feature\Comparison\ComparisonSnapshotTest.php`, focused compare/profile
+  analytics tests, typecheck, lint scoped, dan build.
+- Risiko: scoring real belum masuk. Browser QA belum dijalankan bila tool browser
+  tidak tersedia.
 
 Jangan menambah scope baru ke checklist tanpa instruksi user.

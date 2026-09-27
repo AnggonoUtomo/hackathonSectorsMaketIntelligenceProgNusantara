@@ -54,6 +54,7 @@ seluruh endpoint provider.
 
 ## Increment 3: Section harga/keuangan/valuasi on-demand
 
+- Status: selesai.
 - Perubahan: tambah endpoint internal compare section atau reuse endpoint analitik
   yang ada untuk memuat prices, financials, dan valuation per saham terpilih.
   UI menampilkan estimasi credit sebelum memuat section.
@@ -75,17 +76,42 @@ seluruh endpoint provider.
   `/nusalens/companies/{symbol}/analysis?section=financials` dari frontend
   setelah user klik. Data empat kuartal ditampilkan sebagai grafik batang per
   metrik dan tabel pembanding. Section valuasi belum masuk slice ini.
+- Slice 3C: valuasi memakai endpoint analitik existing
+  `/nusalens/companies/{symbol}/analysis?section=valuation` dari frontend
+  setelah user klik. Rasio historis ditampilkan sebagai grafik garis per metrik
+  dan tabel pembanding.
+- Hasil: harga, keuangan, dan valuasi sudah tersedia sebagai section on-demand
+  pada halaman compare. Masing-masing section menampilkan estimasi credit,
+  loading/error per saham, Recharts, tabel alternatif, dan tidak diambil saat
+  halaman pertama dibuka.
 
 ## Increment 4: Save snapshot manual
 
-- Perubahan: simpan perbandingan privat manual sebagai snapshot immutable dan
-  update sebagai versi baru.
+- Status: selesai.
+- Perubahan: simpan perbandingan privat manual sebagai snapshot immutable,
+  tampilkan daftar/detail read-only, dan update sebagai versi baru.
 - Prasyarat: increment 2-3 stabil; schema persistence disetujui.
 - Endpoint/credit: simpan snapshot membaca data yang sudah tersedia; tidak
   otomatis refresh provider.
 - Acceptance: ownership per user, snapshot privat, versi baru saat update,
   fetched_at dan periode sumber tersimpan.
-- Verifikasi: feature test auth/ownership/versioning dan migration test.
+- Verifikasi: feature test auth/ownership/versioning, typecheck, lint, build,
+  dan regression compare.
+- Schema:
+    - `comparison_snapshots.id` ULID.
+    - `comparison_snapshots.user_id` owner.
+    - `comparison_snapshots.title` judul snapshot.
+    - `comparison_snapshots.symbols` JSON list maksimal tiga.
+    - `comparison_snapshots.payload` JSON berisi profil dan section yang sudah
+      dimuat.
+    - `comparison_snapshots.version` integer.
+    - `comparison_snapshots.created_from_snapshot_id` nullable untuk versioning.
+    - timestamp Laravel standar.
+- UI: tombol Simpan Snapshot pada `/bandingkan`, daftar snapshot privat di
+  `/bandingkan/snapshots`, dan detail snapshot read-only di
+  `/bandingkan/snapshots/{snapshot}`.
+- Hasil: snapshot menyimpan profil compare dan section on-demand yang sudah
+  berhasil dimuat di browser. Simpan snapshot tidak memanggil provider.
 
 ## Increment 5: Score comparison setelah gate peer/scoring
 

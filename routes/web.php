@@ -3,6 +3,7 @@
 use App\Modules\Company\Presentation\CompanyAnalyticsController;
 use App\Modules\Company\Presentation\CompanyProfileController;
 use App\Modules\Comparison\Application\ComparisonSelectionBuilder;
+use App\Modules\Comparison\Presentation\ComparisonSnapshotController;
 use App\Modules\Research\Presentation\ResearchSummaryController;
 use App\Modules\Screening\Presentation\CompanySearchController;
 use Illuminate\Http\Request;
@@ -48,6 +49,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'comparison' => $payload,
         ]);
     })->name('compare');
+    Route::get('bandingkan/snapshots', [ComparisonSnapshotController::class, 'index'])->name('compare.snapshots.index');
+    Route::post('bandingkan/snapshots', [ComparisonSnapshotController::class, 'store'])->name('compare.snapshots.store');
+    Route::get('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'show'])->name('compare.snapshots.show');
 
     Route::get('jelaskan-nilai', function (Request $request) {
         $validated = $request->validate([
