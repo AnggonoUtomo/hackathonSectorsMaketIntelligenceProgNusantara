@@ -7,8 +7,9 @@ User menyetujui increment 2 setelah commit increment 1 (`0914215`).
 Increment 3-5 tidak otomatis dikerjakan. Pada 2026-09-26 user menyetujui UX-2A:
 rapikan detail perusahaan menjadi Company Cockpit sebelum scoring/wizard penuh.
 Setelah UX-2A di-commit, UX-2B dilanjutkan untuk memperjelas aksi riset pada
-`/temukan-saham`. Formula, auth, persistence snapshot, dan batas module tetap
-mengikuti baseline.
+`/temukan-saham`. Setelah UX-2B di-commit, UX-2C dilanjutkan untuk menyembunyikan
+entry utama yang masih fake/placeholder dari navigasi. Formula, auth, persistence
+snapshot, dan batas module tetap mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
 
@@ -138,6 +139,27 @@ mengikuti baseline.
 - Hasil: kolom kanan berubah menjadi aksi `Riset` menuju Company Cockpit,
   tooltip dan `aria-label` menjelaskan tujuan aksi, serta query `from` tidak
   mengirim `keyword` kosong.
+
+## UX-2C: Navigasi utama tanpa placeholder
+
+- Status: selesai setelah UX-2B di-commit.
+- Hasil pengguna: menu utama tidak mengajak pengguna membuka compare, kandidat,
+  atau jelaskan nilai yang belum menjadi alur real penuh.
+- Owner: frontend, Screening, Comparison dan Research sebagai route yang tetap
+  dipertahankan.
+- Prasyarat: UX-1 sampai UX-2B selesai.
+- Perubahan: sidebar menampilkan Dashboard dan Temukan Saham sebagai alur utama
+  yang siap diuji; dashboard shortcut mengikuti alur real yang sama. Route lama
+  tetap ada untuk deep link dan pekerjaan lanjutan.
+- Endpoint/credit: tidak ada endpoint atau provider call baru.
+- Acceptance: menu utama tidak mengarah ke fake/placeholder, dashboard tidak
+  mempromosikan compare/kandidat, route lama tidak rusak, dan menu aktif tetap
+  benar pada detail perusahaan.
+- Verifikasi: typecheck, ESLint scoped, build, route lama, dan browser smoke
+  dashboard/sidebar bila tool browser tersedia.
+- Hasil: sidebar utama hanya menampilkan Dashboard dan Temukan Saham; dashboard
+  hanya mempromosikan alur Temukan Saham yang real. Route compare/research/
+  kandidat tetap tersedia untuk deep link dan pekerjaan lanjutan.
 
 ## Increment 4: Eksplorasi dengan tujuan riset
 

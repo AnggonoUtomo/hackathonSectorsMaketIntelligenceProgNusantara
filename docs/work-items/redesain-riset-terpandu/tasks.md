@@ -64,6 +64,16 @@
 - [x] Jalankan typecheck, lint scoped, build dan browser QA desktop/mobile.
 - [x] Perbarui handoff setelah verifikasi.
 
+## UX-2C: Navigasi utama tanpa placeholder
+
+- [x] Scope ditetapkan: sidebar dan shortcut dashboard saja; route lama tidak
+      dihapus.
+- [x] Sembunyikan menu utama yang masih fake/placeholder.
+- [x] Sesuaikan shortcut dashboard agar hanya mempromosikan alur real.
+- [x] Verifikasi route lama tetap ada.
+- [x] Jalankan typecheck, lint scoped dan build.
+- [x] Perbarui handoff setelah verifikasi.
+
 ## Increment 4: Eksplorasi
 
 - [ ] Tentukan kriteria tujuan riset dan cakupan urutan hasil.
@@ -175,5 +185,22 @@
 - Cleanup: server QA dihentikan dan router sementara `storage/framework/testing/ux2b-router.php`
   dihapus. Tidak ada endpoint baru, provider call baru, commit, atau push
   otomatis untuk UX-2B.
+
+## Hasil UX-2C
+
+- Perubahan: sidebar utama hanya menampilkan Dashboard dan Temukan Saham. Menu
+  Bandingkan, Jelaskan Nilai dan Kandidat Menarik tidak dihapus routenya, tetapi
+  tidak lagi dipromosikan sebagai menu utama sampai alurnya real. Dashboard hanya
+  menampilkan shortcut Temukan Saham.
+- Verifikasi otomatis: `npm run typecheck`, ESLint scoped
+  `resources/js/components/app-sidebar.tsx resources/js/pages/dashboard.tsx`,
+  `npm run build`, `php artisan route:list | Select-String -Pattern
+'bandingkan|jelaskan-nilai|kandidat-menarik'`, dan `git diff --check` lulus.
+- Browser smoke: tertunda. Chrome DevTools MCP tidak tersedia setelah interup
+  lanjutan dan Playwright tidak terpasang lokal, sehingga tidak ada klaim browser
+  PASS untuk UX-2C pada handoff ini.
+- Cleanup: server QA sementara dihentikan dan router `storage/framework/testing/ux2c-router.php`
+  dihapus. Tidak ada endpoint/provider call baru, tidak ada route lama yang
+  dihapus, dan UX-2C belum commit/push.
 
 Jangan menambah scope ke checklist tanpa instruksi user.

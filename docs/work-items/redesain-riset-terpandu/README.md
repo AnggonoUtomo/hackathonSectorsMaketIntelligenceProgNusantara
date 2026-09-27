@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai.
+- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai.
 - Kelanjutan 2026-09-26 UX-2: setelah menu `/perusahaan` digabung ke
   `/temukan-saham`, user menyetujui rekomendasi untuk merapikan alur riset utama
   sebelum masuk scoring besar. Tahap ini fokus pada Company Cockpit di detail
@@ -54,6 +54,10 @@ memperjelas aksi dari hasil pencarian ke Company Cockpit dan menjaga konteks
 query balik. Tidak menambah filter, sort, endpoint Sectors, compare real, atau
 enrichment per baris.
 
+UX-2C merapikan navigasi utama agar tidak mempromosikan modul yang masih fake
+atau placeholder. Route lama tetap dipertahankan untuk kompatibilitas, tetapi
+sidebar dan shortcut dashboard hanya menampilkan alur real yang siap diuji.
+
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
 lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
@@ -93,6 +97,18 @@ Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 - [x] Pola tabel tetap sesuai aturan ContohUI: padat, mudah dipindai, aksi kanan
       berbasis ikon atau ikon+teks yang jelas.
 - [x] Typecheck, build/lint scoped, dan browser desktop/mobile lulus.
+
+## Acceptance criteria UX-2C
+
+- [ ] Sidebar utama hanya menampilkan alur yang real dan siap diuji.
+- [ ] Dashboard tidak mempromosikan compare/kandidat yang masih fake atau
+      placeholder.
+- [ ] Route `/bandingkan`, `/jelaskan-nilai`, dan `/kandidat-menarik` tidak
+      dihapus atau diubah kontraknya pada tahap ini.
+- [ ] Tidak ada endpoint atau provider call baru.
+- [x] Typecheck dan build/lint scoped lulus; browser smoke tertunda karena
+      Chrome DevTools MCP tidak tersedia setelah interup dan Playwright tidak
+      terpasang lokal.
 
 ## Dependency dan keputusan
 

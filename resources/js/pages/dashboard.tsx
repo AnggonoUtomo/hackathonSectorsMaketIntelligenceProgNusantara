@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Database, GitCompare, Search, ShieldCheck, WalletCards } from 'lucide-react';
+import { ArrowRight, Database, Search, ShieldCheck, WalletCards } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,10 +20,7 @@ const metrics = [
     { label: 'Compare MVP', value: '3', note: 'Maksimum saham' },
 ];
 
-const flows = [
-    { title: 'Temukan Saham', href: '/temukan-saham', icon: Search, text: 'Perusahaan tercatat di Bursa Efek Indonesia.' },
-    { title: 'Bandingkan', href: '/bandingkan', icon: GitCompare, text: 'Bandingkan maksimal 3 saham dengan snapshot privat.' },
-];
+const flows = [{ title: 'Temukan Saham', href: '/temukan-saham', icon: Search, text: 'Cari perusahaan dan buka cockpit riset berbasis data real.' }];
 
 export default function Dashboard() {
     return (
@@ -60,7 +57,7 @@ export default function Dashboard() {
                     <Card>
                         <CardHeader>
                             <CardTitle className="text-base">Status Fondasi</CardTitle>
-                            <CardDescription>Placeholder ini belum melakukan live call Sectors.</CardDescription>
+                            <CardDescription>Alur real dibuka bertahap agar tidak mencampur data uji dan data produksi.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-3 text-sm">
                             <div className="flex items-start gap-3">
@@ -69,11 +66,11 @@ export default function Dashboard() {
                             </div>
                             <div className="flex items-start gap-3">
                                 <Database className="mt-0.5 size-4 text-sky-600" />
-                                <span>Ledger credit disimpan di MySQL; Redis hanya cache.</span>
+                                <span>Pencarian, profil, grafik, valuasi dan ringkasan riset memakai adapter data internal.</span>
                             </div>
                             <div className="flex items-start gap-3">
                                 <WalletCards className="mt-0.5 size-4 text-amber-600" />
-                                <span>Structured screener memakai estimasi 1 credit saat cache miss.</span>
+                                <span>Compare dan kandidat menarik menunggu data real sebelum masuk menu utama.</span>
                             </div>
                         </CardContent>
                     </Card>
