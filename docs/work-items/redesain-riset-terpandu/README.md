@@ -2,7 +2,7 @@
 
 ## Status dan owner
 
-- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai.
+- Status: increment 0-2 selesai; UX-1 selesai; UX-2A selesai; UX-2B selesai; UX-2C selesai; UX-2D selesai.
 - Kelanjutan 2026-09-26 UX-2: setelah menu `/perusahaan` digabung ke
   `/temukan-saham`, user menyetujui rekomendasi untuk merapikan alur riset utama
   sebelum masuk scoring besar. Tahap ini fokus pada Company Cockpit di detail
@@ -58,6 +58,10 @@ UX-2C merapikan navigasi utama agar tidak mempromosikan modul yang masih fake
 atau placeholder. Route lama tetap dipertahankan untuk kompatibilitas, tetapi
 sidebar dan shortcut dashboard hanya menampilkan alur real yang siap diuji.
 
+UX-2D merapikan entry legacy `/jelaskan-nilai` tanpa symbol agar tidak membuka
+halaman pencarian kedua yang mirip `/temukan-saham`. Entry tanpa symbol diarahkan
+ke `/temukan-saham`, sementara `?symbol=` tetap mengarah ke detail perusahaan.
+
 Arsitektur module, formula v1, auth, dan database tidak diubah. Berita,
 kepemilikan, foreign flow, dan volume spike dari referensi adalah peluang
 lanjutan, bukan otomatis scope MVP. Recharts dipasang sesuai persetujuan.
@@ -100,15 +104,24 @@ Smoke API berbayar dijalankan pada implementasi melalui adapter/ledger internal.
 
 ## Acceptance criteria UX-2C
 
-- [ ] Sidebar utama hanya menampilkan alur yang real dan siap diuji.
-- [ ] Dashboard tidak mempromosikan compare/kandidat yang masih fake atau
+- [x] Sidebar utama hanya menampilkan alur yang real dan siap diuji.
+- [x] Dashboard tidak mempromosikan compare/kandidat yang masih fake atau
       placeholder.
-- [ ] Route `/bandingkan`, `/jelaskan-nilai`, dan `/kandidat-menarik` tidak
+- [x] Route `/bandingkan`, `/jelaskan-nilai`, dan `/kandidat-menarik` tidak
       dihapus atau diubah kontraknya pada tahap ini.
-- [ ] Tidak ada endpoint atau provider call baru.
+- [x] Tidak ada endpoint atau provider call baru.
 - [x] Typecheck dan build/lint scoped lulus; browser smoke tertunda karena
       Chrome DevTools MCP tidak tersedia setelah interup dan Playwright tidak
       terpasang lokal.
+
+## Acceptance criteria UX-2D
+
+- [x] `/jelaskan-nilai` tanpa symbol redirect ke `/temukan-saham`.
+- [x] `/jelaskan-nilai?symbol=ADES` tetap redirect ke `/perusahaan/ADES` tanpa
+      provider call.
+- [x] Validasi symbol invalid tetap mengembalikan error seperti sebelumnya.
+- [x] Tidak ada endpoint Sectors, provider call, atau route baru.
+- [x] Test navigasi NusaLens lulus.
 
 ## Dependency dan keputusan
 

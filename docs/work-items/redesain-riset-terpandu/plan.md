@@ -8,8 +8,10 @@ Increment 3-5 tidak otomatis dikerjakan. Pada 2026-09-26 user menyetujui UX-2A:
 rapikan detail perusahaan menjadi Company Cockpit sebelum scoring/wizard penuh.
 Setelah UX-2A di-commit, UX-2B dilanjutkan untuk memperjelas aksi riset pada
 `/temukan-saham`. Setelah UX-2B di-commit, UX-2C dilanjutkan untuk menyembunyikan
-entry utama yang masih fake/placeholder dari navigasi. Formula, auth, persistence
-snapshot, dan batas module tetap mengikuti baseline.
+entry utama yang masih fake/placeholder dari navigasi. Setelah UX-2C di-commit,
+UX-2D merapikan deep link `/jelaskan-nilai` tanpa symbol agar kembali ke
+`/temukan-saham` dan tidak menjadi halaman pencarian kedua. Formula, auth,
+persistence snapshot, dan batas module tetap mengikuti baseline.
 
 ## Increment 0: Rancangan pengalaman
 
@@ -160,6 +162,26 @@ snapshot, dan batas module tetap mengikuti baseline.
 - Hasil: sidebar utama hanya menampilkan Dashboard dan Temukan Saham; dashboard
   hanya mempromosikan alur Temukan Saham yang real. Route compare/research/
   kandidat tetap tersedia untuk deep link dan pekerjaan lanjutan.
+
+## UX-2D: Entry legacy riset tanpa duplikasi pencarian
+
+- Status: selesai.
+- Hasil pengguna: deep link `/jelaskan-nilai` tanpa emiten membawa pengguna ke
+  pintu masuk riset yang sama, yaitu `/temukan-saham`, bukan ke layar pencarian
+  lain yang membuat alur terasa dobel.
+- Owner: Research route dan frontend navigation contract.
+- Prasyarat: UX-2C selesai dan route lama tetap dipertahankan.
+- Perubahan: redirect `/jelaskan-nilai` tanpa `symbol` ke route `discover`;
+  pertahankan redirect symbol valid ke detail perusahaan dan validasi symbol
+  invalid yang sudah ada.
+- Endpoint/credit: tidak ada endpoint, adapter, atau provider call baru.
+- Acceptance: no-symbol redirect ke `/temukan-saham`, symbol valid redirect ke
+  `/perusahaan/{symbol}`, invalid symbol tetap error, dan test navigasi lulus.
+- Verifikasi: RED/GREEN test feature untuk route research dan regresi route
+  NusaLens.
+- Hasil: `/jelaskan-nilai` tanpa symbol redirect ke `/temukan-saham`, sementara
+  symbol valid tetap redirect ke detail perusahaan dan invalid symbol tetap
+  memakai validasi route sebelumnya.
 
 ## Increment 4: Eksplorasi dengan tujuan riset
 

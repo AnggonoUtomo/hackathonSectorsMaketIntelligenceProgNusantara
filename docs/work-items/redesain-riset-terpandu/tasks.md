@@ -74,6 +74,15 @@
 - [x] Jalankan typecheck, lint scoped dan build.
 - [x] Perbarui handoff setelah verifikasi.
 
+## UX-2D: Entry legacy riset tanpa duplikasi pencarian
+
+- [x] Reproduksi perilaku lama dengan test RED: `/jelaskan-nilai` masih
+      merender halaman pencarian kedua.
+- [x] Redirect `/jelaskan-nilai` tanpa symbol ke `/temukan-saham`.
+- [x] Pertahankan redirect `?symbol=` dan validasi invalid symbol.
+- [x] Jalankan test navigasi NusaLens dan diff check.
+- [x] Perbarui handoff setelah verifikasi.
+
 ## Increment 4: Eksplorasi
 
 - [ ] Tentukan kriteria tujuan riset dan cakupan urutan hasil.
@@ -201,6 +210,20 @@
   PASS untuk UX-2C pada handoff ini.
 - Cleanup: server QA sementara dihentikan dan router `storage/framework/testing/ux2c-router.php`
   dihapus. Tidak ada endpoint/provider call baru, tidak ada route lama yang
-  dihapus, dan UX-2C belum commit/push.
+  dihapus. UX-2C di-commit sebagai `a9c98ba`.
+
+## Hasil UX-2D
+
+- Perubahan: `/jelaskan-nilai` tanpa `symbol` sekarang redirect ke
+  `/temukan-saham` sehingga tidak ada layar pencarian riset kedua. Route bernama
+  `research` tetap ada untuk kompatibilitas.
+- Regresi: `/jelaskan-nilai?symbol=ADES` tetap redirect ke `/perusahaan/ADES`
+  tanpa provider call, dan `symbol` invalid tetap menghasilkan validation error.
+- Verifikasi: test RED sempat gagal dengan status 200 dari route lama; setelah
+  implementasi, `php artisan test --compact --filter=test_research_entry_redirects_to_discover_without_fake_facts_or_provider_calls`
+  lulus 1 test / 3 assertion dan `php artisan test --compact --filter=NusaLensNavigationTest`
+  lulus 35 test / 227 assertion.
+- Batas: halaman `resources/js/pages/nusalens/research-start.tsx` belum dihapus
+  pada increment ini agar tidak mencampur redirect legacy dengan cleanup asset.
 
 Jangan menambah scope ke checklist tanpa instruksi user.

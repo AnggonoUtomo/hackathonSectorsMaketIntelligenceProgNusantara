@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return redirect()->route('companies.show', ['symbol' => $symbol]);
         }
 
-        return Inertia::render('nusalens/research-start');
+        return redirect()->route('discover');
     })->name('research');
 
     Route::get('kandidat-menarik', function () {
