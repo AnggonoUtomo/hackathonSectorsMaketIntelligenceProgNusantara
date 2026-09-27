@@ -2,7 +2,8 @@
 
 ## Status
 
-Draft untuk selection-first comparison flow.
+Aktif untuk compare real bertahap sampai snapshot manual. Score comparison masih
+proposal dan menunggu gate peer/scoring.
 
 ## Tujuan, scope, dan non-scope
 
@@ -16,31 +17,38 @@ Scope implementasi saat ini:
 - autocomplete perusahaan untuk membantu user awam memilih saham;
 - profil ringkas real/cache untuk setiap symbol terpilih;
 - error provider ditampilkan per saham, bukan menghapus semua pilihan;
-- payload tetap tanpa matriks fake agar tidak mencampur contoh dengan data real;
-- link dari detail perusahaan menuju Bandingkan dengan symbol terpilih.
+- section harga, keuangan, dan valuasi dimuat on-demand setelah user meminta;
+- Recharts dan tabel alternatif tersedia untuk section yang sudah dimuat;
+- snapshot manual privat menyimpan profil dan section yang sudah tersedia di
+  halaman;
+- link dari detail perusahaan menuju Bandingkan dengan symbol terpilih;
+- payload tetap tanpa skor fake agar tidak mencampur contoh dengan data real.
 
 Non-scope implementasi awal:
 
-- live Sectors call atau konsumsi credit real;
-- matriks side-by-side berbasis profil/harga/keuangan/valuasi real;
-- persistence perbandingan privat;
-- versioning snapshot tersimpan;
 - formula Intelligence final;
+- scoring comparison sebelum gate peer/scoring;
+- menghitung percentile atau peer di module Comparison;
 - sharing publik, watchlist, billing, BYOK, dan AI.
 
 ## Arsitektur
 
 - Module: `app/Modules/Comparison/`.
-- Inbound adapter: route Inertia saat ini di `routes/web.php`; controller
-  Presentation dapat diekstrak saat behavior bertambah.
+- Inbound adapter: route Inertia compare di `routes/web.php`; snapshot manual
+  memakai `ComparisonSnapshotController` di Presentation.
 - Use case: `ComparisonSelectionBuilder` di Application untuk normalisasi dan
   validasi pilihan saham serta memuat profil ringkas lewat contract
   `CompanyDirectory`.
+- Snapshot use cases: `SaveComparisonSnapshot`, `ListComparisonSnapshots`, dan
+  `GetComparisonSnapshot`.
 - Aturan Domain: maksimal 3 saham pada MVP; tidak ada rekomendasi beli/jual.
-- Outbound port: memakai contract `CompanyDirectory` dari MarketData sebagai
-  boundary data provider internal.
+- Outbound/read port: memakai contract `CompanyDirectory` dari MarketData sebagai
+  boundary profil internal dan endpoint analytics Company/MarketData untuk
+  section on-demand.
+- Persistence port: `ComparisonSnapshotStore`.
 - Outbound adapter: adapter Sectors/cache/ledger milik MarketData.
-- Composition root: Laravel container auto-resolve class sederhana.
+- Persistence adapter: `EloquentComparisonSnapshotStore`.
+- Composition root: binding `ComparisonSnapshotStore` di `AppServiceProvider`.
 
 ## Contract dan data
 
@@ -55,13 +63,31 @@ Output Inertia awal:
 - `comparison.symbols`: symbol yang diminta setelah normalisasi;
 - `comparison.companies`: kartu profil ringkas per saham dengan `status`
   `ready|error`;
-- `comparison.metrics`: kosong sampai section harga/keuangan/valuasi real dibuat;
+- `comparison.metrics`: kosong sampai hasil Intelligence real tersedia;
 - `comparison.meta`: source `profile`, limit `3`, state `ready|partial|empty`,
   `liveProvider`, dan `estimatedCredits`.
 
 Unknown symbol tidak disamarkan sebagai data kosong global. Untuk increment
 awal, unknown symbol ditolak sebagai validation/session error agar input buruk
 jelas terlihat.
+
+Section on-demand:
+
+- `GET /nusalens/companies/{symbol}/analysis?section=prices|financials|valuation`
+  memuat section per saham saat user meminta.
+- Harga dan valuasi cold cache sampai 1 credit per saham; keuangan empat kuartal
+  sampai 4 credit per saham.
+- Data section sukses diingat di state browser agar ikut tersimpan bila user
+  menekan Simpan Snapshot.
+
+Snapshot manual:
+
+- `GET /bandingkan/snapshots` menampilkan daftar snapshot milik user.
+- `POST /bandingkan/snapshots` menyimpan snapshot tanpa refresh provider.
+- `GET /bandingkan/snapshots/{snapshot}` menampilkan detail read-only bila owner
+  cocok; user lain mendapat 404.
+- Update versi lama membuat row baru dengan `created_from_snapshot_id`, bukan
+  menimpa payload lama.
 
 ## Authorization, audit, dan UI
 
@@ -72,17 +98,20 @@ Route Bandingkan wajib `auth` dan `verified`. UI menampilkan:
 - chip saham terpilih dengan logo bila tersedia;
 - kartu profil berisi logo, nama, sektor/subsektor, harga terakhir, freshness,
   dan link ke Company Cockpit;
+- kontrol section harga, keuangan, valuasi dengan estimasi credit;
+- tombol Simpan Snapshot serta link daftar snapshot;
+- daftar snapshot privat dan detail read-only;
 - empty state saat belum memilih saham;
-- placeholder eksplisit bahwa harga historis, keuangan, valuasi, dan scoring
-  belum dimuat pada increment ini;
+- placeholder eksplisit bahwa scoring belum tersedia sampai Intelligence siap;
 - disclaimer bahwa hasil bukan rekomendasi investasi.
 
 ## Dependency
 
 Selection flow memakai pencarian perusahaan internal yang sudah tersedia. Profil
 ringkas memakai `CompanyDirectory::profile()` sehingga cache dan ledger tetap
-ditangani MarketData. Integrasi matriks nyata nanti harus menggunakan data
-Company/Intelligence internal, bukan JSON vendor langsung.
+ditangani MarketData. Section harga/keuangan/valuasi memakai endpoint analytics
+internal existing. Integrasi scoring nanti harus menggunakan hasil Intelligence,
+bukan JSON vendor langsung dan bukan kalkulator di Comparison.
 
 ## Acceptance dan verifikasi
 
@@ -94,9 +123,14 @@ Company/Intelligence internal, bukan JSON vendor langsung.
 - [x] Format symbol buruk ditolak secara eksplisit.
 - [x] UI dari detail perusahaan dapat menuju Bandingkan dengan symbol terkait.
 - [x] Automated test tidak melakukan live Sectors call.
+- [x] Harga, keuangan, dan valuasi dimuat on-demand dengan grafik/tabel.
+- [x] Snapshot manual privat dapat disimpan, dibuka, dan dibuat versi baru.
+- [x] User tidak dapat membuka snapshot milik user lain.
 
 ## Risiko dan keputusan terbuka
 
-- Desain persistence perbandingan manual privat belum dikerjakan.
-- Format snapshot/versioning final menunggu model Company dan Intelligence.
-- Matriks real harga/keuangan/valuasi belum dikerjakan.
+- Scoring comparison belum dikerjakan.
+- Contract publik Intelligence, persistence bukti skor, dan estimasi credit peer
+  lengkap belum disetujui.
+- Snapshot score nanti harus menyimpan hasil/referensi skor yang sudah dimuat,
+  bukan menghitung ulang saat detail snapshot dibuka.

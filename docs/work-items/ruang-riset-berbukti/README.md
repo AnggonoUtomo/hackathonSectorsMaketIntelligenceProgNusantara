@@ -36,13 +36,13 @@ Observasi melalui browser pada halaman publik/guest. Screener diperiksa pada
 fitur penuh akun berbayar. Klaim pembeda di bawah adalah hipotesis produk,
 bukan bukti bahwa Sectors tidak memiliki kemampuan tersebut.
 
-| Sumber | Yang terlihat atau dicoba | Batas verifikasi |
-| --- | --- | --- |
-| [Screener](https://sectors.app/screener) | Template gaya investasi, grup AND/OR, pembanding field/perhitungan, sort, limit, dan pilihan 218 variabel. Memilih Undervalued Banks mengubah form bank, P/E, dan dividend yield. | Tidak menekan Run Screener atau menjalankan save/export/workflow. |
-| [Peers](https://sectors.app/peers) | Preview tiga bank, label maksimal lima perusahaan dan lima metrik, grafik antarperiode, kontrol Annual/Quarterly. Tab Net Income berhasil mengganti panel. | Batas adalah label preview, bukan jaminan semua paket. Data Quarterly dan ekspor belum diverifikasi. |
+| Sumber                                                               | Yang terlihat atau dicoba                                                                                                                                                                                                                               | Batas verifikasi                                                                                              |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [Screener](https://sectors.app/screener)                             | Template gaya investasi, grup AND/OR, pembanding field/perhitungan, sort, limit, dan pilihan 218 variabel. Memilih Undervalued Banks mengubah form bank, P/E, dan dividend yield.                                                                       | Tidak menekan Run Screener atau menjalankan save/export/workflow.                                             |
+| [Peers](https://sectors.app/peers)                                   | Preview tiga bank, label maksimal lima perusahaan dan lima metrik, grafik antarperiode, kontrol Annual/Quarterly. Tab Net Income berhasil mengganti panel.                                                                                              | Batas adalah label preview, bukan jaminan semua paket. Data Quarterly dan ekspor belum diverifikasi.          |
 | [Company Ownership](https://sectors.app/indonesia/company-ownership) | Pencarian perusahaan/investor, komposisi kepemilikan, periode, tab Government Ownership dan Monthly Movement. Membuka Monthly Movement mengganti panel dan query URL; tersedia pembanding bulan, tampilan Company/Investor, dan filter jenis perubahan. | Limited Preview; sorting/filter penuh memerlukan akun. Tidak memvalidasi kelengkapan data atau semua kontrol. |
-| [Chat](https://sectors.app/chat) | Contoh pertanyaan kesehatan perusahaan, perbandingan sektor, dan pasar. Modal About Data Visualization menjelaskan grafik otomatis dari hasil analisis. | Input guest nonaktif; tidak menguji jawaban, akurasi, sumber, atau grafik yang benar-benar dihasilkan. |
-| [Analytics](https://sectors.app/indonesia/analytics) | Katalog heatmap/performa sektor, indeks, ranking perusahaan, kalender, saham paling aktif, dan pencarian. | Katalog dan preview terlihat; perhitungan masing-masing tool tidak diuji. |
+| [Chat](https://sectors.app/chat)                                     | Contoh pertanyaan kesehatan perusahaan, perbandingan sektor, dan pasar. Modal About Data Visualization menjelaskan grafik otomatis dari hasil analisis.                                                                                                 | Input guest nonaktif; tidak menguji jawaban, akurasi, sumber, atau grafik yang benar-benar dihasilkan.        |
+| [Analytics](https://sectors.app/indonesia/analytics)                 | Katalog heatmap/performa sektor, indeks, ranking perusahaan, kalender, saham paling aktif, dan pencarian.                                                                                                                                               | Katalog dan preview terlihat; perhitungan masing-masing tool tidak diuji.                                     |
 
 Kesimpulan: filter, grafik, compare, kepemilikan, dan AI chat saja bukan pembeda.
 Jangan menyebut Sectors hanya penyedia data: produk tersebut sudah menawarkan
@@ -62,11 +62,14 @@ Pemeriksaan source pada 2026-09-25, bukan status historis blueprint:
   bukti tersedianya P/E TTM dan P/B MRQ yang dipersyaratkan scoring v1.
 - `app/Modules/Intelligence/` belum ada. Mesin nilai dan peer bukan sekadar
   fitur yang tinggal dihubungkan ke UI.
-- `Comparison/Application/FakeComparisonBuilder.php` dan
-  `Research/Application/RuleBasedResearchExplainer.php` masih memakai alur fake.
-  Alur research legacy juga bergantung pada snapshot fake konkret Company.
-- Migration penyimpanan perbandingan/versi belum tersedia. Persistence itu
-  masih pekerjaan implementasi, bukan fitur siap pakai.
+- `Comparison/Application/FakeComparisonBuilder.php` sudah tidak ada. Comparison
+  aktif memakai `ComparisonSelectionBuilder`, section on-demand, dan snapshot
+  manual privat. Scoring compare tetap belum tersedia sampai hasil Intelligence
+  real siap.
+- `Research/Application/RuleBasedResearchExplainer.php` masih memakai alur
+  penjelasan aturan; alur research legacy perlu dipisahkan dari scoring final.
+- Migration snapshot compare manual sudah tersedia pada module Comparison.
+  Persistence bukti Intelligence/scoring masih pekerjaan implementasi terpisah.
 
 ## Scope dan non-scope tahap implementasi
 
@@ -106,8 +109,9 @@ ini; 3B-5 tetap membutuhkan review gate masing-masing sebelum coding.
   `/jelaskan-nilai` atau `/perusahaan/{symbol}`, lalu Buka ringkasan riset.
 - Verifikasi: 138 test / 598 assertion lulus, typecheck, lint file terkait,
   Pint, build, dan pemeriksaan diff. Bukti browser dicatat pada [tasks](tasks.md).
-- Risiko: YoY, hubungan laba-kas, scoring/peer, compare real, dan persistence
-  belum termasuk hasil tahap ini. Manfaat UX perlu dicoba user.
+- Risiko: YoY, hubungan laba-kas, scoring/peer, dan persistence bukti
+  Intelligence belum termasuk hasil tahap ini. Compare real dan snapshot manual
+  sudah ditangani pada work item Comparison. Manfaat UX perlu dicoba user.
 - Warning sidebar mobile existing: DialogContent belum memiliki description;
   tidak diubah karena di luar scope. Tidak ada perubahan database user.
 - File user `Hackaton/` dan file LSP tidak diubah.

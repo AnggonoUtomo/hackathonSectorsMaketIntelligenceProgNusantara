@@ -115,14 +115,49 @@ seluruh endpoint provider.
 
 ## Increment 5: Score comparison setelah gate peer/scoring
 
-- Perubahan: tampilkan Nilai Prioritas Riset dan komponen scoring bila
-  Intelligence real sudah tersedia.
-- Prasyarat: work item peer/scoring disetujui dan kalkulator real siap.
-- Endpoint/credit: mengikuti kebutuhan peer valid semua metrik, bukan hanya tiga
-  saham yang dibandingkan.
-- Acceptance: tidak ada skor bila kelengkapan <70%; peer dan periode dapat
-  ditelusuri; tidak ada label BUY/HOLD/SELL.
-- Verifikasi: unit kalkulator, peer fallback, partial data, dan snapshot bukti.
+- Status: proposal; belum coding.
+- Perubahan: compare menjadi consumer hasil Intelligence real untuk menampilkan
+  Nilai Prioritas Riset, komponen, kelengkapan, dan bukti.
+- Prasyarat: work item peer/scoring minimal menyelesaikan audit 3B.0 atau user
+  menyetujui satu slice komponen yang datanya sudah terbukti layak.
+- Endpoint/credit: mengikuti kebutuhan seluruh peer valid per metrik, bukan hanya
+  tiga saham yang dibandingkan. Estimasi credit harus dihitung sebelum tombol
+  memuat skor aktif.
+- Acceptance: tidak ada skor total bila kelengkapan <70%; peer/periode/bobot
+  dapat ditelusuri; tidak ada label BUY/HOLD/SELL; Comparison tidak menghitung
+  percentile sendiri.
+- Verifikasi: unit kalkulator Intelligence, feature contract compare, partial
+  data/unavailable, snapshot bukti, typecheck, lint, build, dan browser UX.
+
+### Increment 5A: Contract dan UX score preview
+
+- Tujuan: mendefinisikan payload score yang dibutuhkan compare tanpa mengambil
+  data provider baru.
+- Files likely touched: dokumen compare, contract Intelligence, test payload
+  consumer, dan UI placeholder score unavailable bila contract belum punya data.
+- Acceptance: halaman compare bisa menampilkan status "Nilai belum tersedia"
+  beserta alasan/gate, tanpa angka fake.
+- Gate: lanjut coding hanya setelah contract hasil Intelligence disetujui.
+
+### Increment 5B: Consume hasil Intelligence tersimpan
+
+- Tujuan: compare membaca hasil skor yang sudah dihitung dan masih fresh, bukan
+  melakukan fan-out provider sendiri.
+- Files likely touched: use case Comparison, contract Intelligence, route/props,
+  dan UI section Nilai Riset.
+- Acceptance: cache/reuse score tidak menambah credit; hasil expired atau input
+  berubah tampil perlu refresh; bukti bisa dibuka per komponen.
+- Gate: perlu persistence bukti Intelligence siap.
+
+### Increment 5C: Trigger hitung score on-demand
+
+- Tujuan: tombol on-demand meminta Intelligence menghitung skor setelah estimasi
+  credit dan populasi peer valid diketahui.
+- Files likely touched: action/controller baru, use case Intelligence, ledger
+  MarketData, UI loading/error, dan tests.
+- Acceptance: quota/budget tidak cukup menghasilkan unavailable jelas; tidak ada
+  subset peer diam-diam; snapshot compare menyimpan hasil yang sudah dimuat.
+- Gate: perlu audit endpoint/credit peer selesai dan disetujui.
 
 ## Batas berhenti dan pemulihan
 

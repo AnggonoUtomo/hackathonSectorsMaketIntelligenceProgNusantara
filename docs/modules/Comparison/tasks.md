@@ -1,48 +1,82 @@
-# Tasks: Comparison Flow
+# Tasks: Comparison
 
-## Sebelum mulai
+## Baseline dan dokumentasi
 
-- [x] Scope dan non-scope jelas.
-- [x] Dependency/keputusan terbuka diketahui.
-- [x] Acceptance dan cara verifikasi ditetapkan.
+- [x] Scope dan non-scope module Comparison dicatat.
+- [x] Dependency dengan Company, MarketData, dan Intelligence dicatat.
+- [x] Work item historis fake flow dipertahankan sebagai arsip, bukan baseline
+      aktif.
+- [x] Work item compare real bertahap menjadi acuan aktif `/bandingkan`.
 
-## Dokumentasi
+## Increment 0: Fake flow historis
 
-- [x] Buat README module Comparison.
-- [x] Buat specification module Comparison untuk flow awal.
-- [x] Buat plan increment.
-- [x] Buat work item `fake-comparison-flow`.
+- [x] Backend fake comparison payload pernah dibuat.
+- [x] Validasi `symbols` maksimal 3 pernah dibuat.
+- [x] Matrix fake dan link detail ke Bandingkan pernah dibuat.
+- [x] Flow ini digantikan oleh selection-first compare.
 
-## Increment 2: Backend fake comparison payload
-
-- [x] Buat `FakeComparisonBuilder` atau nama setara di module Comparison.
-- [x] Validasi `symbols`: opsional, alfanumerik, maksimal 3, unknown ditolak.
-- [x] Route `/bandingkan` mengirim props `comparison`.
-- [x] Unit dan feature test backend fake comparison.
-
-## Increment 3: UI matrix dan link detail
-
-- [x] Halaman Bandingkan menampilkan empty state saat belum ada symbol.
-- [x] Halaman Bandingkan menampilkan matrix side-by-side dari backend props.
-- [x] Detail perusahaan memiliki link ke `/bandingkan?symbols={symbol}`.
-- [x] Typecheck, lint, build, full test, whitespace, dan sensitive-data scan lulus.
-
-## Increment 4: Selection-first cleanup
+## Increment 1: Selection-first compare
 
 - [x] Ganti fake comparison payload menjadi `ComparisonSelectionBuilder`.
-- [x] Halaman Bandingkan mulai kosong tanpa default `BBCA, TLKM, ICBP`.
+- [x] `/bandingkan` tanpa query menampilkan empty state, bukan default saham.
 - [x] Gunakan autocomplete perusahaan dan chip pilihan maksimal 3 saham.
 - [x] Hapus matrix/metrik fake dari payload compare.
-- [x] Unit dan feature test mengunci state `empty|selected`.
+- [x] Unit dan feature test mengunci state `empty|ready|partial`.
 
-## Hasil
+## Increment 2: Profil ringkas real/cache
 
-- [x] Scope awal selesai dan dokumentasi diperbarui.
-- Perubahan awal: backend fake comparison, validasi query, UI matrix, dan link
-  dari Detail Perusahaan ke Bandingkan selesai.
-- Perubahan terbaru: compare dibersihkan menjadi selection-first tanpa data fake,
-  dengan autocomplete dan payload kosong untuk increment real berikutnya.
-- Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
-  whitespace, dan sensitive-data scan lulus.
-- Risiko: matriks real, persistence perbandingan privat, dan versioning snapshot
-  belum masuk flow ini.
+- [x] Load profil ringkas lewat contract internal `CompanyDirectory`.
+- [x] Tampilkan logo, nama, sektor/subsektor, harga terakhir, dan freshness.
+- [x] Tampilkan error provider per saham tanpa menghapus saham lain.
+- [x] Pastikan cold initial tiga saham maksimal 3 credit.
+- [x] Verifikasi cache hit tidak menambah ledger credit.
+
+## Increment 3: Section data on-demand
+
+- [x] Tambah section harga on-demand dengan Recharts dan tabel.
+- [x] Tambah section keuangan on-demand dengan Recharts dan tabel.
+- [x] Tambah section valuasi on-demand dengan Recharts dan tabel.
+- [x] Tampilkan estimasi credit dan status per section/per saham.
+- [x] Verifikasi null, angka nol valid, error quota, dan stale cache.
+
+## Increment 4: Snapshot manual
+
+- [x] Buat migration `comparison_snapshots`.
+- [x] Buat contract `ComparisonSnapshotStore` dan adapter Eloquent.
+- [x] Buat use case save/list/get snapshot.
+- [x] Buat route/controller daftar, simpan, dan detail snapshot.
+- [x] Tambah tombol Simpan Snapshot pada `/bandingkan`.
+- [x] Tambah halaman daftar snapshot privat dan detail read-only.
+- [x] Verifikasi ownership privat, versioning, validasi maksimal 3 saham, dan
+      simpan tanpa refresh provider.
+
+## Increment 5: Score comparison
+
+- [x] Dokumentasikan proposal dan gate sebelum coding.
+- [ ] Selesaikan atau setujui gate peer/scoring 3B.0.
+- [ ] Definisikan contract/payload hasil Intelligence untuk compare.
+- [ ] Tampilkan state "Nilai belum tersedia" tanpa angka fake.
+- [ ] Baca hasil Intelligence tersimpan yang masih fresh.
+- [ ] Tampilkan bukti peer, kelengkapan, periode, bobot, dan formula version.
+- [ ] Trigger hitung score on-demand hanya setelah estimasi credit dan populasi
+      peer valid disetujui.
+- [ ] Simpan score yang sudah dimuat ke snapshot compare tanpa menghitung ulang
+      saat detail snapshot dibuka.
+
+## Verifikasi terakhir yang relevan
+
+- [x] `php artisan test --compact tests\Feature\Comparison\ComparisonSnapshotTest.php`
+- [x] `php artisan test --compact tests\Feature\Comparison\CompareProfileTest.php tests\Feature\MarketData\CompanyAnalyticsTest.php`
+- [x] `php artisan test --compact --filter='compare_page'`
+- [x] `npm run typecheck`
+- [x] ESLint scoped file compare/snapshot
+- [x] `npm run build`
+- [x] `vendor\bin\pint --dirty`
+- [x] `git diff --check`
+
+## Risiko terbuka
+
+- Scoring real belum masuk dan masih tergantung gate peer/scoring, contract
+  Intelligence, persistence bukti, serta estimasi credit peer lengkap.
+- Browser QA manual belum dicatat untuk snapshot/compare terbaru bila tool
+  browser tidak tersedia.

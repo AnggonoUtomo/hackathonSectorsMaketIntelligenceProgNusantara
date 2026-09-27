@@ -3,7 +3,7 @@
 ## Status dan owner
 
 - Status: increment 0 selesai; increment 1 selesai; increment 2 selesai;
-  increment 3 selesai; increment 4 selesai.
+  increment 3 selesai; increment 4 selesai; increment 5 proposal.
 - Owner: lintas module Comparison, Company, MarketData, Intelligence, dan frontend.
 - Target: route `/bandingkan`, kontrak payload compare, dan UI compare real.
 
@@ -24,7 +24,7 @@ kuota harian akun 20 credit.
 
 ## Scope dan non-scope
 
-Scope proposal ini adalah mengganti compare fake menjadi compare real bertahap:
+Scope pekerjaan ini adalah mengganti compare fake menjadi compare real bertahap:
 
 - `/bandingkan` tanpa query menampilkan state kosong dan pemilihan saham, bukan
   default fake.
@@ -62,7 +62,7 @@ Non-scope tahap awal:
 - [x] Automated test memakai fake HTTP; smoke real hanya setelah estimasi credit
       dan instruksi eksekusi disetujui.
 
-## Kontrak UI yang diusulkan
+## Kontrak UI aktif
 
 Halaman compare memiliki empat area utama:
 
@@ -135,6 +135,9 @@ baru dari provider; data yang belum dimuat tetap tidak muncul dalam snapshot.
   saham.
 - Slice Increment 3C memakai endpoint analitik existing untuk valuasi historis,
   tetap on-demand dengan estimasi cold cache sampai 1 credit per saham.
+- Increment 5 tidak boleh membuat scoring sendiri di Comparison. Nilai berasal
+  dari module Intelligence dan harus mengikuti gate
+  [Kesiapan Peer dan Scoring](../kesiapan-peer-scoring/README.md).
 
 ## Increment 4: Snapshot manual
 
@@ -156,13 +159,52 @@ Implementasi:
   privat di `/bandingkan/snapshots`, dan detail read-only di
   `/bandingkan/snapshots/{snapshot}`.
 
+## Proposal Increment 5: Score comparison
+
+Tujuan increment 5 adalah menampilkan hasil Intelligence pada halaman compare
+tanpa membuat rumus baru di module Comparison. Compare hanya menjadi consumer
+hasil scoring, bukti, kelengkapan, periode, dan versi formula.
+
+Gate sebelum coding:
+
+- Audit peer/scoring minimal 3B.0 selesai atau user menyetujui slice komponen
+  yang datanya paling siap.
+- Contract publik Intelligence disetujui: input symbol, hasil komponen, alasan
+  unavailable, bukti peer, kelengkapan, dan versi formula.
+- Estimasi credit untuk seluruh peer valid diketahui. Jika melebihi quota
+  harian 20 credit per akun, scoring tampil sebagai unavailable/needs data,
+  bukan mengambil subset peer.
+- UI compare tetap tidak menampilkan rekomendasi BUY/HOLD/SELL, kategori skor,
+  atau klaim investasi.
+
+Rancangan UX:
+
+- Tambah section "Nilai Riset" on-demand setelah profil/harga/keuangan/valuasi.
+- Button memuat skor untuk saham yang dipilih, dengan estimasi credit dan pesan
+  bahwa peer di luar tiga saham compare mungkin dibutuhkan.
+- Tampilkan total hanya bila kelengkapan >=70%. Jika tidak, tampilkan komponen
+  tersedia dan alasan "Data belum cukup".
+- Setiap angka memiliki tombol bukti: input mentah, periode, peer valid,
+  unavailable reason, percentile, bobot, dan formula version.
+- Snapshot compare menyimpan referensi/hasil skor yang sudah dimuat, bukan
+  menghitung ulang saat snapshot dibuka.
+
+Non-scope increment 5 proposal:
+
+- Mengubah formula `SCORING.md`.
+- Mengambil seluruh IDX secara sweep.
+- AI explainer.
+- Ranking kandidat global.
+- Paid plan, BYOK, atau pengubahan quota.
+
 ## Handoff
 
-- Perubahan: proposal compare real bertahap ditulis; increment 1 menghilangkan
+- Perubahan: rencana compare real bertahap ditulis; increment 1 menghilangkan
   default/matrix fake; increment 2 memuat profil ringkas real/cache untuk saham
   terpilih dan menampilkan error per saham; increment 3 menambahkan harga,
   keuangan, dan valuasi on-demand dengan Recharts dan tabel alternatif; increment
-  4 menambahkan snapshot manual privat berversi.
+  4 menambahkan snapshot manual privat berversi; increment 5 mulai disiapkan
+  sebagai proposal consumer hasil Intelligence.
 - Verifikasi: source compare fake, route, frontend dashboard, keputusan, scoring,
   dan alur data sudah dibaca. Unit/feature compare, typecheck, lint scoped, build,
   dan diff check dijalankan pada increment 1. Focused test profil compare,
@@ -171,5 +213,5 @@ Implementasi:
   build, dan diff check. Increment 4 diverifikasi dengan
   `ComparisonSnapshotTest`, focused compare/profile analytics test, typecheck,
   lint scoped, dan build.
-- Risiko terbuka: scoring real belum masuk. Browser smoke belum dijalankan bila
-  tool browser tidak tersedia.
+- Risiko terbuka: scoring real belum masuk dan masih tergantung gate
+  peer/scoring. Browser smoke belum dijalankan bila tool browser tidak tersedia.

@@ -1,5 +1,8 @@
 # Tasks: Pending comparison untuk ticker real
 
+Status: selesai dan sudah digantikan oleh compare real bertahap. Checklist ini
+arsip historis, bukan task aktif.
+
 ## Sebelum mulai
 
 - [x] Scope dan non-scope jelas.
@@ -20,6 +23,8 @@
 - Perubahan: `/bandingkan` menerima ticker real valid sebagai pending matrix.
 - Verifikasi: focused compare tests, `npm run typecheck`, `npm run lint:check`,
   dan `npm run build` lulus.
-- Risiko: nilai real belum dihitung.
+- Catatan superseded: compare aktif sekarang memakai autocomplete real, profil
+  real/cache, section on-demand, dan snapshot manual. Nilai scoring real tetap
+  menunggu module Intelligence.
 
 Jangan menambah scope baru ke checklist tanpa instruksi user.

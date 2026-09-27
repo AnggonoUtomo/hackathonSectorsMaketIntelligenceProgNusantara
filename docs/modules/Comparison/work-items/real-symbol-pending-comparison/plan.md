@@ -1,5 +1,8 @@
 # Plan: Pending comparison untuk ticker real
 
+Status: selesai dan sudah digantikan oleh compare real bertahap. Dokumen ini
+arsip historis, bukan rencana aktif.
+
 ## Scope
 
 Membuat `/bandingkan` mulus untuk ticker valid dari Discover/Company walaupun

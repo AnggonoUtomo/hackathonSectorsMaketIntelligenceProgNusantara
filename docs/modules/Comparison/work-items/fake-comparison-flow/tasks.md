@@ -1,5 +1,8 @@
 # Tasks: Fake Comparison Flow
 
+Status: selesai dan sudah digantikan oleh compare real bertahap. Checklist ini
+arsip historis, bukan task aktif.
+
 ## Sebelum mulai
 
 - [x] Scope dan non-scope jelas.
@@ -17,9 +20,11 @@
 
 ## Hasil
 
-- [ ] Scope selesai dan dokumentasi diperbarui.
+- [x] Scope selesai dan dokumentasi diperbarui.
 - Perubahan: backend fake comparison payload, validasi query, route props, UI
   matrix, dan link dari detail selesai.
 - Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
   whitespace, dan sensitive-data scan lulus.
-- Risiko: persistence privat dan versioning snapshot di luar scope.
+- Catatan superseded: persistence privat dan versioning snapshot kini tersedia
+  pada increment Comparison berikutnya. Scoring real tetap menunggu module
+  Intelligence.

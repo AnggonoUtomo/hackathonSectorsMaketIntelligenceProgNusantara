@@ -111,5 +111,7 @@ seluruh roadmap sekaligus. Rincian task implementasi diperbarui saat gate disetu
 - URL lokal `/login` memberi HTTP 200. Tidak ada smoke Sectors berbayar,
   commit, push, atau perubahan file user `Hackaton/`/LSP.
 - Risiko: manfaat UX belum diuji user; basis cash flow, kebutuhan peer/scoring,
-  compare real dan persistence tetap gate tahap berikutnya. Fallback stale dari
-  adapter existing belum ditambahkan; provider error ditampilkan eksplisit.
+  dan persistence bukti Intelligence tetap gate tahap berikutnya. Compare real
+  serta snapshot manual privat sudah ditangani pada work item Comparison.
+  Fallback stale dari adapter existing belum ditambahkan; provider error
+  ditampilkan eksplisit.

@@ -39,9 +39,10 @@ rekomendasi BUY/HOLD/SELL.
   direktori dan profil real; increment 2 menambahkan grafik harga/keuangan dan
   valuasi real. Rencana wizard berikutnya perlu ditinjau bersama proposal
   Ruang Riset Berbukti sebelum implementasi dilanjutkan.
-- [Compare Real Bertahap](work-items/compare-real-bertahap/README.md): proposal
-  mengganti `/bandingkan` dari matrix fake menjadi compare real hemat credit
-  dengan autocomplete, profil awal, dan section data on-demand.
+- [Compare Real Bertahap](work-items/compare-real-bertahap/README.md):
+  `/bandingkan` sudah memakai compare real hemat credit dengan autocomplete,
+  profil awal, section harga/keuangan/valuasi on-demand, snapshot manual privat,
+  dan proposal Increment 5 untuk consumer hasil Intelligence.
 - [Scoring](SCORING.md): metrik, bobot, peer group, data hilang, dan penjelasan nilai.
 - [Alur Data](DATA-FLOW.md): pengambilan bertahap, cache, dan anggaran credit.
 - [Model Data](DATA-MODEL.md): konsep penyimpanan dari blueprint dan batas keputusan schema.

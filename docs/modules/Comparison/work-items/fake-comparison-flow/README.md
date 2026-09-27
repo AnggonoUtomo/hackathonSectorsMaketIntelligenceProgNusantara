@@ -2,7 +2,8 @@
 
 ## Status dan owner
 
-- Status: Done.
+- Status: Done; superseded by
+  [Compare Real Bertahap](../../../work-items/compare-real-bertahap/README.md).
 - Owner: Comparison.
 - Target: `app/Modules/Comparison`, route `/bandingkan`, dan UI Inertia
   placeholder NusaLens.
@@ -31,15 +32,15 @@ Non-scope:
 - scoring final Intelligence;
 - AI explainer atau sharing publik.
 
-## Acceptance criteria
+## Acceptance criteria historis
 
-- [ ] `/bandingkan` dapat dibuka user verified tanpa symbol dan menampilkan
-  empty state.
-- [ ] `/bandingkan?symbols=BBCA,TLKM` menampilkan matrix fake dari backend.
-- [ ] Query lebih dari 3 symbol ditolak.
-- [ ] Unknown symbol ditolak eksplisit.
-- [ ] Detail perusahaan menyediakan jalan ke Bandingkan untuk symbol terkait.
-- [ ] Tidak ada test yang melakukan live call Sectors.
+- [x] `/bandingkan` dapat dibuka user verified tanpa symbol dan menampilkan
+      empty state.
+- [x] `/bandingkan?symbols=BBCA,TLKM` menampilkan matrix fake dari backend.
+- [x] Query lebih dari 3 symbol ditolak.
+- [x] Unknown symbol ditolak eksplisit.
+- [x] Detail perusahaan menyediakan jalan ke Bandingkan untuk symbol terkait.
+- [x] Tidak ada test yang melakukan live call Sectors.
 
 ## Dependency dan keputusan
 
@@ -48,12 +49,13 @@ Non-scope:
 - `docs/DATA-FLOW.md`: pembacaan cache/skor tersimpan tidak memakai credit;
   fake flow tidak melakukan upstream request.
 
-## Handoff
+## Handoff historis
 
 - Perubahan: backend fake comparison payload, validasi maksimal 3 symbol,
   matrix UI Bandingkan, empty state, error state query, dan link dari Detail
   Perusahaan ke Bandingkan.
 - Verifikasi: focused PHPUnit, full PHPUnit, typecheck, lint, build,
   whitespace, dan sensitive-data scan lulus.
-- Risiko terbuka: persistence dan snapshot berversi Comparison belum dirancang
-  pada increment ini.
+- Catatan superseded: flow fake sudah digantikan oleh compare real bertahap.
+  Persistence snapshot manual privat kini tersedia pada increment Comparison
+  berikutnya.

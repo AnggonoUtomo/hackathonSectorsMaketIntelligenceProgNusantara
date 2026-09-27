@@ -2,7 +2,8 @@
 
 ## Status dan owner
 
-- Status: Done.
+- Status: Done; superseded by
+  [Compare Real Bertahap](../../../work-items/compare-real-bertahap/README.md).
 - Owner: Comparison.
 - Target: `/bandingkan`.
 
@@ -20,7 +21,7 @@ belum punya data fake, lalu menampilkan nilai pending secara jujur.
 Non-scope: mengambil data Sectors baru, menyimpan comparison manual, scoring real,
 dan versi snapshot privat.
 
-## Acceptance criteria
+## Acceptance criteria historis
 
 - [x] `/bandingkan?symbols=ADES,AADI` render 200 dan tidak redirect error.
 - [x] Ticker pending tampil pada matrix dengan nilai `-` dan catatan data belum
@@ -34,11 +35,13 @@ dan versi snapshot privat.
 Aturan UI tabel di `AGENTS.md` berlaku. Detail real tetap on-demand agar credit
 Sectors hemat.
 
-## Handoff
+## Handoff historis
 
 - Perubahan: ticker valid yang belum ada dataset fake menjadi pending comparison,
   `/bandingkan` memakai dashboard matrix, dan halaman awal menampilkan default
   MVP `BBCA,TLKM,ICBP`.
 - Verifikasi: focused compare route tests, typecheck, lint, dan build lulus.
-- Risiko terbuka: nilai real belum tersedia sampai modul Intelligence/Company
-  real dikerjakan.
+- Catatan superseded: default MVP dan matrix pending sudah digantikan. Halaman
+  aktif sekarang dimulai dari pilihan user, memakai autocomplete real, profil
+  real/cache, section on-demand, dan snapshot manual. Nilai scoring real tetap
+  menunggu module Intelligence.

@@ -144,11 +144,15 @@ diaktifkan 2026-09-26; audit live dan implementasi belum diotorisasi.
 
 ## Increment 4: Bandingkan alasan
 
-- Prasyarat: 3A stabil. Bukti skor hanya ditambahkan jika gate 3B lulus; compare
-  fakta tidak perlu memalsukan atau menunggu skor yang tidak tersedia.
+- Status: digantikan oleh work item
+  [Compare Real Bertahap](../compare-real-bertahap/README.md). Compare real
+  profil/harga/keuangan/valuasi sudah tersedia; scoring compare tetap menunggu
+  gate 3B.
+- Prasyarat historis: 3A stabil. Bukti skor hanya ditambahkan jika gate 3B lulus;
+  compare fakta tidak perlu memalsukan atau menunggu skor yang tidak tersedia.
 - Ownership: Comparison mengatur pilihan maksimal tiga; Research menyediakan
   hasil penjelasan melalui contract, bukan akses adapter/persistence lintas module.
-- Perubahan: migrasi consumer FakeComparisonBuilder ke data real; tampilkan
+- Perubahan historis: migrasi consumer fake comparison ke data real; tampilkan
   persamaan, perbedaan, trade-off dan keterbatasan. Pertahankan route existing.
 - Endpoint/credit/cache: gunakan kembali input terverifikasi 3A/3B, fetch hanya
   kekurangan union perusahaan. Tidak memakai perkiraan tiga perusahaan sebagai
@@ -158,12 +162,17 @@ diaktifkan 2026-09-26; audit live dan implementasi belum diotorisasi.
 - Verifikasi: feature selection/state/auth, real adapter dengan fake HTTP,
   unit comparability, typecheck/build, browser desktop/mobile dan pagination.
 - Batas berhenti: compare real selesai tanpa menambah penyimpanan diam-diam.
+  Batas ini sudah dipenuhi lewat compare real bertahap; snapshot manual masuk
+  increment Comparison terpisah.
 
 ## Increment 5: Simpan manual dan tinjau perubahan versi
 
-- Prasyarat: compare real stabil, persetujuan desain schema/ownership snapshot.
-  Belum ada migration comparison; baseline accepted bukan bukti implementasi.
-- Perubahan: persistence perbandingan privat manual dengan ULID, immutable
+- Status: digantikan oleh Increment 4 di
+  [Compare Real Bertahap](../compare-real-bertahap/README.md). Snapshot manual
+  privat dan versioning dasar sudah tersedia.
+- Prasyarat historis: compare real stabil, persetujuan desain schema/ownership
+  snapshot.
+- Perubahan historis: persistence perbandingan privat manual dengan ULID, immutable
   evidence/version, dan pembaruan sebagai versi baru. Bukan notebook baru.
 - Endpoint/credit/cache: membaca versi tersimpan tidak memanggil provider;
   pembaruan eksplisit mengikuti input/estimasi/cache yang sudah diverifikasi.

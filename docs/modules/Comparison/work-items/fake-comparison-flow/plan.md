@@ -1,5 +1,8 @@
 # Plan: Fake Comparison Flow
 
+Status: selesai dan sudah digantikan oleh compare real bertahap. Dokumen ini
+arsip historis, bukan rencana aktif.
+
 ## Scope
 
 Membuat Bandingkan dapat dicoba end-to-end dengan data fake internal, sebagai
