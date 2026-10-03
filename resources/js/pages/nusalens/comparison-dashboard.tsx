@@ -1,14 +1,15 @@
 import CompanyAutocomplete from '@/components/company-autocomplete';
 import CompanyLogo from '@/components/company-logo';
+import ResearchPriorityPanel from '@/components/research-priority';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { CompanyIdentity } from '@/types/company-directory';
+import type { ResearchPriority } from '@/types/research-priority';
 import type { FormDataConvertible } from '@inertiajs/core';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import {
     AlertTriangle,
     BookmarkPlus,
-    Building2,
     ChartNoAxesCombined,
     ExternalLink,
     GitCompare,
@@ -192,6 +193,8 @@ const valuationMetrics: Array<{ key: ValuationMetricKey; label: string }> = [
 ];
 
 export function ComparisonDashboard({ comparison }: Props) {
+    const { errors } = usePage().props;
+    const [scores, setScores] = useState<Record<string, ResearchPriority>>({});
     const [query, setQuery] = useState('');
     const [saving, setSaving] = useState(false);
     const [snapshotSections, setSnapshotSections] = useState<SnapshotSections>({});
@@ -216,7 +219,7 @@ export function ComparisonDashboard({ comparison }: Props) {
 
         router.get(
             '/bandingkan',
-            { symbols: symbols || undefined },
+            { symbols: symbols || undefined, base_snapshot_id: new URLSearchParams(window.location.search).get('base_snapshot_id') || undefined },
             {
                 preserveScroll: true,
                 preserveState: true,
@@ -268,6 +271,7 @@ export function ComparisonDashboard({ comparison }: Props) {
         const payload = {
             companies: comparison.companies,
             sections: snapshotSections,
+            scores: Object.fromEntries(comparison.symbols.filter((symbol) => scores[symbol]).map((symbol) => [symbol, scores[symbol].evidenceId])),
         } as unknown as FormDataConvertible;
 
         router.post(
@@ -276,6 +280,7 @@ export function ComparisonDashboard({ comparison }: Props) {
                 title: `Perbandingan ${comparison.symbols.join(', ')}`,
                 symbols: comparison.symbols,
                 payload,
+                base_snapshot_id: new URLSearchParams(window.location.search).get('base_snapshot_id'),
             },
             {
                 preserveScroll: true,
@@ -390,7 +395,11 @@ export function ComparisonDashboard({ comparison }: Props) {
                                     Snapshot menyimpan profil dan section yang sudah dimuat. Menyimpan snapshot tidak melakukan refresh provider.
                                 </p>
                             </div>
-                            <Button type="button" onClick={saveSnapshot} disabled={saving || comparison.symbols.length === 0}>
+                            <Button
+                                type="button"
+                                onClick={saveSnapshot}
+                                disabled={saving || comparison.symbols.length === 0 || comparison.meta.state !== 'ready'}
+                            >
                                 <BookmarkPlus className="size-4" />
                                 {saving ? 'Menyimpan...' : 'Simpan Snapshot'}
                             </Button>
@@ -460,18 +469,50 @@ export function ComparisonDashboard({ comparison }: Props) {
                             ))}
                         </div>
 
-                        <div className="rounded-lg border border-dashed p-5">
-                            <div className="flex items-start gap-3">
-                                <Building2 className="text-muted-foreground mt-0.5 size-5" />
-                                <div>
-                                    <h2 className="font-semibold">Profil ringkas sudah real</h2>
-                                    <p className="text-muted-foreground mt-2 text-sm leading-6">
-                                        Increment ini memuat overview real/cache untuk saham yang dipilih. Section harga, keuangan, valuasi, grafik,
-                                        dan skor tetap ditahan sampai user meminta agar credit API tidak habis di halaman awal.
-                                    </p>
-                                </div>
+                        {errors.payload && (
+                            <p role="alert" className="text-sm text-rose-700">
+                                {String(errors.payload)}
+                            </p>
+                        )}
+                        {new Set(comparison.companies.filter((c) => c.status === 'ready').map((c) => c.subSector)).size > 1 && (
+                            <p className="border-l-2 border-amber-500 pl-3 text-sm">
+                                Perusahaan berasal dari kelompok bisnis berbeda. Nilai masing-masing menggunakan peer sejenisnya sendiri, bukan tiga
+                                pilihan ini.
+                            </p>
+                        )}
+                        {Object.keys(scores).some((symbol) => comparison.symbols.includes(symbol)) && (
+                            <div className="overflow-x-auto">
+                                <table className="w-full min-w-96 text-sm">
+                                    <thead className="bg-muted text-xs uppercase">
+                                        <tr>
+                                            <th className="p-3 text-left">Perusahaan</th>
+                                            <th className="p-3 text-right">Prioritas riset</th>
+                                            <th className="p-3 text-right">Kelengkapan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {comparison.symbols.map((symbol) => (
+                                            <tr key={symbol} className="border-t">
+                                                <th className="p-3 text-left">{symbol}</th>
+                                                <td className="p-3 text-right tabular-nums">{formatNumber(scores[symbol]?.score ?? null)}</td>
+                                                <td className="p-3 text-right tabular-nums">
+                                                    {scores[symbol] ? `${formatNumber(scores[symbol].completeness)}%` : 'Belum dihitung'}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
+                        )}
+                        {comparison.companies
+                            .filter((company) => company.status === 'ready')
+                            .map((company) => (
+                                <ResearchPriorityPanel
+                                    key={company.symbol}
+                                    symbol={company.symbol}
+                                    onLoad={(result) => setScores((current) => ({ ...current, [company.symbol]: result }))}
+                                />
+                            ))}
 
                         <ComparePricesPanel
                             companies={comparison.companies.filter((company) => company.status === 'ready')}

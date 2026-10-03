@@ -3,6 +3,7 @@
 namespace Tests\Feature\Comparison;
 
 use App\Models\User;
+use App\Modules\Company\Application\Contracts\FactAttestation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
@@ -71,6 +72,20 @@ class ComparisonSnapshotTest extends TestCase
         $this->actingAs($other)->get('/bandingkan/snapshots/'.$snapshotId)->assertNotFound();
     }
 
+    public function test_saved_research_is_paginated_and_searchable_without_other_users_data(): void
+    {
+        $owner = User::factory()->create();
+        $this->actingAs($owner);
+        for ($i = 1; $i <= 16; $i++) {
+            $this->post('/bandingkan/snapshots', $this->payload(['title' => 'Riset '.$i]))->assertRedirect();
+        }
+        $this->get('/bandingkan/snapshots')->assertInertia(fn (AssertableInertia $page) => $page
+            ->has('snapshots', 15)->where('pagination.total', 16)->where('pagination.lastPage', 2));
+        $this->get('/bandingkan/snapshots?page=2')->assertInertia(fn (AssertableInertia $page) => $page->has('snapshots', 1));
+        $this->get('/bandingkan/snapshots?q=Riset%2016')->assertInertia(fn (AssertableInertia $page) => $page
+            ->has('snapshots', 1)->where('snapshots.0.title', 'Riset 16'));
+    }
+
     public function test_updating_snapshot_creates_new_version_without_overwriting_previous(): void
     {
         $user = User::factory()->create();
@@ -110,7 +125,7 @@ class ComparisonSnapshotTest extends TestCase
 
     private function payload(array $overrides = []): array
     {
-        return array_replace_recursive([
+        $payload = array_replace_recursive([
             'title' => 'Bank dan Telko',
             'symbols' => ['BBCA', 'TLKM'],
             'payload' => [
@@ -130,5 +145,44 @@ class ComparisonSnapshotTest extends TestCase
                 ],
             ],
         ], $overrides);
+        $attestation = app(FactAttestation::class);
+        foreach ($payload['payload']['companies'] as &$company) {
+            $company['receipt'] = $attestation->seal($company, 'profile');
+        }
+        unset($company);
+        foreach ($payload['payload']['sections'] as $section => &$rows) {
+            foreach ($rows as &$entry) {
+                $entry['receipt'] = $attestation->seal($entry, $section);
+            }
+            unset($entry);
+        }
+        unset($rows);
+
+        return $payload;
+    }
+
+    public function test_tampered_browser_numbers_are_ignored_and_missing_receipt_is_rejected(): void
+    {
+        $payload = $this->payload();
+        $payload['payload']['sections']['prices']['BBCA']['rows'][0]['close'] = 1;
+        $response = $this->actingAs(User::factory()->create())->post('/bandingkan/snapshots', $payload)->assertRedirect();
+        $id = (string) str($response->headers->get('Location'))->afterLast('/');
+        $this->get('/bandingkan/snapshots/'.$id)->assertInertia(fn (AssertableInertia $p) => $p->where('snapshot.payload.sections.prices.BBCA.rows.0.close', 6200));
+        unset($payload['payload']['companies'][0]['receipt']);
+        $this->post('/bandingkan/snapshots', $payload)->assertSessionHasErrors('payload.companies.0.receipt');
+    }
+
+    public function test_rename_delete_and_base_version_enforce_ownership(): void
+    {
+        $owner = User::factory()->create();
+        $response = $this->actingAs($owner)->post('/bandingkan/snapshots', $this->payload());
+        $id = (string) str($response->headers->get('Location'))->afterLast('/');
+        $this->actingAs(User::factory()->create())->patch('/bandingkan/snapshots/'.$id, ['title' => 'Stolen'])->assertNotFound();
+        $this->delete('/bandingkan/snapshots/'.$id)->assertNotFound();
+        $this->post('/bandingkan/snapshots', $this->payload(['base_snapshot_id' => $id]))->assertSessionHasErrors('payload');
+        $this->actingAs($owner)->patch('/bandingkan/snapshots/'.$id, ['title' => 'Riset bank'])->assertRedirect();
+        $this->assertDatabaseHas('comparison_snapshots', ['id' => $id, 'title' => 'Riset bank', 'version' => 1]);
+        $this->delete('/bandingkan/snapshots/'.$id)->assertRedirect('/bandingkan/snapshots');
+        $this->assertDatabaseMissing('comparison_snapshots', ['id' => $id]);
     }
 }

@@ -11,8 +11,8 @@ class ListComparisonSnapshots
     /**
      * @return list<array<string, mixed>>
      */
-    public function execute(string $userId): array
+    public function execute(string $userId, string $query = '', int $page = 1): array
     {
-        return $this->snapshots->listForUser($userId);
+        return $this->snapshots->listForUser($userId, $query, $page);
     }
 }

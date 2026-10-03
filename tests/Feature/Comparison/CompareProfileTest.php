@@ -36,8 +36,7 @@ class CompareProfileTest extends TestCase
 
         $this->get('/bandingkan?symbols=BBCA,TLKM,ICBP')->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'compare')
+                ->component('nusalens/compare')
                 ->where('comparison.symbols', ['BBCA', 'TLKM', 'ICBP'])
                 ->where('comparison.companies.0.symbol', 'BBCA')
                 ->where('comparison.companies.0.name', 'Bank Central Asia')

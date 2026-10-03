@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Comparison;
 
+use App\Modules\Company\Application\Contracts\FactAttestation;
 use App\Modules\Comparison\Application\ComparisonSelectionBuilder;
 use App\Modules\MarketData\Application\Contracts\CompanyDirectory;
 use InvalidArgumentException;
@@ -36,7 +37,7 @@ class ComparisonSelectionBuilderTest extends TestCase
                     'fetchedAt' => '2026-09-23T10:00:00+07:00',
                 ];
             }
-        });
+        }, app(FactAttestation::class));
     }
 
     public function test_it_returns_empty_selection_without_symbols(): void

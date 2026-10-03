@@ -4,6 +4,10 @@ namespace App\Modules\Comparison\Application\Contracts;
 
 interface ComparisonSnapshotStore
 {
+    public function rename(string $userId, string $snapshotId, string $title): bool;
+
+    public function delete(string $userId, string $snapshotId): bool;
+
     /**
      * @param  list<string>  $symbols
      * @param  array<string, mixed>  $payload
@@ -14,7 +18,7 @@ interface ComparisonSnapshotStore
     /**
      * @return list<array<string, mixed>>
      */
-    public function listForUser(string $userId): array;
+    public function listForUser(string $userId, string $query = '', int $page = 1): array;
 
     /**
      * @return array<string, mixed>|null

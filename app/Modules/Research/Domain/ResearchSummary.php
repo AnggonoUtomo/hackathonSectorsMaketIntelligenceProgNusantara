@@ -96,8 +96,8 @@ class ResearchSummary
         }
         $checks[] = $this->check('cash_basis', 'Hubungan laba dan kas belum disimpulkan',
             'Basis kuartalan atau kumulatif arus kas belum terverifikasi.', 'Cocokkan cakupan periode arus kas dengan laba sebelum membandingkannya.');
-        $checks[] = $this->check('yoy', 'Pertumbuhan tahunan belum dihitung',
-            'Permintaan empat kuartal belum menjamin tersedianya kuartal pembanding tahun sebelumnya.', 'Periksa kuartal yang sama tahun sebelumnya, bukan hanya kuartal sebelumnya.');
+        $checks[] = $this->check('yoy', 'Bandingkan dengan kuartal yang sama tahun lalu',
+            'Ringkasan ini mencakup empat kuartal terbaru.', 'Buka analisis perusahaan sejenis untuk pertumbuhan YoY dengan periode pembanding eksplisit.');
         if ($kind === 'bank' || $kind === 'financial_nonbank') {
             $checks[] = $this->check('sector_risk', 'Risiko sektor belum dinilai',
                 $kind === 'bank' ? 'Data CAR dan NPL belum dimuat.' : 'Paket risiko perusahaan keuangan nonbank belum ditetapkan.',
@@ -106,8 +106,8 @@ class ResearchSummary
             $checks[] = $this->check('classification', 'Klasifikasi perlu dipastikan',
                 'Sektor tidak dikenal, belum tersedia, atau sumber profil kedaluwarsa.', 'Periksa sektor perusahaan sebelum menerapkan interpretasi khusus.');
         }
-        $checks[] = $this->check('score', 'Nilai Prioritas Riset belum tersedia',
-            'Metrik scoring dan bukti peer lengkap belum dihitung.', 'Lengkapi data yang sebanding sebelum menilai prioritas riset.');
+        $checks[] = $this->check('score', 'Periksa posisi terhadap perusahaan sejenis',
+            'Ringkasan satu perusahaan tidak menentukan Nilai Prioritas Riset.', 'Buka analisis perusahaan sejenis di bawah untuk nilai komponen, kelengkapan dan bukti peer.');
         $result['checks'] = $checks;
 
         return $result;

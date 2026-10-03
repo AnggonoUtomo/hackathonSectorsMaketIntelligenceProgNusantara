@@ -9,6 +9,15 @@ use Illuminate\Support\Str;
 
 class CreditReservationService
 {
+    public function remaining(string $userId): int
+    {
+        $query = DB::table('market_data_credit_reservations')->whereIn('status', ['reserved', 'committed']);
+        $global = (int) (clone $query)->sum('estimated_credits');
+        $daily = (int) $query->where('user_id', $userId)->where('usage_date', Carbon::now((string) config('marketdata.credits.timezone', 'Asia/Jakarta'))->toDateString())->sum('estimated_credits');
+
+        return max(0, min((int) config('marketdata.credits.global_budget', 1000) - $global, (int) config('marketdata.credits.daily_user_quota', 20) - $daily));
+    }
+
     /**
      * Reserve provider credits before an upstream Sectors attempt.
      */

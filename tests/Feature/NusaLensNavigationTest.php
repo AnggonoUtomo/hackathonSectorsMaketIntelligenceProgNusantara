@@ -160,8 +160,7 @@ class NusaLensNavigationTest extends TestCase
             ->get('/bandingkan')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'compare')
+                ->component('nusalens/compare')
                 ->where('comparison.meta.state', 'empty')
                 ->where('comparison.meta.source', 'profile')
                 ->where('comparison.meta.limit', 3)
@@ -179,8 +178,7 @@ class NusaLensNavigationTest extends TestCase
             ->get('/bandingkan?symbols=BBCA,TLKM')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'compare')
+                ->component('nusalens/compare')
                 ->where('comparison.symbols.0', 'BBCA')
                 ->where('comparison.symbols.1', 'TLKM')
                 ->where('comparison.companies.0.symbol', 'BBCA')
@@ -200,8 +198,7 @@ class NusaLensNavigationTest extends TestCase
             ->get('/bandingkan?symbols=ADES,AADI')
             ->assertOk()
             ->assertInertia(fn (AssertableInertia $page) => $page
-                ->component('nusalens/placeholder')
-                ->where('section', 'compare')
+                ->component('nusalens/compare')
                 ->where('comparison.symbols.0', 'ADES')
                 ->where('comparison.symbols.1', 'AADI')
                 ->where('comparison.companies.0.symbol', 'ADES')

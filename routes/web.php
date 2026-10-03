@@ -4,15 +4,17 @@ use App\Modules\Company\Presentation\CompanyAnalyticsController;
 use App\Modules\Company\Presentation\CompanyProfileController;
 use App\Modules\Comparison\Application\ComparisonSelectionBuilder;
 use App\Modules\Comparison\Presentation\ComparisonSnapshotController;
+use App\Modules\Intelligence\Presentation\ResearchPriorityController;
 use App\Modules\Research\Presentation\ResearchSummaryController;
 use App\Modules\Screening\Presentation\CompanySearchController;
+use App\Modules\Screening\Presentation\PeerCandidatesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
+Route::get('/', function (Request $request) {
+    return redirect()->route($request->user() ? 'dashboard' : 'login');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -21,6 +23,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('temukan-saham', [CompanySearchController::class, 'index'])->middleware('throttle:60,1')->name('discover');
+    Route::get('nusalens/companies/{symbol}/score', ResearchPriorityController::class)
+        ->where('symbol', '[A-Za-z0-9]{4}')->middleware('throttle:10,1')->name('nusalens.companies.score');
+    Route::get('nusalens/evidence/{evidence}', [ResearchPriorityController::class, 'evidence'])
+        ->whereUlid('evidence')->middleware('throttle:60,1')->name('nusalens.evidence');
     Route::get('nusalens/companies/search', [CompanySearchController::class, 'suggestions'])
         ->middleware('throttle:60,1')->name('nusalens.companies.search');
     Route::get('perusahaan', [CompanySearchController::class, 'redirectToDiscover'])->middleware('throttle:60,1')->name('companies');
@@ -44,14 +50,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ]);
         }
 
-        return Inertia::render('nusalens/placeholder', [
-            'section' => 'compare',
+        return Inertia::render('nusalens/compare', [
             'comparison' => $payload,
         ]);
     })->name('compare');
     Route::get('bandingkan/snapshots', [ComparisonSnapshotController::class, 'index'])->name('compare.snapshots.index');
     Route::post('bandingkan/snapshots', [ComparisonSnapshotController::class, 'store'])->name('compare.snapshots.store');
     Route::get('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'show'])->name('compare.snapshots.show');
+    Route::patch('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'update'])->name('compare.snapshots.update');
+    Route::delete('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'destroy'])->name('compare.snapshots.destroy');
 
     Route::get('jelaskan-nilai', function (Request $request) {
         $validated = $request->validate([
@@ -67,9 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return redirect()->route('discover');
     })->name('research');
 
-    Route::get('kandidat-menarik', function () {
-        return redirect()->route('discover');
-    })->name('candidates');
+    Route::get('kandidat-menarik', PeerCandidatesController::class)->middleware('throttle:30,1')->name('candidates');
 });
 
 require __DIR__.'/settings.php';

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Comparison\Application;
 
+use App\Modules\Company\Application\Contracts\FactAttestation;
 use App\Modules\MarketData\Application\Contracts\CompanyDirectory;
 use App\Modules\MarketData\Application\Exception\MarketDataUnavailable;
 use InvalidArgumentException;
@@ -10,7 +11,7 @@ class ComparisonSelectionBuilder
 {
     private const LIMIT = 3;
 
-    public function __construct(private readonly CompanyDirectory $directory) {}
+    public function __construct(private readonly CompanyDirectory $directory, private readonly FactAttestation $attestation) {}
 
     /**
      * @return array{
@@ -78,7 +79,7 @@ class ComparisonSelectionBuilder
         try {
             $profile = $this->directory->profile($userId, $symbol);
 
-            return [
+            $card = [
                 'symbol' => $symbol,
                 'name' => $this->text($profile['name'] ?? null) ?? $symbol,
                 'logoUrl' => $this->text($profile['logoUrl'] ?? null),
@@ -92,6 +93,8 @@ class ComparisonSelectionBuilder
                 'status' => 'ready',
                 'error' => null,
             ];
+
+            return $card + ['receipt' => $this->attestation->seal($card, 'profile')];
         } catch (MarketDataUnavailable $exception) {
             return [
                 'symbol' => $symbol,

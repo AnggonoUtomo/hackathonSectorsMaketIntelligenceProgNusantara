@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Search } from 'lucide-react';
+import { Bookmark, Folder, GitCompare, LayoutGrid, Search } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -19,18 +19,15 @@ const mainNavItems: NavItem[] = [
         icon: Search,
         prefetch: false,
     },
+    { title: 'Bandingkan', url: '/bandingkan', icon: GitCompare, prefetch: false },
+    { title: 'Riset Tersimpan', url: '/bandingkan/snapshots', icon: Bookmark },
 ];
 
 const footerNavItems: NavItem[] = [
     {
         title: 'Repository',
-        url: 'https://github.com/laravel/react-starter-kit',
+        url: 'https://github.com/AnggonoUtomo/hackathonSectorsMaketIntelligenceProgNusantara',
         icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        url: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
     },
 ];
 

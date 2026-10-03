@@ -1,102 +1,69 @@
-import { Badge } from '@/components/ui/badge';
+import CompanyAutocomplete from '@/components/company-autocomplete';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, Database, Search, ShieldCheck, WalletCards } from 'lucide-react';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-    },
-];
-
-const metrics = [
-    { label: 'Credit Sectors MVP', value: '1.000', note: 'Budget aplikasi sekali pakai' },
-    { label: 'Kuota harian user', value: '20', note: 'Reset 00.00 WIB' },
-    { label: 'Cache screener', value: '1 jam', note: 'Hit tidak memakai credit' },
-    { label: 'Compare MVP', value: '3', note: 'Maksimum saham' },
-];
-
-const flows = [{ title: 'Temukan Saham', href: '/temukan-saham', icon: Search, text: 'Cari perusahaan dan buka cockpit riset berbasis data real.' }];
+import { Head, Link, router } from '@inertiajs/react';
+import { ArrowRight, Bookmark, GitCompare, Search } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Dashboard() {
+    const [query, setQuery] = useState('');
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
-            <div className="flex flex-1 flex-col gap-4 p-4">
-                <section className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
-                    <div className="bg-card text-card-foreground rounded-lg border p-5">
-                        <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div className="max-w-2xl">
-                                <Badge variant="outline">MVP Workspace</Badge>
-                                <h1 className="mt-3 text-2xl font-semibold">NusaLens Market Intelligence</h1>
-                                <p className="text-muted-foreground mt-2 text-sm">
-                                    Ruang kerja untuk menyaring, membandingkan, dan memahami saham Indonesia yang layak diteliti lebih lanjut.
-                                </p>
-                            </div>
-                            <Button asChild>
-                                <Link href="/temukan-saham">
-                                    Mulai riset <ArrowRight />
-                                </Link>
-                            </Button>
-                        </div>
-                        <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                            {metrics.map((metric) => (
-                                <div key={metric.label} className="bg-background rounded-md border p-3">
-                                    <div className="text-muted-foreground text-xs">{metric.label}</div>
-                                    <div className="mt-2 text-xl font-semibold">{metric.value}</div>
-                                    <div className="text-muted-foreground mt-1 text-xs">{metric.note}</div>
-                                </div>
-                            ))}
-                        </div>
+        <AppLayout breadcrumbs={[{ title: 'Ruang Riset', href: '/dashboard' }]}>
+            <Head title="Ruang Riset" />
+            <main className="flex min-w-0 flex-1 flex-col gap-8 p-4 md:p-6">
+                <header className="border-b pb-5">
+                    <p className="text-sm font-medium text-teal-700 dark:text-teal-300">NusaLens</p>
+                    <h1 className="mt-2 text-2xl font-semibold">Ruang Riset Saham Indonesia</h1>
+                </header>
+                <section className="max-w-3xl space-y-4" aria-label="Mulai riset perusahaan">
+                    <h2 className="text-base font-semibold">Perusahaan mana yang ingin kamu pelajari?</h2>
+                    <CompanyAutocomplete
+                        value={query}
+                        onChange={setQuery}
+                        onSelect={(company) => router.visit(`/perusahaan/${company.symbol}`)}
+                        onSearch={() => router.get('/temukan-saham', { keyword: query })}
+                    />
+                    <Button asChild variant="outline">
+                        <Link href="/temukan-saham">
+                            <Search className="size-4" />
+                            Semua perusahaan
+                            <ArrowRight className="size-4" />
+                        </Link>
+                    </Button>
+                </section>
+                <section className="grid gap-6 border-y py-6 sm:grid-cols-2">
+                    <div className="space-y-3">
+                        <GitCompare className="size-6 text-sky-600" />
+                        <h2 className="font-semibold">Bandingkan perusahaan</h2>
+                        <p className="text-muted-foreground max-w-md text-sm leading-6">
+                            Harga, kinerja keuangan, dan bukti analisis untuk maksimal tiga perusahaan.
+                        </p>
+                        <Button asChild variant="outline">
+                            <Link href="/bandingkan">
+                                Buka perbandingan
+                                <ArrowRight className="size-4" />
+                            </Link>
+                        </Button>
                     </div>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="text-base">Status Fondasi</CardTitle>
-                            <CardDescription>Alur real dibuka bertahap agar tidak mencampur data uji dan data produksi.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-3 text-sm">
-                            <div className="flex items-start gap-3">
-                                <ShieldCheck className="mt-0.5 size-4 text-emerald-600" />
-                                <span>Fitur riset berada di balik login dan verifikasi email.</span>
-                            </div>
-                            <div className="flex items-start gap-3">
-                                <Database className="mt-0.5 size-4 text-sky-600" />
-                                <span>Pencarian, profil, grafik, valuasi dan ringkasan riset memakai adapter data internal.</span>
-                            </div>
-                            <div className="flex items-start gap-3">
-                                <WalletCards className="mt-0.5 size-4 text-amber-600" />
-                                <span>Compare dan kandidat menarik menunggu data real sebelum masuk menu utama.</span>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <div className="space-y-3">
+                        <Bookmark className="size-6 text-amber-600" />
+                        <h2 className="font-semibold">Riset tersimpan</h2>
+                        <p className="text-muted-foreground max-w-md text-sm leading-6">
+                            Kembali ke bukti yang sudah disimpan atau mulai versi perbandingan terbaru.
+                        </p>
+                        <Button asChild variant="outline">
+                            <Link href="/bandingkan/snapshots">
+                                Buka riset tersimpan
+                                <ArrowRight className="size-4" />
+                            </Link>
+                        </Button>
+                    </div>
                 </section>
-
-                <section className="grid gap-4 md:grid-cols-2">
-                    {flows.map((flow) => (
-                        <Card key={flow.title}>
-                            <CardHeader>
-                                <div className="flex items-center gap-2">
-                                    <flow.icon className="size-4" />
-                                    <CardTitle className="text-base">{flow.title}</CardTitle>
-                                </div>
-                                <CardDescription>{flow.text}</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Button asChild variant="outline" size="sm">
-                                    <Link href={flow.href} prefetch={flow.href !== '/temukan-saham'}>
-                                        Buka <ArrowRight />
-                                    </Link>
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </section>
-            </div>
+                <footer className="text-muted-foreground max-w-3xl text-xs leading-6">
+                    Sumber data: Sectors Financial API. NusaLens membantu riset dengan data dan perhitungan yang dapat diperiksa. Bukan penasihat
+                    investasi atau rekomendasi membeli dan menjual saham.
+                </footer>
+            </main>
         </AppLayout>
     );
 }

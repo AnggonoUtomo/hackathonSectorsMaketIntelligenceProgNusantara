@@ -5,10 +5,11 @@ import CompanyAnalysisChart, {
     type AnalysisMetric,
     type AnalysisRow,
 } from '@/components/company-analysis-chart';
+import ResearchPriorityPanel from '@/components/research-priority';
 import ResearchSummaryPanel from '@/components/research-summary';
 import { Button } from '@/components/ui/button';
 import { Link } from '@inertiajs/react';
-import { ArrowRight, BarChart3, Building2, ChartNoAxesCombined, FileSearch, RefreshCw, Scale, Search, Table2 } from 'lucide-react';
+import { ArrowRight, BarChart3, Building2, ChartNoAxesCombined, FileSearch, RefreshCw, Scale, Table2 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 type Section = 'prices' | 'financials' | 'valuation';
@@ -48,11 +49,18 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
     function selectTab(next: TabKey) {
         setTab(next);
     }
-    const nextStepActions = <CockpitNextActions symbol={symbol} current={tab} onSelect={selectTab} />;
+    const nextStepActions = (
+        <Button asChild variant="outline" size="sm">
+            <Link href={`/bandingkan?symbols=${encodeURIComponent(symbol)}`}>
+                <ArrowRight className="size-4" />
+                Bandingkan perusahaan
+            </Link>
+        </Button>
+    );
 
     return (
         <section className="min-w-0">
-            <div role="tablist" aria-label="Data perusahaan" className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+            <div role="tablist" aria-label="Data perusahaan" className="mb-4 flex gap-2 overflow-x-auto border-b pb-2">
                 {tabs.map((item, index) => (
                     <button
                         key={item.key}
@@ -62,7 +70,7 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                         aria-selected={tab === item.key}
                         aria-controls="company-analysis-panel"
                         tabIndex={tab === item.key ? 0 : -1}
-                        className={`min-h-24 rounded-lg border p-3 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 ${
+                        className={`min-h-11 shrink-0 rounded-md border px-3 py-2 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 ${
                             tab === item.key
                                 ? 'border-teal-600 bg-teal-50 text-teal-950 dark:bg-teal-950/30 dark:text-teal-100'
                                 : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
@@ -96,26 +104,16 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                             </span>
                             <span className="min-w-0">
                                 <span className="block text-sm font-semibold">{item.label}</span>
-                                <span className="mt-1 block text-xs leading-5">{item.description}</span>
                             </span>
                         </span>
                     </button>
                 ))}
             </div>
-            <section className="bg-muted/20 mb-6 rounded-lg border p-4" aria-label="Langkah riset berikutnya">
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                    <div className="min-w-0">
-                        <h2 className="text-sm font-semibold">Langkah berikutnya</h2>
-                        <p className="text-muted-foreground mt-1 text-xs leading-5">
-                            Periksa bukti utama, lalu lanjut ke data harga, keuangan, atau valuasi sebelum mencari pembanding.
-                        </p>
-                    </div>
-                    {nextStepActions}
-                </div>
-            </section>
+            <div className="mb-5 flex justify-end">{nextStepActions}</div>
             <div id="company-analysis-panel" role="tabpanel" aria-labelledby={`tab-${tab}`} tabIndex={0} className="min-w-0 space-y-6">
                 <div hidden={tab !== 'research'}>
-                    <ResearchSummaryPanel symbol={symbol} active={tab === 'research'} actions={nextStepActions} />
+                    <ResearchSummaryPanel symbol={symbol} active={tab === 'research'} />
+                    <ResearchPriorityPanel key={symbol} symbol={symbol} />
                 </div>
                 {tab === 'research' ? null : tab === 'overview' ? (
                     children
@@ -132,40 +130,6 @@ export default function CompanyAnalysis({ symbol, children }: { symbol: string; 
                 )}
             </div>
         </section>
-    );
-}
-
-function CockpitNextActions({ symbol, current, onSelect }: { symbol: string; current: TabKey; onSelect: (tab: TabKey) => void }) {
-    const actions = [
-        { key: 'overview', label: 'Profil', Icon: Building2 },
-        { key: 'prices', label: 'Harga', Icon: ChartNoAxesCombined },
-        { key: 'financials', label: 'Keuangan', Icon: BarChart3 },
-        { key: 'valuation', label: 'Valuasi', Icon: Scale },
-    ] as const;
-
-    return (
-        <div className="flex flex-wrap gap-2">
-            {actions.map(({ key, label, Icon }) => (
-                <Button
-                    key={key}
-                    type="button"
-                    variant={current === key ? 'secondary' : 'outline'}
-                    size="sm"
-                    aria-pressed={current === key}
-                    onClick={() => onSelect(key)}
-                >
-                    <Icon className="size-4" />
-                    {label}
-                </Button>
-            ))}
-            <Button asChild variant="ghost" size="sm">
-                <Link href={`/temukan-saham?keyword=${encodeURIComponent(symbol)}`}>
-                    <Search className="size-4" />
-                    Cari pembanding
-                    <ArrowRight className="size-4" />
-                </Link>
-            </Button>
-        </div>
     );
 }
 

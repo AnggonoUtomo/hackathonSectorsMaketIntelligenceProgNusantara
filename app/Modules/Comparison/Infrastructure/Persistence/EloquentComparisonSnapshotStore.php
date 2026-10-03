@@ -6,6 +6,16 @@ use App\Modules\Comparison\Application\Contracts\ComparisonSnapshotStore;
 
 class EloquentComparisonSnapshotStore implements ComparisonSnapshotStore
 {
+    public function rename(string $userId, string $snapshotId, string $title): bool
+    {
+        return ComparisonSnapshot::query()->where('user_id', $userId)->whereKey($snapshotId)->update(['title' => $title]) > 0;
+    }
+
+    public function delete(string $userId, string $snapshotId): bool
+    {
+        return ComparisonSnapshot::query()->where('user_id', $userId)->whereKey($snapshotId)->delete() > 0;
+    }
+
     public function create(string $userId, string $title, array $symbols, array $payload, ?string $baseSnapshotId): array
     {
         $base = $baseSnapshotId !== null ? $this->findModelForUser($userId, $baseSnapshotId) : null;
@@ -21,15 +31,18 @@ class EloquentComparisonSnapshotStore implements ComparisonSnapshotStore
         return $this->map($snapshot);
     }
 
-    public function listForUser(string $userId): array
+    public function listForUser(string $userId, string $query = '', int $page = 1): array
     {
-        return ComparisonSnapshot::query()
+        $records = ComparisonSnapshot::query()
             ->where('user_id', $userId)
-            ->latest()
-            ->limit(50)
-            ->get()
-            ->map(fn (ComparisonSnapshot $snapshot): array => $this->map($snapshot))
-            ->all();
+            ->when($query !== '', fn ($builder) => $builder->where('title', 'like', '%'.addcslashes($query, '%_\\').'%'))
+            ->orderByDesc('created_at')->orderByDesc('id')
+            ->paginate(15, ['id', 'title', 'symbols', 'version', 'created_at'], 'page', $page);
+
+        return ['items' => $records->map(fn ($snapshot) => [
+            'id' => $snapshot->id, 'title' => $snapshot->title, 'symbols' => $snapshot->symbols,
+            'version' => $snapshot->version, 'createdAt' => $snapshot->created_at?->toIso8601String(),
+        ])->all(), 'total' => $records->total(), 'page' => $records->currentPage(), 'lastPage' => $records->lastPage()];
     }
 
     public function findForUser(string $userId, string $snapshotId): ?array

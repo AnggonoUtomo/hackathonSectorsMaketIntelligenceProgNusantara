@@ -10,21 +10,26 @@ metrik, kelompok pembanding, kelengkapan, dan tanggal sumbernya.
 Bukan daftar saham yang harus dibeli. Tujuannya membantu menjawab:
 **"Perusahaan mana yang layak saya teliti lebih lanjut, dan mengapa?"**
 
-> Status: pencarian nama/kode, direktori dan profil sudah memakai data real.
-> Detail perusahaan menyediakan grafik harga, laporan kuartalan dan valuasi.
-> Fitur riset wajib login dan verifikasi email. Wizard dan penyambungan
-> nilai/perbandingan ke data real belum selesai; halaman Compare/Research lama
-> masih memakai data contoh dan bukan hasil analisis real.
+> Status 3 Oktober 2026: alur pencarian, cockpit, analisis peer, kandidat sejenis,
+> perbandingan, dan riset tersimpan sudah terhubung ke backend/data real.
+> Grafik memakai Recharts. Total nilai hanya muncul jika syarat data terpenuhi;
+> data yang belum terverifikasi tidak diganti angka contoh.
 
 ## Yang sudah bisa dicoba
 
-Panduan alur lengkap sementara tersedia di [User Guide](docs/USER-GUIDE.md).
+Panduan langkah demi langkah tersedia di [User Guide](docs/USER-GUIDE.md).
 
 1. Login dengan email terverifikasi, lalu buka **Temukan Saham**.
 2. Ketik nama atau kode perusahaan, lalu pilih hasil pencarian.
 3. Pada detail, buka **Harga**, **Keuangan**, atau **Valuasi** sesuai kebutuhan.
 4. Pilih rentang harga 30/90 hari atau kelompok angka keuangan. Tombol tabel
    menampilkan angka lengkap; tooltip grafik menampilkan nilai per periode.
+5. Tekan **Analisis perusahaan sejenis**, lalu buka komponen untuk melihat
+   nilai mentah, periode, peer, percentile, dan bobotnya.
+6. **Lihat kandidat sejenis** untuk menjelajahi bukti fundamental yang sama,
+   atau **Bandingkan** untuk memilih maksimal tiga perusahaan.
+7. Muat bagian yang diperlukan dan pilih **Simpan Snapshot**. Buka kembali
+   lewat **Riset Tersimpan**; nama dapat diubah dan versi dapat dihapus.
 
 Harga memakai rupiah; grafik keuangan memakai miliar rupiah dan tabelnya rupiah
 lengkap. Valuasi memakai rasio kali (x), bukan label murah/mahal. Tanggal sumber
@@ -44,18 +49,18 @@ Cakupan MVP meliputi perusahaan bank dan nonbank di Indonesia.
 | Detail Perusahaan      | Melihat profil, metrik keuangan/pasar, lima komponen nilai, dan sumbernya.          |
 | Bandingkan             | Menyandingkan maksimal 3 saham beserta angka asli dan posisi terhadap peer.         |
 | Jelaskan Nilai         | Menelusuri rumus, bobot, kontribusi metrik, dan data yang belum tersedia.           |
-| Temukan Kandidat       | Menjelajahi kandidat menurut aspek bisnis, pertumbuhan, valuasi, atau pasar.        |
+| Temukan Kandidat       | Menjelajahi kandidat sejenis menurut kesehatan bisnis, pertumbuhan, dan keamanan keuangan dari bukti tersimpan. |
 | Perbandingan Tersimpan | Menyimpan manual, memberi nama, membuka kembali, dan menghapus perbandingan privat. |
 
-## Cara penggunaan yang direncanakan
+## Alur Riset
 
 1. Daftar secara publik, verifikasi email, lalu login untuk mengakses fitur riset.
 2. Buka **Temukan Saham**, pilih kelompok perusahaan dan kriteria pencarian.
 3. Buka **Detail Perusahaan** untuk memeriksa angka, periode laporan, dan freshness.
-4. Baca **Mengapa Nilainya Seperti Ini?**; jangan melihat total tanpa kelengkapannya.
+4. Baca bukti pada **Analisis perusahaan sejenis**; jangan melihat total tanpa kelengkapannya.
 5. Bandingkan maksimal **3 saham** untuk melihat perbedaan relatif.
 6. Simpan perbandingan yang ingin ditinjau kembali. Hasil lama mempertahankan
-   snapshot saat disimpan; **Perbarui data** menghasilkan versi baru sesuai
+   snapshot saat disimpan; **Buat versi terbaru**, lalu simpan, menghasilkan versi baru sesuai
    cache dan kuota, bukan menimpa sejarah.
 
 Perbandingan tersimpan hanya dapat diakses pemilik. MVP tidak merekam seluruh
@@ -143,8 +148,9 @@ Spesifikasi lengkap: [Perhitungan v1](docs/SCORING.md).
 
 - Tanggal data pasar, periode laporan, kelengkapan, dan status data lama terlihat.
 - Cache mengurangi panggilan API; pembaruan hanya saat data dibutuhkan.
-- Jika pembaruan gagal, fallback pasar dibatasi 24 jam dengan pengecualian bursa
-  tutup; laporan keuangan 7 hari sejak pengambilan berhasil.
+- Scoring memakai fundamental dengan cache 24 jam. Valuasi peer bersifat
+  opsional, memakai harga dengan cache 1 jam dan batas usia observasi 24 jam.
+  Pengecualian bursa tutup belum dipakai karena kalender/basis waktunya belum terbukti.
 - Data tidak tersedia atau budget habis tidak disamarkan sebagai hasil kosong.
 - Budget MVP: 1.000 credit Sectors sekali pakai dan 20 credit per akun per hari,
   reset 00.00 WIB. Membaca cache tidak memakai credit; cadangan 600 credit tidak
@@ -152,12 +158,20 @@ Spesifikasi lengkap: [Perhitungan v1](docs/SCORING.md).
 - Penjelasan berbasis aturan selalu menjadi bagian inti. AI hanya pelengkap
   opsional atas permintaan, menjelaskan bukti yang sudah dihitung.
 
+**Keterbatasan yang terlihat dalam aplikasi:** momentum 20 sesi belum diaktifkan
+pada sumber real karena konsistensi aksi korporasi belum terbukti. Valuasi peer
+memerlukan data pasar seluruh kelompok; jika kuota tidak cukup, fundamental
+tetap tersedia tanpa memotong sampel. Pada smoke AADI, kelengkapan fundamental
+65,00% sehingga total ditahan. Ini bukan kegagalan menghitung atau skor nol.
+Tab Valuasi historis juga tidak otomatis menjadi input PE TTM/PB MRQ.
+
 ## Pengembangan berikutnya
 
 | Tahap           | Rencana                                                                                   | Status                                                         |
 | --------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Fondasi MVP     | Verifikasi email untuk riset, ULID, dan kesiapan penyimpanan/cache.                       | Disepakati; implementasi berikutnya perlu plan.                |
-| Alur riset inti | Integrasi Sectors, screener, skor v1, detail, perbandingan privat, dan penjelasan aturan. | Scope MVP yang disepakati.                                     |
+| Fondasi MVP     | Verifikasi email, ULID, MySQL, cache dan ledger credit. | Terimplementasi dan diuji. |
+| Alur riset inti | Pencarian, detail, skor berbukti, kandidat fundamental, compare dan snapshot privat. | Terimplementasi; ketersediaan metrik mengikuti syarat sumber dan kuota. |
+| Kelengkapan sumber | Basis harga adjusted, kalender bursa dan cakupan live valuasi peer. | Masih perlu bukti provider; tidak mengubah formula agar total muncul. |
 | Pelengkap demo  | AI explainer setelah alur inti stabil.                                                    | Opsional; provider, model, dan budget belum dipilih.           |
 | Pasca-MVP       | Paket berbayar dan/atau API key milik pengguna sendiri (BYOK).                            | Arah pengembangan; belum ada desain paket, harga, atau jadwal. |
 
@@ -175,6 +189,9 @@ dari pengantar produk ini.
 Mulai dari [indeks dokumentasi](docs/README.md) dan [keputusan aktif](docs/DECISIONS.md)
 sebelum mengembangkan fitur. Arsitektur dan pola kerja tetap mengikuti dokumen
 NusaLens, tanpa menganggap seluruh target sudah tersedia di source.
+
+Hasil pekerjaan, batas data, dan verifikasi tersedia di
+[Penuntasan MVP](docs/work-items/penuntasan-mvp/README.md).
 
 ## Disclaimer
 

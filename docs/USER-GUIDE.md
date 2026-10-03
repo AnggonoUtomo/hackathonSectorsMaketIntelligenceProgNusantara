@@ -1,312 +1,150 @@
-# User Guide Sementara NusaLens
-
-Panduan ini menjelaskan alur penggunaan NusaLens berdasarkan kondisi aplikasi
-saat ini. Tujuannya membantu pengguna memahami apa yang sudah bisa dicoba, apa
-yang masih berupa keterbatasan, dan ke mana alur produk seharusnya bergerak.
-
-NusaLens adalah alat informasi dan riset. Aplikasi ini bukan penasihat investasi,
-broker, trading bot, atau pemberi rekomendasi beli/jual/tahan.
-
-## Status saat ini
-
-Yang sudah tersedia untuk diuji:
-
-- Login dan email verified untuk fitur riset.
-- Pencarian perusahaan lewat **Temukan Saham** dengan data real.
-- Detail perusahaan atau **Company Cockpit**.
-- Tab **Ringkasan Riset**, **Profil**, **Harga**, **Keuangan**, dan **Valuasi**.
-- Grafik Recharts dan tabel angka pada data harga, keuangan, dan valuasi.
-- Ringkasan Riset berbasis aturan dengan bukti angka dan perhitungan sederhana.
-
-Yang belum selesai:
-
-- Wizard analisis terpandu.
-- Nilai Prioritas Riset final berbasis peer dan formula scoring v1.
-- Compare real maksimal tiga saham.
-- Snapshot perbandingan privat dan berversi.
-- AI explainer.
-
-## Alur utama yang bisa dicoba sekarang
-
-### 1. Login
-
-1. Buka aplikasi.
-2. Login memakai akun yang sudah terverifikasi email.
-3. Masuk ke dashboard.
-4. Pilih menu **Temukan Saham**.
-
-Jika akun belum verified, fitur riset akan diarahkan ke halaman verifikasi.
-
-### 2. Cari saham
-
-1. Pada halaman **Temukan Saham**, ketik nama perusahaan atau kode saham.
-   Contoh: `adaro`, `AADI`, `bank`, atau `central`.
-2. Sistem menampilkan daftar perusahaan yang cocok.
-3. Perhatikan kolom nama perusahaan dan simbol saham.
-4. Pilih aksi **Riset** pada perusahaan yang ingin diperiksa.
-
-Contoh alur:
-
-```text
-Temukan Saham -> ketik "AADI" -> pilih PT Adaro Andalan Indonesia Tbk -> Riset
-```
-
-Setelah klik **Riset**, user masuk ke halaman detail:
-
-```text
-/perusahaan/AADI
-```
-
-## Company Cockpit
-
-Halaman detail perusahaan berfungsi sebagai ruang kerja riset satu saham. Di
-sini user tidak langsung diberi kesimpulan beli/jual, tetapi diberi data dan
-bukti untuk memutuskan apakah perusahaan tersebut layak diteliti lebih lanjut.
-
-Tab yang tersedia:
-
-| Tab             | Fungsi                                            |
-| --------------- | ------------------------------------------------- |
-| Ringkasan Riset | Temuan berbasis aturan dan bukti angka sumber.    |
-| Profil          | Identitas, klasifikasi, dan ringkasan perusahaan. |
-| Harga           | Grafik dan tabel harga historis.                  |
-| Keuangan        | Grafik dan tabel laporan kuartalan.               |
-| Valuasi         | Grafik dan tabel rasio valuasi historis.          |
-
-## Ringkasan Riset
-
-### Cara membuka
-
-1. Pada halaman perusahaan, buka tab **Ringkasan Riset**.
-2. Klik tombol **Buka ringkasan riset**.
-3. Sistem mengambil profil perusahaan dan laporan keuangan kuartalan.
-4. Jika data tersedia dan masih fresh, sistem menampilkan temuan.
-
-Estimasi saat cold cache dapat mencapai beberapa credit karena sistem perlu
-mengambil profil dan laporan kuartalan. Cache hit tidak memakai credit tambahan.
-
-### Apa yang dihitung saat ini?
-
-Ringkasan Riset saat ini memakai aturan:
-
-```text
-research-facts-v1
-```
-
-Ini belum formula scoring final. Aturan saat ini hanya membaca fakta dasar yang
-dapat dibuktikan dari data perusahaan, misalnya:
-
-- perusahaan mencatat laba/rugi kuartalan;
-- porsi laba bersih terhadap pendapatan untuk perusahaan nonkeuangan;
-- ekuitas tercatat positif, negatif, atau nol;
-- tren pendapatan dan laba per kuartal dalam grafik/tabel.
-
-Contoh perhitungan yang sudah tersedia:
-
-| Temuan              | Perhitungan                                          |
-| ------------------- | ---------------------------------------------------- |
-| Laba/rugi kuartalan | `earnings > 0`, `earnings < 0`, atau `earnings = 0`. |
-| Margin laba bersih  | `earnings / revenue * 100`.                          |
-| Status ekuitas      | `total_equity > 0`, `< 0`, atau `= 0`.               |
-
-Angka pada Ringkasan Riset berasal dari data real yang dimuat melalui backend,
-bukan dari AI. AI juga belum dipakai untuk membuat kesimpulan.
-
-### Bukti dan perhitungan
-
-Setiap temuan memiliki bagian **Bukti dan perhitungan**. Saat dibuka, user dapat
-melihat:
-
-- metrik sumber;
-- nilai angka;
-- periode laporan;
-- basis angka, misalnya selama kuartal atau posisi pada tanggal laporan;
-- formula aturan;
-- endpoint sumber;
-- waktu pengambilan data;
-- versi aturan.
-
-Bagian ini dibuat agar user bisa menelusuri alasan sebuah temuan muncul, bukan
-hanya menerima kalimat ringkasan.
-
-## Yang masih perlu diperiksa
-
-Bagian **Yang masih perlu diperiksa** adalah daftar keterbatasan analisis saat
-ini. Ini bukan nilai dari API dan bukan skor. Daftar ini sengaja muncul agar
-NusaLens tidak menarik kesimpulan yang belum didukung bukti.
-
-### Hubungan laba dan kas belum disimpulkan
-
-Alasan:
-
-- sistem belum memverifikasi basis arus kas;
-- laba positif belum tentu berarti kas operasional sehat;
-- laporan arus kas belum dibandingkan dengan laba pada basis periode yang sama.
-
-Yang perlu dilakukan ke depan:
-
-- ambil dan validasi data arus kas;
-- cocokkan basis kuartalan atau kumulatif;
-- bandingkan laba dengan kas operasi.
-
-### Pertumbuhan tahunan belum dihitung
-
-Alasan:
-
-- ringkasan saat ini belum menghitung YoY;
-- empat kuartal yang dimuat belum otomatis menjamin kuartal pembanding tahun
-  sebelumnya tersedia dan sebanding;
-- pertumbuhan harus membandingkan kuartal yang sama, misalnya Q2 2026 dengan Q2
-  2025, bukan sekadar kuartal sebelumnya.
-
-Yang perlu dilakukan ke depan:
-
-- pastikan data kuartal pembanding tahun sebelumnya tersedia;
-- hitung pertumbuhan pendapatan dan laba YoY;
-- tampilkan periode dan basis pembanding.
-
-### Nilai Prioritas Riset belum tersedia
-
-Alasan:
-
-- kalkulator scoring v1 belum dihubungkan;
-- sistem belum mengambil semua peer valid;
-- percentile dan kelengkapan data belum dihitung;
-- bukti peer belum disimpan sebagai snapshot immutable.
-
-Nilai Prioritas Riset final nantinya mengikuti formula di `docs/SCORING.md`,
-termasuk:
-
-- Kesehatan Bisnis 30%;
-- Pertumbuhan 25%;
-- Harga Saham 20%;
-- Kekuatan Pasar 15%;
-- Keamanan Keuangan 10%;
-- kelengkapan minimal 70%;
-- peer minimal 5 perusahaan lain per metrik;
-- angka tampil dua desimal;
-- tanpa label beli/jual/tahan.
-
-Jadi, bila dropdown ini muncul, artinya sistem sedang jujur bahwa skor prioritas
-belum layak ditampilkan.
-
-## Tab Profil
-
-Tab **Profil** digunakan untuk membaca identitas perusahaan. Gunakan tab ini
-untuk memastikan:
-
-- nama perusahaan benar;
-- sektor/subsektor sesuai;
-- deskripsi bisnis tersedia;
-- data profil masih fresh.
-
-Profil membantu memahami konteks sebelum membaca grafik atau angka keuangan.
-
-## Tab Harga
-
-Tab **Harga** digunakan untuk membaca pergerakan harga historis.
-
-Langkah:
-
-1. Buka tab **Harga**.
-2. Pilih rentang, misalnya 30 hari atau 90 hari.
-3. Baca grafik harga.
-4. Bila butuh angka lengkap, buka tabel.
-
-Catatan:
-
-- perubahan harga bukan total return;
-- grafik tidak memberi rekomendasi beli/jual;
-- harga historis perlu dibaca bersama data keuangan dan valuasi.
-
-## Tab Keuangan
-
-Tab **Keuangan** digunakan untuk membaca laporan kuartalan.
-
-Langkah:
-
-1. Buka tab **Keuangan**.
-2. Pilih metrik yang tersedia.
-3. Baca grafik dan tabel.
-4. Perhatikan periode laporan.
-
-Catatan:
-
-- angka tabel memakai rupiah penuh;
-- grafik dapat memakai satuan ringkas seperti miliar rupiah;
-- nol valid tetap ditampilkan sebagai nol;
-- data tidak tersedia tidak diganti nol.
-
-## Tab Valuasi
-
-Tab **Valuasi** digunakan untuk membaca rasio valuasi historis.
-
-Langkah:
-
-1. Buka tab **Valuasi**.
-2. Baca rasio yang tersedia, misalnya P/E atau P/B bila provider menyediakan.
-3. Gunakan tabel untuk melihat angka lengkap per periode.
-
-Catatan:
-
-- rasio rendah tidak otomatis berarti murah;
-- rasio tinggi tidak otomatis berarti mahal;
-- konteks peer dan kualitas bisnis tetap diperlukan.
-
-## Setelah menemukan satu saham, user ke mana?
-
-Kondisi saat ini: setelah user membuka satu perusahaan, alur lanjut belum cukup
-jelas. Secara produk, user seharusnya diarahkan ke urutan berikut:
-
-```text
-Temukan Saham
--> Riset satu perusahaan
--> Baca Ringkasan Riset
--> Buka Bukti dan Perhitungan
--> Periksa Harga, Keuangan, dan Valuasi
--> Tambahkan pembanding
--> Bandingkan maksimal tiga saham
--> Hitung Nilai Prioritas Riset bila data peer sudah siap
--> Simpan snapshot riset bila ingin ditinjau ulang
-```
-
-Alur lanjut tersebut belum seluruhnya tersedia di UI. Karena itu, untuk sementara
-penggunaan yang paling masuk akal adalah:
-
-1. mulai dari **Temukan Saham**;
-2. buka satu perusahaan;
-3. baca **Ringkasan Riset**;
-4. buka **Bukti dan perhitungan** pada setiap temuan;
-5. cek **Harga**, **Keuangan**, dan **Valuasi**;
-6. catat saham yang menarik secara manual;
-7. ulangi pencarian untuk perusahaan lain.
-
-## Perbaikan UX yang perlu dibuat berikutnya
-
-Agar pengguna awam tidak berhenti setelah satu saham, halaman perusahaan perlu
-menampilkan aksi lanjut yang eksplisit:
-
-- **Bandingkan dengan saham lain**;
-- **Tambah ke perbandingan**;
-- **Muat data harga**;
-- **Muat data keuangan**;
-- **Muat valuasi**;
-- **Hitung Nilai Prioritas Riset** bila scoring sudah siap;
-- **Simpan snapshot riset** bila persistence compare sudah siap.
-
-Untuk tahap berikutnya, prioritas paling masuk akal adalah merapikan halaman
-Company Cockpit agar setelah Ringkasan Riset user mendapat panduan langkah
-berikutnya, bukan berhenti di halaman detail.
-
-## Ringkasan status fitur
-
-| Alur                        | Status                                         |
-| --------------------------- | ---------------------------------------------- |
-| Temukan Saham real          | Sudah bisa dicoba.                             |
-| Detail perusahaan real      | Sudah bisa dicoba.                             |
-| Ringkasan Riset berbukti    | Sudah bisa dicoba, tetapi belum scoring final. |
-| Harga/Keuangan/Valuasi real | Sudah bisa dicoba.                             |
-| Compare real                | Belum selesai. Proposal bertahap sudah dibuat. |
-| Nilai Prioritas Riset final | Belum selesai. Menunggu scoring dan peer.      |
-| Wizard pengguna awam        | Belum selesai.                                 |
-| Snapshot tersimpan          | Belum selesai.                                 |
+# Panduan Penggunaan NusaLens
+
+Status: 3 Oktober 2026. Panduan ini mengikuti alur yang tersedia, bukan mockup.
+NusaLens membantu riset, bukan memberi keputusan beli/jual/tahan.
+
+## 1. Masuk dan cari perusahaan
+
+1. Buka aplikasi, daftar bila belum memiliki akun, lalu verifikasi email.
+2. Login. Dashboard menyediakan pencarian nama/kode dan akses riset tersimpan.
+3. Ketik nama, misalnya `Adaro`, tanpa perlu mengetahui ticker. Pilih hasil
+   autocomplete dengan nama/logo yang sesuai, atau buka **Temukan Saham**.
+4. Pada daftar, terapkan/reset pencarian dan gunakan pagination. Pilih perusahaan
+   untuk masuk ke `/perusahaan/AADI`, misalnya PT Adaro Andalan Indonesia Tbk.
+
+`/perusahaan` hanya mengalihkan ke Temukan Saham. Bukan daftar kedua.
+Nama mirip belum tentu perusahaan yang sama: cocokkan nama lengkap dan profil.
+
+## 2. Pahami satu perusahaan
+
+Tab di cockpit memisahkan pertanyaan riset:
+
+| Tab | Yang diperiksa |
+| --- | --- |
+| Ringkasan Riset | Laba/rugi, margin, ekuitas dan temuan yang memiliki bukti. |
+| Profil | Identitas dan klasifikasi bisnis. |
+| Harga | Grafik harga historis, rentang 30/90 hari, serta tabel sumber. |
+| Keuangan | Angka kuartalan dan tren pendapatan/laba/aset/ekuitas. |
+| Valuasi | Rasio historis tahunan yang disediakan provider. |
+
+1. Tekan **Buka ringkasan riset** untuk mengambil fakta yang dibutuhkan.
+2. Buka **Bukti dan perhitungan** pada temuan. Periksa input, unit, periode,
+   rumus, sumber dan waktu pengambilannya.
+3. Buka tab lain sesuai pertanyaan, tidak perlu memuat seluruh bagian sekaligus.
+4. Grafik keuangan memakai satuan ringkas; tabel menyajikan angka lengkap.
+   Tooltip membantu membaca periode. Kosong berarti tidak tersedia, bukan nol.
+
+Ringkasan memakai `research-facts-v1`, misalnya margin `laba / pendapatan x 100`.
+Ini berbeda dari formula peringkat peer `nusalens-v1.0.0` pada langkah berikutnya.
+Hubungan laba dan kas tetap perlu diperiksa karena kesamaan basis arus kas belum
+terverifikasi. Daftar keterbatasan bukan angka tambahan dari API.
+
+## 3. Analisis perusahaan sejenis
+
+1. Di bagian **Posisi AADI dibanding perusahaan sejenis**, tekan
+   **Analisis perusahaan sejenis**.
+2. Sistem mengambil input fundamental dan seluruh populasi sektor melalui backend.
+   Sistem memilih peer kompatibel; tidak hanya memakai saham pilihan pengguna.
+3. Baca kelengkapan berbobot, jumlah populasi sumber, grafik dan lima komponen.
+4. Buka satu komponen. Periksa nilai mentah, periode, kelompok, jumlah peer,
+   rank/percentile, bobot efektif dan alasan perusahaan dikeluarkan.
+5. **Buka seluruh bukti perhitungan** membuka JSON input/hasil immutable untuk
+   penelusuran rinci. Bukti ini tidak memuat API key atau data pribadi pengguna.
+
+| Komponen | Bobot | Inti perhitungan |
+| --- | --- | --- |
+| Kesehatan Bisnis | 30% | ROE/ROA tahunan. |
+| Pertumbuhan | 25% | `(kuartal sekarang / kuartal sama tahun lalu - 1) x 100`. |
+| Harga Saham | 20% | Kapitalisasi pasar / laba empat kuartal; kapitalisasi / ekuitas kuartalan. |
+| Kekuatan Pasar | 15% | Perubahan penutupan 20 sesi dengan basis aksi korporasi terverifikasi. |
+| Keamanan Keuangan | 10% | Bank CAR/NPL; nonkeuangan DER/current ratio. |
+
+Nilai relatif memerlukan sedikitnya **lima peer lain** valid per metrik. Semua
+peer valid dipakai. Bank tidak dicampur nonbank. Fallback periode maksimal satu
+tahun/kuartal, ditampilkan jelas. Angka tampilan dua desimal; rumus tidak dibulatkan
+di tengah. Rincian ada di [SCORING](SCORING.md).
+
+### Mengapa total belum muncul?
+
+Total memerlukan **kelengkapan berbobot minimal 70% sebelum penyesuaian bobot**.
+Quality + Growth + Risk lengkap baru 65%. Contoh smoke AADI menghasilkan 65,00%:
+tiga komponen dapat dibaca tetapi total memang harus ditahan. Ini bukan skor nol.
+Keuangan nonbank tidak dipaksa memakai rasio risiko industri.
+
+**Lengkapi valuasi peer** mencoba mengambil harga seluruh kelompok yang memenuhi
+syarat laporan. Estimasi jumlah panggilan harus muat dalam kuota. Jika tidak cukup,
+tidak dimulai pengambilan parsial kelompok tersebut. Jika provider gagal di tengah,
+data parsial tidak dipakai sebagai sampel lengkap; credit yang telanjur terpakai
+tetap tercatat. Laba TTM/ekuitas/tanggal pasar harus cocok agar valuasi masuk nilai.
+
+Momentum real tetap tidak tersedia sampai basis aksi korporasi terbukti. Tab Harga
+boleh menampilkan seri mentah, tetapi itu bukan izin memakainya sebagai skor momentum.
+Tab Valuasi historis juga tidak menggantikan PE TTM/PB MRQ pada mesin nilai.
+
+### Data lama
+
+Lihat waktu sumber. Saat masa berlaku habis, panel diberi status historis.
+**Perbarui analisis** membaca ulang sumber/cache sesuai kebijakan; tidak memperbarui
+usia data hanya karena perhitungan dijalankan lagi. Perbarui analisis awal memakai
+fundamental; valuasi opsional perlu diminta kembali. Hasil lama tidak ditimpa.
+
+## 4. Temukan pembanding
+
+1. Setelah analisis muncul, pilih **Lihat kandidat sejenis**.
+2. Cari nama/kode dan urutkan menurut Kesehatan Bisnis, Pertumbuhan atau Keamanan
+   Keuangan. Tekan **Terapkan**; **Reset** kembali ke seluruh kandidat terkait.
+3. Daftar memakai bukti tersimpan, tanpa panggilan Sectors tambahan. Pagination
+   tidak mengubah populasi peer. Nilai kosong tetap diurutkan setelah nilai valid.
+4. Buka detail dengan ikon mata atau gunakan ikon Bandingkan untuk menyandingkan
+   target awal dengan kandidat itu.
+
+Kelompok dan periode tiap metrik dapat berbeda. Skor identik bukan berarti
+risiko atau prospek identik. Daftar ini bukan screener seluruh IDX atau rekomendasi.
+
+## 5. Bandingkan maksimal tiga saham
+
+1. Gunakan **Bandingkan** dari cockpit/kandidat atau sidebar.
+2. Cari perusahaan lewat autocomplete, lalu tambahkan pilihan. Maksimal tiga.
+   URL menyimpan pilihan `symbols`; saat kosong tidak ada saham contoh otomatis.
+3. Periksa profil. Muat harga, keuangan, atau valuasi bila diperlukan.
+4. Jalankan analisis perusahaan sejenis untuk setiap saham yang ingin dinilai.
+   Mesin memakai peer masing-masing, bukan tiga pilihan sebagai kelompok scoring.
+5. Periksa matriks, grafik, kelengkapan, dan bukti. Jangan menyamakan peringkat
+   perusahaan dari jenis bisnis berbeda tanpa membaca kelompok pembandingnya.
+
+Error pada satu saham tidak menghapus data saham lain. Snapshot memerlukan profil
+pilihan yang berhasil dimuat; tidak memaksa pengambilan semua section atau skor.
+
+## 6. Simpan dan lanjutkan riset
+
+1. Tekan **Simpan Snapshot**. Data yang telah dimuat disimpan, tanpa refresh API.
+2. Buka **Riset Tersimpan** di sidebar untuk mencari nama dan membuka versi lama.
+3. Ikon pensil mengubah nama. Ikon hapus meminta konfirmasi untuk menghapus versi.
+4. Pada detail pilih **Buat versi terbaru** untuk membuka pilihan saham yang sama.
+5. Muat kembali bagian/nilai yang dibutuhkan, kemudian simpan. Versi sebelumnya
+   tetap utuh; versi baru berisi bagian yang dimuat pada sesi pembaruan tersebut.
+
+Snapshot privat hanya milik akun yang menyimpan. Angka berasal dari receipt backend
+dan bukti Intelligence, bukan angka kiriman browser yang dipercaya begitu saja.
+Seluruh input/hasil skor disalin ke snapshot agar tetap dapat dibaca setelah bukti
+bersama berusia lebih dari 30 hari dibersihkan. Menghapus versi tidak menghapus
+versi lain. Tidak ada sharing publik atau riwayat pencarian otomatis.
+
+## 7. Saat data atau credit tidak tersedia
+
+- Kuota aplikasi 20 credit per akun/hari, reset 00.00 WIB. Budget project 1.000
+  sekali pakai; bukan refill harian. Cadangan 600 tidak digunakan otomatis.
+- Cache hit, bukti tersimpan, dan membuka snapshot tidak memerlukan credit Sectors.
+- Cache fundamental 24 jam, pasar peer 1 jam dengan batas observasi 24 jam;
+  pengecualian libur bursa belum digunakan tanpa kalender yang terbukti.
+- Jangan menekan ulang berulang kali saat limit tercapai. Buka riset tersimpan.
+- Provider error, peer kurang, dan data kosong ditampilkan berbeda. Error tidak
+  disulap menjadi skor, nol, atau rekomendasi transaksi.
+
+## Batas MVP dan rencana lanjut
+
+Alur terpandu memakai langkah/aksi pada cockpit, kandidat, compare dan snapshot;
+tidak ada wizard modal terpisah. AI belum diintegrasikan. Berikutnya: validasi
+basis harga/kalender serta cakupan valuasi live, kemudian AI opsional dengan budget
+terpisah. Paket berbayar/BYOK adalah arah pasca-MVP, belum implementasi.
+Lihat [Roadmap](ROADMAP.md) dan [hasil verifikasi](work-items/penuntasan-mvp/README.md).

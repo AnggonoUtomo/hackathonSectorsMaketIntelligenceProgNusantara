@@ -1,8 +1,11 @@
+import { AnalysisTable, type AnalysisRow } from '@/components/company-analysis-chart';
 import CompanyLogo from '@/components/company-logo';
+import ResearchPriorityPanel from '@/components/research-priority';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
+import type { ResearchPriority } from '@/types/research-priority';
 import { Head, Link } from '@inertiajs/react';
 import { Bookmark, CalendarDays, ExternalLink, GitCompare, History, Table2 } from 'lucide-react';
 
@@ -32,6 +35,8 @@ type SnapshotSectionEntry = {
 };
 
 type SnapshotPayload = {
+    scores?: Record<string, ResearchPriority>;
+    integrity?: string;
     companies?: SnapshotCompany[];
     sections?: Record<string, Record<string, SnapshotSectionEntry>>;
 };
@@ -95,7 +100,7 @@ const sectionLabels: Record<string, string> = {
 export default function ComparisonSnapshotDetail({ snapshot }: Props) {
     const companies = snapshot.payload.companies ?? [];
     const sections = snapshot.payload.sections ?? {};
-    const compareUrl = `/bandingkan?symbols=${snapshot.symbols.join(',')}`;
+    const compareUrl = `/bandingkan?symbols=${snapshot.symbols.join(',')}&base_snapshot_id=${snapshot.id}`;
 
     return (
         <AppLayout breadcrumbs={breadcrumbs(snapshot)}>
@@ -121,12 +126,22 @@ export default function ComparisonSnapshotDetail({ snapshot }: Props) {
                             <Button asChild>
                                 <Link href={compareUrl}>
                                     <GitCompare className="size-4" />
-                                    Buka Compare Live
+                                    Buat versi terbaru
                                 </Link>
                             </Button>
                         </div>
                     </div>
                 </section>
+
+                {snapshot.payload.integrity !== 'server-v1' && (
+                    <p role="status" className="border-l-2 border-amber-500 pl-3 text-sm">
+                        Snapshot lama ini dibuat sebelum verifikasi bukti server. Angkanya belum memiliki jaminan integritas yang sama dengan snapshot
+                        baru.
+                    </p>
+                )}
+                {Object.values(snapshot.payload.scores ?? {}).map((score) => (
+                    <ResearchPriorityPanel key={score.symbol} symbol={score.symbol} initial={score} historical />
+                ))}
 
                 <section className="grid gap-3 md:grid-cols-3">
                     <div className="rounded-lg border p-4">
@@ -234,6 +249,18 @@ export default function ComparisonSnapshotDetail({ snapshot }: Props) {
                                                 <div className="text-muted-foreground mt-1 text-xs">
                                                     Diambil: {formatDate(entry.fetchedAt ?? null)}
                                                 </div>
+                                                {Array.isArray(entry.rows) && entry.rows.length > 0 && (
+                                                    <details className="mt-3">
+                                                        <summary className="cursor-pointer text-xs">Buka data tersimpan</summary>
+                                                        <AnalysisTable
+                                                            rows={entry.rows as AnalysisRow[]}
+                                                            metrics={Object.keys(entry.rows[0] as Record<string, unknown>)
+                                                                .filter((key) => key !== 'date')
+                                                                .map((key) => ({ key, label: key.replaceAll('_', ' '), color: '#0d9488' }))}
+                                                            financial={section === 'financials'}
+                                                        />
+                                                    </details>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
