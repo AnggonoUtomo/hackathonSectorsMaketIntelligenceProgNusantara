@@ -61,7 +61,8 @@ Siapkan akun demo terverifikasi secara privat; jangan menaruh password di README
 ## Prioritas dua hari terakhir
 
 1. Sediakan hosting sesuai Deployment, isi secret secara privat dan jalankan
-   seluruh gate server. Commit/push release hanya ketika diminta user.
+   seluruh gate server. Source rilis sudah di-push 7 Oktober 2026 atas instruksi
+   user; ini belum berarti aplikasi sudah terpasang pada hosting publik.
 2. Review satu alur nyata lengkap, rekam demo dengan tanggal sumber terlihat,
    periksa aturan resmi, URL akses dan persyaratan video sebelum submission.
 

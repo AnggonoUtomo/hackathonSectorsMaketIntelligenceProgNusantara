@@ -32,3 +32,10 @@ Lihat [plan](plan.md), [tasks](tasks.md), dan [Scoring](../../../../SCORING.md).
 Untuk memakai kebijakan baru pada aplikasi, muat/perbarui analisis aktif.
 Hasil tersimpan lama tetap historis; buat versi baru untuk perbandingan terbaru.
 Pengambilan real saat pengguna memperbarui tetap mengikuti TTL dan kuota normal.
+
+## Delivery 7 Oktober 2026
+
+Perubahan dikomit sebagai `f5d6a5e` dan berhasil di-push ke `origin/main` bersama
+pekerjaan rilis dan tampilan bukti. Suite gabungan 197 test / 1.180 assertion
+lulus. Pernyataan belum commit/push di verifikasi 6 Oktober adalah riwayat tahap
+tersebut, bukan status delivery sekarang.

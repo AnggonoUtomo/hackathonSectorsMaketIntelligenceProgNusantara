@@ -1,7 +1,7 @@
 # Tampilan Bukti Perhitungan
 
 Otorisasi user 6 Oktober 2026: URL evidence harus nyaman dibaca, kemudian commit
-dan push. Status: implementasi dan verifikasi selesai; delivery Git menyusul.
+dan push. Status: selesai, terverifikasi dan sudah di-push pada 7 Oktober 2026.
 Owner Intelligence; tidak mengubah formula/TTL.
 
 Browser membuka halaman Inertia pada URL yang sama. `Accept: application/json`
@@ -32,3 +32,14 @@ Lihat [plan](plan.md) dan [tasks](tasks.md).
 - Akun QA, sesi akun QA dan credential sementara dihapus setelah pemeriksaan;
   akun pengguna, bukti, snapshot, usia cache dan ledger tidak diubah.
 - Pemakaian credit Sectors untuk pekerjaan ini: 0. Hosting tidak disentuh.
+
+## Delivery
+
+- `4dfda69`: persiapan rilis, hardening, preflight dan dependency patch.
+- `f5d6a5e`: ambang kelengkapan 60% dan bukti lama tetap immutable.
+- `5b557ba`: halaman bukti serta sinkronisasi dokumentasi/checklist.
+
+Ketiganya berhasil di-push ke `origin/main`; HEAD remote `5b557ba` dikonfirmasi
+dengan `git ls-remote`. File tersisa hanya folder user `Hackaton/` dan dua file
+LSP untracked; tidak dimasukkan. Catatan penutupan ini dikirim terpisah sesudah
+verifikasi push. Hasil lokal tidak menyatakan deployment publik telah selesai.

@@ -29,7 +29,7 @@ rekomendasi BUY/HOLD/SELL.
 - [Ambang Kelengkapan 60%](modules/Intelligence/work-items/ambang-kelengkapan-60/README.md):
   revisi formula v1.1.0 atas instruksi user 6 Oktober 2026; snapshot lama tetap utuh.
 - [Kesiapan Publish](work-items/kesiapan-publish/README.md): hardening, audit,
-  preflight, CI dan verifikasi rilis 6 Oktober 2026. Hosting belum tersedia.
+  preflight, CI dan verifikasi rilis 6-7 Oktober 2026. Hosting belum tersedia.
 - [Deployment](DEPLOYMENT.md): environment produksi, pemasangan, email,
   worker/scheduler, pemindahan ledger, backup/rollback dan gate sebelum publikasi.
 - [Penuntasan MVP](work-items/penuntasan-mvp/README.md): acuan hasil fitur

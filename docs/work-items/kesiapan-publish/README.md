@@ -61,8 +61,8 @@ Helper browser sementara dibersihkan. Smoke tidak membuat akun, mengirim email,
 atau memanggil Sectors. Pemakaian credit pekerjaan kesiapan publish: **0**.
 QA riset login/cockpit/compare/snapshot sebelumnya tetap tercatat terpisah pada
 [Penuntasan MVP](../penuntasan-mvp/README.md), bukan diakui sebagai smoke baru.
-Workflow CI sudah disiapkan; GitHub Actions belum dijalankan untuk perubahan
-ini karena belum di-push. Perintah ekuivalen dijalankan lokal.
+Pada verifikasi 6 Oktober perubahan belum di-push; perintah ekuivalen CI
+dijalankan lokal. Status delivery terbaru dicatat di bawah.
 
 ## Pemeriksaan ulang 7 Oktober 2026
 
@@ -83,6 +83,12 @@ provider setelah cutover wajib ditutup mengikuti Deployment. Konfigurasi Linux
 di runbook belum dieksekusi pada hosting tujuan. Batas momentum/kalender dan
 valuasi populasi live pada Penuntasan MVP tetap berlaku; tidak dibuat angka palsu.
 
-User belum memiliki hosting; pembelian, upload, video/submission resmi serta
-commit/push tidak dilakukan. Perubahan rilis dan dokumentasi lanjutan tetap
-di worktree setelah `1d83595`. File `Hackaton/` dan LSP milik user tidak disentuh.
+User belum memiliki hosting; pembelian, upload dan video/submission resmi
+tidak dilakukan. File `Hackaton/` dan LSP milik user tidak disentuh.
+
+## Delivery 7 Oktober 2026
+
+Atas instruksi lanjutan user, persiapan rilis dikirim melalui `4dfda69`, bersama
+perubahan ambang 60% `f5d6a5e` dan tampilan bukti `5b557ba`. Push `origin/main`
+berhasil dan HEAD remote dikonfirmasi. Hasil verifikasi di atas adalah lokal;
+hasil GitHub Actions dan pengujian hosting tidak disamakan dengan hasil lokal.
