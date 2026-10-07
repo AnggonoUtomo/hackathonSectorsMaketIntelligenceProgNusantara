@@ -11,10 +11,10 @@
 - Lokasi frontend: `resources/js/`, mengikuti starter Laravel/Inertia yang ada.
 - Framework reusable: tidak ada pada baseline awal.
 - Strategi identifier: ULID untuk entitas, termasuk users dan foreign key terkait.
-  Migrasi dari ID integer starter belum dilakukan; jangan reset data tanpa izin.
+  User dan foreign key terkait sudah memakai ULID; jangan reset data tanpa izin.
 - Mekanisme route frontend: Inertia.js.
 - Command discovery/validation module: belum tersedia. Starter Laravel/Inertia
-  sudah ada; module NusaLens belum diimplementasikan.
+  tersedia bersama enam module NusaLens. Validasi memakai PHPUnit/typecheck/lint/build.
 - Bahasa dokumentasi dan handoff: Bahasa Indonesia.
 - Commit message: gaya Conventional Commit, contoh
   `feat(screening): add structured company screener`.
@@ -102,7 +102,7 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
 - Compare maksimal 3 saham. Riwayat MVP hanya perbandingan tersimpan manual,
   privat, berbasis snapshot, dan pembaruan sebagai versi baru.
 - Scoring mencakup bank dan nonbank sesuai metrik v1 di `docs/SCORING.md`.
-  Minimal 5 peer lain per metrik, kelengkapan berbobot 70%, tampilan 2 desimal,
+  Minimal 5 peer lain per metrik, kelengkapan berbobot minimal 60%, tampilan 2 desimal,
   tanpa label kategori skor. Jangan mencampur bank dan nonbank sebagai peer.
 - NusaLens adalah alat informasi dan riset, bukan penasihat investasi, broker,
   trading bot, atau pemberi rekomendasi BUY/HOLD/SELL.

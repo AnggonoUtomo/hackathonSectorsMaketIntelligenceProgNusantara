@@ -13,7 +13,9 @@ class ResearchPriorityTest extends TestCase
         $rows = $this->population();
         $result = (new ResearchPriorityCalculator)->calculate('TARG', $rows);
         $this->assertEqualsWithDelta(65, $result['completeness'], 0.000001);
-        $this->assertNull($result['score']);
+        $this->assertSame(50.0, $result['score']);
+        $this->assertNull($result['reason']);
+        $this->assertSame('nusalens-v1.1.0', $result['formulaVersion']);
         $this->assertSame(50.0, $result['components'][0]['score']);
         $this->assertCount(5, $result['components'][0]['metrics'][0]['peers']);
         $rows[] = $this->company('MORE');
@@ -44,7 +46,7 @@ class ResearchPriorityTest extends TestCase
         $this->assertNull((new ResearchPriorityCalculator)->calculate('TARG', $rows)['components'][0]['score']);
     }
 
-    public function test_exact_threshold_and_lower_is_better_with_no_intermediate_rounding(): void
+    public function test_lower_is_better_with_no_intermediate_rounding(): void
     {
         $rows = $this->population();
         foreach ($rows as &$row) {
@@ -58,6 +60,22 @@ class ResearchPriorityTest extends TestCase
         $this->assertNotNull($result['score']);
         $this->assertSame(100.0, $result['components'][2]['score']);
         $rows[0]['annual']['2025']['currentAssets'] = null;
+        $this->assertNotNull((new ResearchPriorityCalculator)->calculate('TARG', $rows)['score']);
+    }
+
+    public function test_exact_sixty_percent_qualifies_but_less_than_sixty_does_not(): void
+    {
+        $rows = $this->population();
+        $rows[0]['annual']['2025']['currentAssets'] = null;
+        $result = (new ResearchPriorityCalculator)->calculate('TARG', $rows);
+        $this->assertSame(60.0, $result['completeness']);
+        $this->assertSame(50.0, $result['score']);
+        $this->assertNull($result['reason']);
+        $this->assertSame([30, 25, 20, 15, 10], array_column($result['components'], 'weight'));
+        $rows[0]['annual']['2025']['debt'] = null;
+        $result = (new ResearchPriorityCalculator)->calculate('TARG', $rows);
+        $this->assertSame(55.0, $result['completeness']);
+        $this->assertSame('Data belum cukup. Nilai total memerlukan kelengkapan berbobot minimal 60%.', $result['reason']);
         $this->assertNull((new ResearchPriorityCalculator)->calculate('TARG', $rows)['score']);
     }
 

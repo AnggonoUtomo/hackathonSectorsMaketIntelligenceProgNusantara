@@ -1,10 +1,11 @@
 # Spesifikasi Intelligence MVP
 
-- Formula `nusalens-v1.0.0`; minimal5 peer lain, semua anggota valid kelompok.
+- Formula `nusalens-v1.1.0`; minimal5 peer lain, semua anggota valid kelompok.
 - Kompatibilitas kind dan subsektor; keuangan nonbank memakai industri sama.
 - Periode terbaru dicoba di seluruh hierarki sebelum mundur maksimal satu periode.
 - Ties average-rank, lower-is-better dibalik, tanpa pembulatan tahap menengah.
-- Kelengkapan bobot awal minimal70%; total ditahan bila kurang, bukan nol.
+- Kelengkapan bobot awal minimal60%; total ditahan bila kurang, bukan nol.
+- Bukti/snapshot v1.0.0 (ambang70%) tetap immutable; perhitungan baru membuat bukti versi baru.
 - Input PE: market cap/laba empat kuartal; PB: market cap/ekuitas kuartal.
   Laporan, tanggal pasar dan denominator harus cocok, denominator positif.
 - Momentum memerlukan21 close dan bukti penyesuaian aksi korporasi. Adapter real

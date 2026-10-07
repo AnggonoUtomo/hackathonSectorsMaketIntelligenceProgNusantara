@@ -2,7 +2,9 @@
 
 ## Status dan ownership
 
-Keputusan MVP disetujui user pada 2026-09-20; kalkulator belum diimplementasikan.
+Keputusan MVP disetujui user pada 2026-09-20. Pada 2026-10-06 user menurunkan
+ambang kelengkapan dari 70% ke 60%; formula aktif menjadi `nusalens-v1.1.0`.
+Bobot, metrik, peer, percentile dan reweighting tetap seperti v1.0.0.
 Intelligence memiliki formula, hasil, bukti input/peer, dan versi konfigurasi.
 Domain berupa pure PHP tanpa HTTP, Laravel, database, Redis, atau AI.
 Application menyiapkan input internal melalui kontrak publik.
@@ -28,7 +30,7 @@ Bobot/formula dikonfigurasi dan diberi versi di kode, bukan editor bobot di UI.
 Asuransi dan perusahaan keuangan nonbank tetap tercakup, tetapi tidak dipaksa
 memakai DER/current ratio. Komponen risiko tidak tersedia dan mengurangi
 kelengkapan 10 poin persentase; jangan menghapus bobot itu dari denominator
-kelengkapan. Skor masih mungkin tersedia bila total kelengkapan >=70%.
+kelengkapan. Skor masih mungkin tersedia bila total kelengkapan >=60%.
 
 Foreign flow, broker, forecast, PS, NIM, CASA, berita, dan filing tidak masuk
 skor v1. Jangan menambahkan metrik atau endpoint hanya karena provider mendukungnya.
@@ -122,14 +124,14 @@ Metrik hilang dikeluarkan, bobot tersedia dinormalisasi di dalam komponen.
 Komponen tanpa metrik ditampilkan tidak tersedia, bukan nol. Bobot antar-komponen
 dinormalisasi hanya bila suatu komponen kosong seluruhnya.
 
-- Kelengkapan >=70%: total boleh ditampilkan walau ada komponen kosong.
-- Kelengkapan <70%: tahan total, tampilkan data yang tersedia dan "Data belum cukup".
+- Kelengkapan >=60%: total boleh ditampilkan walau ada komponen kosong.
+- Kelengkapan <60%: tahan total, tampilkan data yang tersedia dan "Data belum cukup".
 - Contoh: hanya komponen risiko 10% kosong, komponen lain lengkap -> kelengkapan
   90%, total dapat dihitung dari empat komponen dengan bobot dinormalisasi.
 - Satu dari dua metrik Quality hilang mengurangi kelengkapan 15 poin persentase,
   bukan dianggap tetap 100% setelah reweighting.
 - UI menampilkan 2 angka desimal, tanpa label tinggi/sedang/rendah. Kalkulasi,
-  pengurutan, ambang 70%, dan identitas input memakai nilai sebelum pembulatan
+  pengurutan, ambang 60%, dan identitas input memakai nilai sebelum pembulatan
   tampilan; tidak ada pembulatan antara tahap.
 
 ## Bukti, reuse, dan AI
@@ -138,6 +140,9 @@ Simpan hasil dan snapshot input immutable di MySQL: angka mentah/unit, periode,
 tanggal pasar, fetched_at, validitas/alasan eksklusi, anggota peer dan nilainya,
 rank/percentile, bobot awal/efektif, kontribusi, kelengkapan, dan versi formula.
 Input berubah menghasilkan snapshot baru, bukan menimpa hasil historis.
+Perubahan versi formula juga menghasilkan fingerprint bukti baru meski input
+sama. Bukti/snapshot v1.0.0 tetap memakai hasil dan ambang 70% saat disimpan;
+tidak dimigrasikan atau dihitung ulang diam-diam. Analisis baru memakai v1.1.0.
 Snapshot Company menyimpan fakta; bukti Intelligence menentukan fakta mana yang
 dipakai dalam satu kalkulasi. Kontrak persistence ada di [DATA-MODEL.md](DATA-MODEL.md).
 
@@ -151,7 +156,18 @@ mengganti rumus, mengarang bukti, atau memberi BUY/HOLD/SELL.
 
 ## Gate implementasi
 
-Paket metrik sudah disetujui, bukan hasil validasi live data. Sebelum kalkulator
+Status sumber real 3 Oktober 2026: annual ROE/ROA, quarterly YoY, dan risiko
+diproyeksikan lewat structured companies. Valuasi opsional menggabungkan Daily
+market cap/close dengan empat laba kuartal eksplisit dan ekuitas kuartalan.
+Tanggal harga sama dan seluruh kelompok wajib selesai sebelum ranking.
+Momentum real tetap unavailable: adjusted close belum terbukti. Smoke live AADI
+fundamental menghasilkan kelengkapan 65%, tanpa total pada formula lama v1.0.0.
+Dengan v1.1.0, input valid yang tetap memiliki kelengkapan 65% memenuhi ambang
+untuk total; ini perubahan aturan, bukan hasil smoke live baru. Valuasi populasi penuh
+baru diverifikasi fake HTTP; belum diklaim lulus smoke live. Lihat
+[bukti penuntasan](work-items/penuntasan-mvp/README.md).
+
+Paket metrik yang disetujui bukan jaminan kelengkapan setiap emiten. Sebelum sumber
 dan adapter dikunci, buktikan periode/basis/unit, projection dan pagination
 screener, data peer lengkap, konsistensi aksi korporasi, precision numerik, dan
 biaya pengambilan. Ketidakcocokan nyata dilaporkan, bukan mengubah formula diam-diam.

@@ -13,13 +13,17 @@ ADR-002 memperjelas baseline sesuai instruksi user tanggal 2026-09-19 dan
 melengkapi ADR-001. ADR-003 dan keputusan wawancara 2026-09-20 menutup keputusan
 MVP yang dahulu terbuka. Accepted berarti disetujui, bukan sudah diimplementasikan.
 
-## Baseline wawancara yang disetujui
+## Baseline aktif yang disetujui
+
+Revisi user 2026-10-06: kelengkapan minimum turun dari 70% ke 60%, tanpa mengubah
+bobot/peer/validitas. Formula `nusalens-v1.1.0`; snapshot historis tetap memakai
+versi saat disimpan. Rincian: [Ambang 60%](modules/Intelligence/work-items/ambang-kelengkapan-60/README.md).
 
 | Area | Keputusan | Acuan |
 | --- | --- | --- |
 | Akses dan identitas | Registrasi umum; login + email verified untuk riset; ULID termasuk users/FK. | [Security](SECURITY.md), [Model Data](DATA-MODEL.md) |
 | Tampilan dan compare | Recharts; maksimal 3 saham; simpan manual privat dan berversi. | [Project](PROJECT.md) |
-| Scoring v1 | Bank/nonbank, bobot 30/25/20/15/10, metrik setara per komponen, peer minimal 5 lainnya, average rank, threshold 70%, 2 desimal tanpa kategori. | [Scoring](SCORING.md) |
+| Scoring v1.1 | Bank/nonbank, bobot 30/25/20/15/10, metrik setara per komponen, peer minimal 5 lainnya, average rank, threshold 60%, 2 desimal tanpa kategori. | [Scoring](SCORING.md) |
 | Periode dan data invalid | Periode/basis kompatibel, fallback maksimal satu periode; hilang bukan nol, outlier valid dipertahankan. | [Scoring](SCORING.md) |
 | Bukti dan reuse | Snapshot immutable, hasil identik dapat dibagi, retensi 30 hari kecuali masih dirujuk. | [Model Data](DATA-MODEL.md) |
 | Credit | 1.000 sekali pakai, cadangan 600 perlu izin; 20/akun/hari reset WIB, satu retry maksimal. | [Alur Data](DATA-FLOW.md) |

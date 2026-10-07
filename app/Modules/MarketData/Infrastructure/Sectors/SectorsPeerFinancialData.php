@@ -21,7 +21,7 @@ final class SectorsPeerFinancialData implements PeerFinancialData
             throw $this->invalid();
         }
         $date = now('Asia/Jakarta');
-        $year = (int) $date->year - ($date->month <= 4 ? 2 : 1);
+        $year = (int) $date->year - 1;
         $quarter = $date->copy()->startOfQuarter()->subQuarter();
         $periods = ['annual' => [(string) $year, (string) ($year - 1)],
             'quarterly' => ['Q'.$quarter->quarter.'-'.$quarter->year, 'Q'.$quarter->copy()->subQuarter()->quarter.'-'.$quarter->copy()->subQuarter()->year]];

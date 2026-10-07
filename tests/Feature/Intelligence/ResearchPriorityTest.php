@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Comparison\Application\Contracts\ComparisonSnapshotStore;
 use App\Modules\Intelligence\Application\Contracts\ScoreEvidence;
 use App\Modules\Intelligence\Domain\ResearchPriorityCalculator;
+use App\Modules\MarketData\Application\Contracts\PeerFinancialData;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -28,7 +29,8 @@ class ResearchPriorityTest extends TestCase
     {
         $this->fake();
         $this->actingAs(User::factory()->create());
-        $result = $this->getJson('/nusalens/companies/TARG/score')->assertOk()->assertJsonPath('completeness', 65)->assertJsonPath('score', null)->json();
+        $result = $this->getJson('/nusalens/companies/TARG/score')->assertOk()->assertJsonPath('completeness', 65)
+            ->assertJsonPath('score', 50)->assertJsonPath('formulaVersion', 'nusalens-v1.1.0')->assertJsonPath('reason', null)->json();
         Http::assertSentCount(2);
         $this->assertDatabaseCount('market_data_credit_reservations', 2);
         $this->travel(1)->hours();
@@ -63,6 +65,17 @@ class ResearchPriorityTest extends TestCase
         $this->assertDatabaseCount('intelligence_evidence', 0);
     }
 
+    public function test_early_year_requests_latest_completed_year_before_falling_back(): void
+    {
+        $this->travelTo(CarbonImmutable::parse('2027-03-01 12:00:00', 'Asia/Jakarta'));
+        $this->fake();
+        $this->actingAs(User::factory()->create())->getJson('/nusalens/companies/TARG/score')->assertOk()
+            ->assertJsonPath('components.0.metrics.0.period', '2025');
+        Http::assertSent(fn ($request) => str_contains($request['order_by'], 'roe[2026]')
+            && str_contains($request['order_by'], 'roe[2025]')
+            && ! str_contains($request['order_by'], 'roe[2024]'));
+    }
+
     public function test_guest_and_unverified_requests_make_no_provider_calls(): void
     {
         $this->getJson('/nusalens/companies/TARG/score')->assertUnauthorized();
@@ -89,7 +102,7 @@ class ResearchPriorityTest extends TestCase
         config(['marketdata.credits.daily_user_quota' => 7]);
         $this->fake();
         $this->actingAs(User::factory()->create())->getJson('/nusalens/companies/TARG/score?include_market=1')
-            ->assertOk()->assertJsonPath('completeness', 65)->assertJsonPath('score', null)
+            ->assertOk()->assertJsonPath('completeness', 65)->assertJsonPath('score', 50)
             ->assertJsonPath('marketNotice', fn ($message) => str_contains($message, '6 credit'));
         Http::assertSentCount(2);
     }
@@ -119,7 +132,39 @@ class ResearchPriorityTest extends TestCase
         $this->assertSame('2026-10-02T17:00:00+00:00', $result['expiresAt']);
         $this->travel(31)->minutes();
         $this->getJson('/nusalens/companies/TARG/score?include_market=1')->assertOk()
-            ->assertJsonPath('completeness', 65)->assertJsonPath('score', null);
+            ->assertJsonPath('completeness', 65)->assertJsonPath('score', 50);
+    }
+
+    public function test_new_threshold_creates_distinct_evidence_without_rewriting_legacy_snapshots(): void
+    {
+        $this->fake();
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $input = app(PeerFinancialData::class)->fetch($user->id, 'TARG');
+        $legacy = (new ResearchPriorityCalculator)->calculate('TARG', $input['companies']);
+        $legacy['formulaVersion'] = 'nusalens-v1.0.0';
+        $legacy['score'] = null;
+        $legacy['reason'] = 'Data belum cukup. Nilai total memerlukan kelengkapan berbobot minimal 70%.';
+        $record = app(ScoreEvidence::class)->save($input, $legacy);
+        $snapshot = app(ComparisonSnapshotStore::class)->create($user->id, 'Formula lama', ['TARG'],
+            ['evidence' => ['TARG' => $record]], null);
+        $snapshotBefore = app(ComparisonSnapshotStore::class)->findForUser($user->id, $snapshot['id']);
+
+        $result = $this->getJson('/nusalens/companies/TARG/score')->assertOk()
+            ->assertJsonPath('formulaVersion', 'nusalens-v1.1.0')->assertJsonPath('completeness', 65)
+            ->assertJsonPath('score', 50)->json();
+        $this->assertNotSame($record['id'], $result['evidenceId']);
+        $this->assertSame($record, app(ScoreEvidence::class)->find($record['id']));
+        $saved = app(ComparisonSnapshotStore::class)->findForUser($user->id, $snapshot['id']);
+        $this->assertSame($snapshotBefore, $saved);
+        $this->assertNull($saved['payload']['evidence']['TARG']['result']['score']);
+        $this->assertSame('nusalens-v1.0.0', $saved['payload']['evidence']['TARG']['result']['formulaVersion']);
+        $this->assertSame($input['fetchedAt'], $result['fetchedAt']);
+        $this->assertSame($input['expiresAt'], $result['expiresAt']);
+        $this->getJson('/nusalens/companies/TARG/score')->assertJsonPath('evidenceId', $result['evidenceId']);
+        $this->assertDatabaseCount('intelligence_evidence', 2);
+        $this->assertDatabaseCount('market_data_credit_reservations', 2);
+        Http::assertSentCount(2);
     }
 
     public function test_malformed_provider_identity_returns_safe_error_without_evidence(): void

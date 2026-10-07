@@ -6,7 +6,9 @@ use InvalidArgumentException;
 
 final class ResearchPriorityCalculator
 {
-    public const VERSION = 'nusalens-v1.0.0';
+    public const VERSION = 'nusalens-v1.1.0';
+
+    public const MINIMUM_COMPLETENESS = 60;
 
     public function calculate(string $symbol, array $companies): array
     {
@@ -57,9 +59,10 @@ final class ResearchPriorityCalculator
         unset($component);
 
         return ['symbol' => $symbol, 'name' => $target['name'], 'formulaVersion' => self::VERSION,
-            'score' => $completeness >= 70 ? $weighted / $availableWeight : null,
+            'score' => $completeness >= self::MINIMUM_COMPLETENESS ? $weighted / $availableWeight : null,
             'completeness' => $completeness, 'components' => $components,
-            'reason' => $completeness < 70 ? 'Data belum cukup. Nilai total memerlukan kelengkapan berbobot minimal 70%.' : null];
+            'reason' => $completeness < self::MINIMUM_COMPLETENESS
+                ? 'Data belum cukup. Nilai total memerlukan kelengkapan berbobot minimal '.self::MINIMUM_COMPLETENESS.'%.' : null];
     }
 
     private function rank(string $symbol, string $metric, array $population, array $normalized, bool $higher): array
