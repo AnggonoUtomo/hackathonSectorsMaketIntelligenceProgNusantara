@@ -10,6 +10,9 @@ on:
       - develop
       - main
 
+permissions:
+  contents: read
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -23,7 +26,8 @@ jobs:
         with:
           php-version: 8.4
           tools: composer:v2
-          coverage: xdebug
+          coverage: none
+          extensions: pdo_mysql, pdo_sqlite, mbstring, redis
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -34,14 +38,20 @@ jobs:
       - name: Install Node Dependencies
         run: npm ci
 
-      - name: Build Assets
-        run: npm run build
-
       - name: Create SQLite Database
         run: touch database/database.sqlite
 
       - name: Install Dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Build Assets
+        run: npm run build:ssr
+
+      - name: Audit PHP Lockfile
+        run: composer audit --locked
+
+      - name: Audit JS Lockfile
+        run: npm audit --audit-level=moderate
 
       - name: Typecheck Frontend
         run: npm run typecheck

@@ -53,12 +53,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('nusalens/compare', [
             'comparison' => $payload,
         ]);
-    })->name('compare');
-    Route::get('bandingkan/snapshots', [ComparisonSnapshotController::class, 'index'])->name('compare.snapshots.index');
-    Route::post('bandingkan/snapshots', [ComparisonSnapshotController::class, 'store'])->name('compare.snapshots.store');
-    Route::get('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'show'])->name('compare.snapshots.show');
-    Route::patch('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'update'])->name('compare.snapshots.update');
-    Route::delete('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'destroy'])->name('compare.snapshots.destroy');
+    })->middleware('throttle:60,1')->name('compare');
+    Route::get('bandingkan/snapshots', [ComparisonSnapshotController::class, 'index'])->middleware('throttle:60,1')->name('compare.snapshots.index');
+    Route::post('bandingkan/snapshots', [ComparisonSnapshotController::class, 'store'])->middleware('throttle:snapshot-write')->name('compare.snapshots.store');
+    Route::get('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'show'])->middleware('throttle:60,1')->name('compare.snapshots.show');
+    Route::patch('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'update'])->middleware('throttle:snapshot-write')->name('compare.snapshots.update');
+    Route::delete('bandingkan/snapshots/{snapshot}', [ComparisonSnapshotController::class, 'destroy'])->middleware('throttle:snapshot-write')->name('compare.snapshots.destroy');
 
     Route::get('jelaskan-nilai', function (Request $request) {
         $validated = $request->validate([

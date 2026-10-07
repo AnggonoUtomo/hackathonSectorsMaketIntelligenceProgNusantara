@@ -20,6 +20,9 @@ use App\Modules\MarketData\Infrastructure\Sectors\SectorsCompanyAnalytics;
 use App\Modules\MarketData\Infrastructure\Sectors\SectorsCompanyDirectory;
 use App\Modules\MarketData\Infrastructure\Sectors\SectorsPeerFinancialData;
 use App\Modules\MarketData\Infrastructure\Sectors\SectorsPeerMarketData;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -45,6 +48,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        RateLimiter::for('registration', fn (Request $request) => Limit::perHour(5)->by($request->ip()));
+        RateLimiter::for('public-auth', fn (Request $request) => Limit::perMinute(10)->by($request->ip()));
+        RateLimiter::for('snapshot-write', fn (Request $request) => Limit::perMinute(30)->by((string) $request->user()->id));
     }
 }
