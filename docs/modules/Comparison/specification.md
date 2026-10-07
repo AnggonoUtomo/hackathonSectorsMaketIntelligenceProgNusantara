@@ -2,8 +2,8 @@
 
 ## Status
 
-Aktif untuk compare real bertahap sampai snapshot manual. Score comparison masih
-proposal dan menunggu gate peer/scoring.
+Aktif sampai Increment5: compare real, score on-demand dan snapshot manual.
+Implementasi diselesaikan melalui work item Penuntasan MVP.
 
 ## Tujuan, scope, dan non-scope
 
@@ -102,7 +102,7 @@ Route Bandingkan wajib `auth` dan `verified`. UI menampilkan:
 - tombol Simpan Snapshot serta link daftar snapshot;
 - daftar snapshot privat dan detail read-only;
 - empty state saat belum memilih saham;
-- placeholder eksplisit bahwa scoring belum tersedia sampai Intelligence siap;
+- skor Intelligence, kelengkapan, bukti peer dan alasan unavailable;
 - disclaimer bahwa hasil bukan rekomendasi investasi.
 
 ## Dependency
@@ -110,7 +110,7 @@ Route Bandingkan wajib `auth` dan `verified`. UI menampilkan:
 Selection flow memakai pencarian perusahaan internal yang sudah tersedia. Profil
 ringkas memakai `CompanyDirectory::profile()` sehingga cache dan ledger tetap
 ditangani MarketData. Section harga/keuangan/valuasi memakai endpoint analytics
-internal existing. Integrasi scoring nanti harus menggunakan hasil Intelligence,
+internal existing. Integrasi scoring menggunakan hasil Intelligence,
 bukan JSON vendor langsung dan bukan kalkulator di Comparison.
 
 ## Acceptance dan verifikasi
@@ -129,8 +129,6 @@ bukan JSON vendor langsung dan bukan kalkulator di Comparison.
 
 ## Risiko dan keputusan terbuka
 
-- Scoring comparison belum dikerjakan.
-- Contract publik Intelligence, persistence bukti skor, dan estimasi credit peer
-  lengkap belum disetujui.
-- Snapshot score nanti harus menyimpan hasil/referensi skor yang sudah dimuat,
-  bukan menghitung ulang saat detail snapshot dibuka.
+- Score tersimpan menyalin input dan hasil Intelligence tanpa hitung/HTTP saat dibuka.
+- Valuasi peer live lengkap dan momentum tetap mengikuti gap sumber Intelligence.
+- Versi lama tanpa receipt diberi penanda integritas legacy; tidak ditulis ulang.

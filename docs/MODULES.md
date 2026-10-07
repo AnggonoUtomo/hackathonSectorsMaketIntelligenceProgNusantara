@@ -1,7 +1,7 @@
 # Daftar Module
 
 Module berada langsung di `app/Modules/{Module}`, sesuai rancangan NusaLens.
-Semua module bisnis masih `Planned`; starter Laravel/Inertia sudah tersedia.
+Keenam module bisnis berstatus `Active`; AI tetap opsional dan belum terintegrasi.
 Dokumentasi module berada di `docs/modules/{Module}/` saat implementasi dimulai.
 
 | Module | Tanggung jawab | Kolaborasi yang dibutuhkan |
@@ -39,7 +39,8 @@ ledger/reservasi credit, Company memiliki snapshot fakta keuangan/pasar,
 Intelligence memiliki hasil/versi formula/bukti input dan peer, Comparison
 memiliki perbandingan privat berversi maksimal 3 saham. Screening tidak membuat
 riwayat otomatis dan Research tidak menyimpan laporan terpisah pada MVP.
-DDL dan wiring migration masih perlu spesifikasi implementasi.
+DDL ledger, comparison_snapshots, dan intelligence_evidence tersedia pada
+`database/migrations`; status teknis rinci ada di [DATA-MODEL](DATA-MODEL.md).
 
 ## Pembaruan indeks
 

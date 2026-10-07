@@ -1,3 +1,4 @@
+import ScoreInputEvidence from '@/components/score-input-evidence';
 import { Button } from '@/components/ui/button';
 import type { ResearchPriority, ScoreMetric } from '@/types/research-priority';
 import { Link } from '@inertiajs/react';
@@ -16,11 +17,13 @@ export default function ResearchPriorityPanel({
     initial,
     onLoad,
     historical = false,
+    detailed = false,
 }: {
     symbol: string;
     initial?: ResearchPriority;
     onLoad?: (data: ResearchPriority) => void;
     historical?: boolean;
+    detailed?: boolean;
 }) {
     const [data, setData] = useState<ResearchPriority | undefined>(initial);
     const [loading, setLoading] = useState(false);
@@ -150,7 +153,7 @@ export default function ResearchPriorityPanel({
                                     <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
                                     <YAxis type="category" dataKey="label" width={130} tick={{ fontSize: 11 }} />
                                     <Tooltip formatter={(value) => number(typeof value === 'number' ? value : null)} />
-                                    <Bar dataKey="score" name="Posisi relatif" maxBarSize={24} radius={[0, 3, 3, 0]}>
+                                    <Bar dataKey="score" name="Posisi relatif" maxBarSize={24} radius={[0, 3, 3, 0]} isAnimationActive={!historical}>
                                         {data.components.map((c, i) => (
                                             <Cell key={c.key} fill={colors[i]} />
                                         ))}
@@ -176,8 +179,15 @@ export default function ResearchPriorityPanel({
                                     </span>
                                 </summary>
                                 <div className="mt-4 space-y-6">
+                                    {detailed && (
+                                        <p className="text-muted-foreground text-xs leading-6">
+                                            Bobot efektif komponen pada total {number(component.effectiveWeight * 100)}%. Kontribusi tersimpan{' '}
+                                            {number(component.contribution ?? null)} poin. Nilai komponen memakai rata-rata percentile metrik yang
+                                            tersedia; total menggabungkan komponen dengan bobot efektifnya.
+                                        </p>
+                                    )}
                                     {component.metrics.map((metric) => (
-                                        <MetricEvidence key={metric.key} metric={metric} />
+                                        <MetricEvidence key={metric.key} metric={metric} detailed={detailed} />
                                     ))}
                                 </div>
                             </details>
@@ -214,7 +224,7 @@ export default function ResearchPriorityPanel({
     );
 }
 
-function MetricEvidence({ metric }: { metric: ScoreMetric }) {
+function MetricEvidence({ metric, detailed }: { metric: ScoreMetric; detailed: boolean }) {
     return (
         <article className="border-border min-w-0 space-y-3 border-l-2 pl-4">
             <h3 className="text-sm font-semibold">{metric.label}</h3>
@@ -243,6 +253,7 @@ function MetricEvidence({ metric }: { metric: ScoreMetric }) {
                     </p>
                 </>
             )}
+            {detailed && <ScoreInputEvidence metric={metric} />}
             {metric.attempts.length > 1 && (
                 <p className="text-muted-foreground text-xs">
                     Pemeriksaan kelompok: {metric.attempts.map((a) => `${a.period} ${a.group}: ${a.validPeers} peer`).join('; ')}.

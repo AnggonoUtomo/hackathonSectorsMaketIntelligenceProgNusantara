@@ -1,12 +1,20 @@
 # Plan: Kesiapan Peer dan Scoring
 
+Catatan revisi 6 Oktober 2026: acuan 70% di rencana ini bersifat historis.
+Ambang aktif 60% pada formula v1.1.0; lihat [Scoring](../../SCORING.md).
+
 ## Urutan dan batas persetujuan
 
-Dokumentasi ini merinci increment 3B, bukan otorisasi seluruh pekerjaan.
-Usulan urutan: selesaikan UX-1 setelah persetujuan, lalu audit 3B.0. Setiap
-increment berhenti pada handoff dan review sebelum berlanjut.
+Dokumentasi ini menyimpan rencana awal increment3B. Otorisasi user untuk
+menuntaskan MVP menggantikan gate approval per increment. Status implementasi,
+smoke dan gap sumber aktual ada di [Penuntasan MVP](../penuntasan-mvp/README.md).
 
 ## Increment 3B.0: Audit kelayakan data dan biaya
+
+Audit tahap awal pada 2026-09-27 sudah dicatat di
+[Audit 3B.0](audit-3b0.md). Hasilnya menyelesaikan pembacaan dokumentasi resmi
+dan source lokal, tetapi belum menggantikan entitlement/payload live, smoke
+sanitasi, atau persetujuan implementasi.
 
 - Mulai dari dokumentasi resmi Sectors, kode adapter, dan metadata cache yang
   sudah ada. Tidak membuka key atau memasukkan payload sensitif ke dokumen.
@@ -58,8 +66,11 @@ batas berhenti disetujui. Jalankan melalui adapter internal, bukan HTTP mentah
 yang melewati ledger. Simpan bukti sanitasi, tanpa credential.
 
 **Acceptance:** matriks punya bukti, biaya dapat dihitung, dan populasi lengkap
-dapat ditentukan. Jika gagal, laporkan metrik unavailable beserta penyebabnya;
-jangan mengubah formula atau membeli quota diam-diam.
+dapat ditentukan. Audit awal sudah menemukan kandidat hemat melalui structured
+screener, tetapi acceptance penuh belum lulus sampai payload live, entitlement,
+unit/periode, pagination, dan sisa budget terverifikasi. Jika gagal, laporkan
+metrik unavailable beserta penyebabnya; jangan mengubah formula atau membeli
+quota diam-diam.
 
 ## Proposal ownership dan persistence
 

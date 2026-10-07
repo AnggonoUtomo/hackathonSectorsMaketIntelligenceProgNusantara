@@ -21,11 +21,11 @@ Eloquent di Infrastructure. Snapshot menyimpan data yang sudah tersedia di
 halaman saat user menekan tombol simpan; aksi simpan tidak melakukan refresh
 provider dan tidak menambah credit API.
 
-Dependency target:
+Dependency aktif:
 
 - Company: identitas dan snapshot perusahaan internal.
-- Intelligence: hasil nilai dan bukti input saat scoring sudah tersedia. Belum
-  dihubungkan ke compare aktif.
+- Intelligence: public contract `ScoreEvidence` untuk hasil dan input lengkap
+  yang sudah dimuat. UI memakai endpoint Intelligence, bukan kalkulator Comparison.
 - MarketData: tidak dipanggil langsung oleh Comparison; data provider masuk
   melalui module pemilik data.
 
@@ -34,6 +34,9 @@ Dependency target:
 Semua halaman Bandingkan berada di balik login dan email verified. Snapshot
 manual bersifat privat per user. Membuka snapshot user lain menghasilkan 404.
 Update snapshot lama membuat versi baru, bukan menimpa data lama.
+Rename/delete memeriksa owner; daftar memiliki pencarian dan pagination15 item.
+Fakta profil/section memakai `FactAttestation` Company, receipt terenkripsi backend.
+Angka kiriman browser tidak dipercaya. Skor tersimpan berikut input peer lengkap.
 
 ## Verifikasi
 

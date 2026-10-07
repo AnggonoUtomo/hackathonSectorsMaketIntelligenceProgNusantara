@@ -1,15 +1,20 @@
 # Work Item: Kesiapan Peer dan Scoring
 
+Catatan revisi 6 Oktober 2026: acuan 70% di rencana ini bersifat historis.
+Ambang aktif 60% pada formula v1.1.0; lihat [Scoring](../../SCORING.md).
+
 ## Status dan tujuan
 
-- Status: dokumentasi dan inventaris source lokal; implementasi belum disetujui.
-- Tanggal: 2026-09-26.
+- Status terbaru: rencana/audit awal diteruskan dan diotorisasi user melalui
+  [Penuntasan MVP](../penuntasan-mvp/README.md). Kalkulator/adapter/bukti/UI
+  terimplementasi; gap momentum/kalender dan smoke valuasi lengkap tetap terbuka.
+- Pembaruan: 2026-10-03; inventaris dan audit di bawah merekam kondisi 2026-09-27.
 - Owner: Intelligence, Company, MarketData, Research, dan frontend.
 - Induk: [Ruang Riset Berbukti](../ruang-riset-berbukti/README.md), increment 3B.
 
 Menentukan apakah data, populasi peer, biaya, dan bukti cukup untuk menjalankan
-Nilai Prioritas Riset v1. Persetujuan membuat dokumentasi bukan persetujuan
-membuat module, migration, atau menjalankan panggilan Sectors berbayar.
+Nilai Prioritas Riset v1. Larangan implementasi pada audit awal sudah digantikan
+otorisasi penyelesaian menyeluruh user; batas formula/credit tetap berlaku.
 
 Ringkasan Riset 3A sudah tersedia tanpa skor. Penyederhanaan dua pintu pencarian
 ditangani terpisah melalui [increment UX-1](../ruang-riset-berbukti/plan.md).
@@ -62,12 +67,21 @@ Nama field yang mirip tidak membuktikan kesetaraan periode, unit, atau definisi.
 - Populasi yang baru diambil sebagian karena budget tidak boleh dianggap lengkap.
   Ringkasan fakta 3A tetap bisa dipakai saat skor belum tersedia.
 
+## Audit 3B.0
+
+Audit tahap awal dicatat pada [Audit 3B.0](audit-3b0.md). Audit tersebut
+memakai dokumentasi resmi Sectors dan source lokal, tanpa live API/credit.
+Hasilnya: structured screener berpotensi menjadi sumber paling hemat untuk peer
+dan rasio utama, tetapi entitlement, unit, periode, payload akun lokal, dan
+strategi credit masih harus dibuktikan sebelum coding scoring.
+
 ## Gate dan acceptance dokumentasi
 
 - [x] Inventaris membedakan data existing, gap, dan asumsi yang belum diuji.
 - [x] Scope audit, estimasi credit, ownership, dan increment ada pada [plan](plan.md).
 - [x] Tugas implementasi dipisahkan dari tugas dokumentasi pada [tasks](tasks.md).
-- [ ] Bukti field/periode/unit, entitlement, pagination dan kelengkapan peer lengkap.
+- [x] Audit awal dokumentasi resmi Sectors dan source lokal dicatat.
+- [ ] Bukti live field/periode/unit, entitlement, pagination dan kelengkapan peer lengkap.
 - [ ] Estimasi cold/warm dan sisa budget terverifikasi; smoke terarah disetujui.
 - [ ] Proposal contract/struktur Intelligence dan schema bukti mendapat persetujuan.
 

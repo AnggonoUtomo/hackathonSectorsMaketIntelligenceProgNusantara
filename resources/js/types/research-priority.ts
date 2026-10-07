@@ -33,5 +33,13 @@ export type ResearchPriority = {
     expiresAt: string;
     reason: string | null;
     populationCount: number;
-    components: Array<{ key: string; label: string; weight: number; score: number | null; effectiveWeight: number; metrics: ScoreMetric[] }>;
+    components: Array<{
+        key: string;
+        label: string;
+        weight: number;
+        score: number | null;
+        effectiveWeight: number;
+        contribution?: number | null;
+        metrics: ScoreMetric[];
+    }>;
 };

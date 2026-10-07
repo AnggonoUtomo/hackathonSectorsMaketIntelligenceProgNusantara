@@ -6,6 +6,8 @@
    kompatibel, fallback hierarki/periode, percentile, bobot dan kelengkapan.
 3. MarketData menyediakan input melalui public contract. Projection terstruktur
    memakai periode eksplisit, pagination lengkap dan cache 24 jam untuk fundamental.
+   Tahun laporan dimulai dari tahun kalender terakhir yang selesai, tanpa cutoff
+   bulan publikasi buatan; data tidak valid memicu fallback satu periode di Domain.
    Data pasar campuran memakai 1 jam. Growth memakai kuartal eksplisit; momentum
    tanpa bukti adjusted close tidak dihitung. Annual tidak menggantikan TTM/MRQ.
    Valuasi tambahan on-demand memakai kapitalisasi Daily / jumlah laba empat

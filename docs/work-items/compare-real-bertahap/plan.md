@@ -1,5 +1,8 @@
 # Plan: Compare Real Bertahap
 
+Catatan revisi 6 Oktober 2026: acceptance 70% di rencana ini sudah digantikan
+ambang 60% pada formula v1.1.0; lihat [Scoring](../../SCORING.md).
+
 ## Scope
 
 Tujuan pekerjaan ini adalah mengganti `/bandingkan` dari matrix fake menjadi alat
@@ -115,7 +118,8 @@ seluruh endpoint provider.
 
 ## Increment 5: Score comparison setelah gate peer/scoring
 
-- Status: proposal; belum coding.
+- Status: terimplementasi melalui Penuntasan MVP. Rincian 5A-5C di bawah adalah
+  rencana yang telah dijalankan, bukan permintaan persetujuan baru.
 - Perubahan: compare menjadi consumer hasil Intelligence real untuk menampilkan
   Nilai Prioritas Riset, komponen, kelengkapan, dan bukti.
 - Prasyarat: work item peer/scoring minimal menyelesaikan audit 3B.0 atau user

@@ -2,16 +2,17 @@
 
 ## Status
 
-Starter Laravel 12/Inertia React, dependency manifest/lock, migration, dan
-command project tersedia. Module bisnis, ULID users, kewajiban email verified,
-dan konfigurasi Sectors belum diimplementasikan. MySQL/Redis adalah target;
-pekerjaan dokumentasi ini tidak membuktikan koneksi lokal keduanya.
+Laravel 12/Inertia React beserta enam module bisnis, ULID users, email verified,
+ledger/snapshot/bukti dan adapter Sectors real sudah tersedia. MySQL lokal dan
+build telah dipakai pada pengujian MVP. Hosting publik belum tersedia; gunakan
+[Deployment](DEPLOYMENT.md) dan `.env.production.example` untuk menyiapkannya,
+bukan menyalin konfigurasi lokal dengan debug aktif.
 
 ## Prasyarat
 
 - PHP 8.4+ sebagai target runtime dari rancangan awal, bukan klaim minimum Laravel.
 - Composer.
-- Node.js yang kompatibel dengan toolchain frontend yang dipilih.
+- Node.js 22 untuk menyamai quality gate CI.
 - MySQL sebagai database utama.
 - Redis untuk cache dan queue.
 - Git untuk repository yang sudah tersedia.
@@ -22,8 +23,8 @@ jika membantu, tetapi bukan kebutuhan wajib produk.
 
 ## Rancangan environment
 
-Contoh target lokal, tanpa credential. `.env.example` starter sudah tersedia;
-contoh ini bukan klaim semua variabel produk sudah dihubungkan ke konfigurasi:
+Contoh ringkas lokal tanpa credential. `.env.example` berisi variabel lengkap;
+API key tetap di backend dan mode real harus diaktifkan secara eksplisit:
 
 ```env
 APP_NAME=NusaLens
@@ -47,13 +48,13 @@ SECTORS_API_BASE_URL=https://api.sectors.app/v2
 SECTORS_API_KEY=
 SECTORS_API_TIMEOUT=10
 
-AI_EXPLAINER_ENABLED=false
+MARKETDATA_PROVIDER_MODE=real
 ```
 
 Sesuaikan host, port, URL, dan credential secara lokal. Jangan masukkan nilai
 secret ke repository atau output. Provider/model AI belum dipilih; variabel key
-AI baru ditambahkan sesuai integrasi yang disetujui. Email verification juga
-memerlukan transport mail yang diuji pada increment auth.
+AI baru ditambahkan sesuai integrasi yang disetujui. Email verification lokal
+bisa memakai mail log; produksi wajib transport SMTP dan pengujian inbox nyata.
 
 ## Setup starter
 
@@ -68,7 +69,7 @@ Siapkan `.env` lokal berdasarkan `.env.example` bila belum ada, pilih database
 MySQL yang benar, dan jangan menimpa credential atau APP_KEY instalasi yang ada.
 `php artisan key:generate` hanya untuk instalasi baru tanpa key. Setelah database
 siap dan rencana migration diperiksa, `php artisan migrate` menjalankan migration
-starter; command ini belum mengubah ID users menjadi ULID.
+yang tersedia, termasuk ULID dan tabel ledger/snapshot/bukti. Tidak memakai fresh/reset.
 
 ```powershell
 php vendor/bin/phpunit
@@ -80,7 +81,7 @@ npm run build
 Development: `composer dev` menjalankan server, queue, log, dan Vite sesuai
 script project. Jika salah satu helper tidak didukung environment, jalankan
 `php artisan serve` dan `npm run dev` pada terminal terpisah; gunakan port lain
-bila port default terpakai. Halaman awal masih starter, bukan fitur riset MVP.
+bila port default terpakai. Halaman awal mengarahkan ke login atau dashboard riset.
 
 Untuk Laragon/Apache, document root yang dituju adalah `public/`. File `.htaccess`
 root buatan user mengarahkan path ke `public/` saat akses lewat root repository;
@@ -89,7 +90,7 @@ dan AllowOverride sesuai; tanpa rewrite jangan sajikan root repository karena
 berkas nonpublik dapat terekspos. Dukungan Apache belum diuji runtime pada
 pekerjaan dokumentasi ini.
 
-## Verifikasi fondasi produk berikutnya
+## Verifikasi instalasi
 
 1. Verifikasi dependency backend/frontend dari lockfile yang tersedia.
 2. Verifikasi environment lokal dan app key; jangan regenerasi key yang sudah digunakan.
@@ -101,5 +102,13 @@ pekerjaan dokumentasi ini.
 8. Uji satu use case end-to-end; gunakan API live hanya saat pemeriksaan manual
    memang membutuhkan data nyata.
 
-Command pemeriksaan tersedia pada [QUALITY.md](QUALITY.md). Pekerjaan dokumentasi
-ini tidak memasang dependency, membuat database, atau menjalankan migration.
+Command pemeriksaan tersedia pada [QUALITY.md](QUALITY.md). Pada penuntasan MVP,
+migration additive dijalankan di MySQL lokal dan build client/SSR diverifikasi.
+Laragon melayani `http://hackatonsectors.test`. Tidak perlu Vite saat memakai
+hasil build. Jangan menyisakan `public/hot` yang menunjuk dev server mati.
+
+Aktifkan scheduler Laravel pada deployment (`php artisan schedule:run` setiap
+menit, atau `php artisan schedule:work` untuk lokal). Retensi bukti berjalan
+01.00 WIB melalui `nusalens:prune-evidence`; hanya bukti bersama kedaluwarsa >30
+hari dihapus, bukan snapshot privat atau ledger. SMTP/verifikasi email publik,
+HTTPS, queue/cache produksi dan backup database tetap perlu konfigurasi deployment.

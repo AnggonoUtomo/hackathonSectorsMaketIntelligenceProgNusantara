@@ -1,5 +1,8 @@
 # PRD: Ruang Riset Berbukti
 
+Catatan revisi 6 Oktober 2026: acuan 70% di rancangan ini bersifat historis.
+Ambang aktif 60% pada formula v1.1.0; lihat [Scoring](../../SCORING.md).
+
 ## Status
 
 Increment 3A dilanjutkan atas instruksi user, 2026-09-25. Rincian implementasi

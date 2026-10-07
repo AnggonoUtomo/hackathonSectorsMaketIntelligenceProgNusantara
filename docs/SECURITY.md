@@ -17,9 +17,18 @@ terverifikasi, ditegakkan di backend. Gunakan auth session starter; jangan
 mengganti dengan token/JWT tanpa kebutuhan baru. Auth/reset/verifikasi tetap
 dapat diakses sesuai state pengguna agar tidak terjadi redirect loop.
 
-Starter belum menerapkan keputusan ini: User belum mengimplementasikan
-MustVerifyEmail dan dashboard baru memakai middleware auth. Route verifikasi
-yang sudah ada bukan bukti akses riset sudah terlindungi.
+User sudah mengimplementasikan MustVerifyEmail. Route riset memakai middleware
+auth dan verified; pengujian mencakup guest, akun belum terverifikasi, serta
+ownership snapshot. Registrasi dibatasi 5 request/jam/IP. Login/reset berbagi
+batas 10 request/menit/IP, ditambah limiter kegagalan login starter. Penulisan
+snapshot dibatasi 30 request/menit/akun; baca compare/snapshot 60/menit.
+
+Header nosniff, SAMEORIGIN, referrer/permissions policy dan CSP dasar diterapkan
+di middleware. CSP membatasi base/object/frame, belum berupa allowlist script
+dan style menyeluruh. HSTS hanya aktif pada HTTPS production. Debug wajib mati,
+document root harus public, dan secret/runtime berada di luar public root.
+Pemeriksaan konfigurasi tersedia melalui `php artisan nusalens:preflight`;
+detail dan batas pengujian ada di [Deployment](DEPLOYMENT.md).
 
 Perbandingan tersimpan hanya dapat dibaca, diperbarui, dinamai, atau dihapus
 pemiliknya. ULID bukan permission; uji akses lintas akun pada setiap endpoint.

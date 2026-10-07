@@ -24,6 +24,9 @@ Laravel/Inertia sudah tersedia; test domain NusaLens ditambahkan per work item.
 - Lint tanpa mengubah file: `npm run lint:check`.
 - Build client: `npm run build`; client dan SSR: `npm run build:ssr`.
 - Instalasi reproducible: `npm ci`; audit dependency: `npm audit`.
+- PHP style read-only: `php vendor/bin/pint --test`; audit: `composer audit --locked`.
+- Preflight produksi: `php artisan nusalens:preflight --check-services`.
+  Sengaja gagal pada environment lokal; lihat [Deployment](DEPLOYMENT.md).
 - Module validation: belum tersedia.
 - Gate baseline: typecheck, lint, build client/SSR, dan seluruh test backend.
 
@@ -52,8 +55,9 @@ status deprecated/EOL diperiksa terpisah dari jumlah vulnerability.
   average rank/ties (semua sama =50), dan lower-is-better dibalik.
 - Hierarki subindustry -> industry -> subsector -> sector, tanpa pencampuran
   bank/nonbank, independen dari filter screener, fallback periode terbaru dahulu.
-- Kelengkapan tepat 70%, kurang dari 70%, komponen kosong, dan bobot awal sebelum
+- Kelengkapan tepat 60%, kurang dari 60%, 65%, komponen kosong, dan bobot awal sebelum
   reweighting; pembulatan 2 desimal tidak mempengaruhi sorting/ambang.
+- Versi formula baru tidak memakai ulang fingerprint hasil lama atau menimpa snapshot.
 - Bank, perusahaan nonkeuangan, dan keuangan nonbank tanpa metrik risiko paksa.
 - Periode/basis tidak kompatibel, denominator nol/negatif, turnaround,
   momentum 20 sesi dan konsistensi aksi korporasi, tanpa clipping outlier valid.

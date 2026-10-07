@@ -57,13 +57,14 @@ riwayat implementasi dan tidak lagi menjadi baseline aktif.
 
 ## Increment 5: Score comparison
 
-- Status: proposal; belum coding.
+- Status: terimplementasi melalui Penuntasan MVP. Proposal berikut menjadi
+  riwayat rencana; gate eksekusi digantikan otorisasi penyelesaian user.
 - Perubahan target: Comparison menjadi consumer hasil Intelligence real untuk
   menampilkan Nilai Prioritas Riset, komponen, kelengkapan, bukti peer, periode,
   bobot, dan versi formula.
 - Prasyarat: gate peer/scoring 3B.0 atau slice komponen yang datanya terbukti
   layak. Comparison tidak menghitung percentile atau formula sendiri.
-- Acceptance target: tidak ada total saat kelengkapan <70%; tidak ada label
+- Acceptance aktif sejak 6 Oktober 2026: tidak ada total saat kelengkapan <60%; tidak ada label
   BUY/HOLD/SELL; credit peer lengkap diestimasi sebelum aksi hitung aktif.
 
 ## Batas berhenti

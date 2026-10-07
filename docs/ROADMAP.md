@@ -4,7 +4,8 @@
 
 Rencana ini berasal dari keputusan user pada wawancara MVP. Ini urutan target,
 bukan daftar fitur yang sudah tersedia, deadline, atau izin otomatis memulai
-pekerjaan berikutnya. Starter Laravel/Inertia sudah ada; modul bisnis belum ada.
+pekerjaan berikutnya. Enam module telah dibuat; status implementasi terbaru ada
+di [Penuntasan MVP](work-items/penuntasan-mvp/README.md).
 Setiap increment tetap membutuhkan scope, acceptance, dan verifikasi.
 
 ## MVP yang disepakati
@@ -14,7 +15,7 @@ Setiap increment tetap membutuhkan scope, acceptance, dan verifikasi.
 | 1. Fondasi | Registrasi publik, login, email terverifikasi sebelum riset. | ULID users/FK dengan migrasi aman; MySQL/Redis, auth dan ownership test. |
 | 2. Data | Akses data Sectors terkendali dan error yang jujur. | Adapter, cache, ledger/reservasi 1.000 credit dan kuota 20/hari, fake HTTP. |
 | 3. Temukan Saham | Kriteria terstruktur, shortlist, pagination/filter URL. | Allowlist query, estimasi biaya, loading/empty/error; tidak membuat riwayat otomatis. |
-| 4. Penilaian v1 | Lima komponen, total, kelengkapan, dan bukti. | Semua peer valid, periode/basis sama, ambang 70%, unit test rumus dan snapshot. |
+| 4. Penilaian v1.1 | Lima komponen, total, kelengkapan, dan bukti. | Semua peer valid, periode/basis sama, ambang 60%, unit test rumus dan snapshot. |
 | 5. Detail | Profil, angka sumber, freshness dan penjelasan nilai. | Recharts, input terverifikasi, penjelasan aturan, QA desktop/mobile. |
 | 6. Bandingkan | Maksimal 3 saham, simpan manual privat, nama/hapus, versi baru. | Snapshot immutable, akses hanya pemilik, referensi/retensi dan test lintas akun. |
 | 7. Kandidat dan demo | Kandidat riset, alur end-to-end, disclaimer. | Cache hemat, fallback, error state, QA dan checklist submission. |
@@ -50,7 +51,7 @@ tidak termasuk MVP. Penyebutan di sini bukan backlog yang telah disetujui.
 
 ## Gate teknis yang masih perlu dibuktikan
 
-Ketersediaan aktual field dan periode Sectors, konsistensi aksi korporasi,
-kalender bursa/publish data, biaya seluruh peer, precision/index/FK, migrasi
-ULID tanpa kehilangan data, dan kesiapan MySQL/Redis diuji saat work item terkait.
+Gate tersisa: konsistensi aksi korporasi, kalender bursa/publish data, kelengkapan
+live valuasi seluruh peer dalam kuota, konfigurasi email/deployment publik dan demo.
+Kalkulator, ownership, persistence, credit dan migrasi additive telah diuji lokal.
 Jangan mengubah keputusan produk untuk menutupi keterbatasan provider.

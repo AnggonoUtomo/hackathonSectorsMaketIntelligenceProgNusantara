@@ -2,6 +2,10 @@
 
 Status: implementasi MVP pada 3 Oktober 2026. Acuan pekerjaan:
 [Penuntasan MVP](../../work-items/penuntasan-mvp/README.md).
+Revisi 6 Oktober 2026: [ambang kelengkapan 60%](work-items/ambang-kelengkapan-60/README.md),
+formula v1.1.0. Bukti/snapshot formula terdahulu tetap immutable.
+URL evidence kini memiliki [halaman bukti terbaca](work-items/tampilan-bukti/README.md),
+sedangkan request JSON tetap kompatibel.
 
 Owner normalisasi, peer/periode, percentile, lima komponen, total, kelengkapan,
 versi formula dan bukti immutable. Domain pure PHP: `MetricNormalizer`,
@@ -16,7 +20,8 @@ Presentation menyediakan endpoint score/evidence. Screening mengonsumsi
 
 Semua sumber melalui MarketData; tidak ada HTTP dalam Domain/Application.
 `intelligence_evidence` menyimpan input/result JSON dengan ULID/fingerprint unik.
-Input identik menghasilkan bukti sama; perubahan input menghasilkan bukti baru.
+Input dan versi formula identik menghasilkan bukti sama; perubahan salah satunya
+menghasilkan bukti baru.
 `PruneResearchEvidence` membersihkan bukti kedaluwarsa >30 hari. Comparison
 menyimpan salinan lengkap yang tidak ikut dibersihkan.
 

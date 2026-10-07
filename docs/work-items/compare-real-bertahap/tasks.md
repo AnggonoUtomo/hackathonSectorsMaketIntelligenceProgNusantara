@@ -60,16 +60,16 @@
 ## Increment 5: Score comparison
 
 - [x] Dokumentasikan proposal dan gate sebelum coding.
-- [ ] Selesaikan atau setujui gate peer/scoring 3B.0.
-- [ ] Increment 5A: definisikan contract/payload hasil Intelligence untuk
+- [x] Selesaikan atau setujui gate peer/scoring 3B.0.
+- [x] Increment 5A: definisikan contract/payload hasil Intelligence untuk
       compare.
-- [ ] Increment 5A: tampilkan state "Nilai belum tersedia" tanpa angka fake.
-- [ ] Increment 5B: baca hasil Intelligence tersimpan yang masih fresh.
-- [ ] Increment 5B: tampilkan bukti peer, kelengkapan, periode, bobot, dan
+- [x] Increment 5A: tampilkan state "Nilai belum tersedia" tanpa angka fake.
+- [x] Increment 5B: baca hasil Intelligence tersimpan yang masih fresh.
+- [x] Increment 5B: tampilkan bukti peer, kelengkapan, periode, bobot, dan
       formula version.
-- [ ] Increment 5C: hitung score on-demand hanya setelah estimasi credit dan
+- [x] Increment 5C: hitung score on-demand hanya setelah estimasi credit dan
       populasi peer valid disetujui.
-- [ ] Simpan score yang sudah dimuat ke snapshot compare tanpa menghitung ulang
+- [x] Simpan score yang sudah dimuat ke snapshot compare tanpa menghitung ulang
       saat detail snapshot dibuka.
 
 ## Hasil
@@ -81,6 +81,7 @@
 - [x] Increment 4 proposal selesai.
 - [x] Increment 4 selesai.
 - [x] Increment 5 proposal selesai.
+- [x] Increment 5 implementasi selesai melalui Penuntasan MVP.
 - Perubahan: work item compare real bertahap dibuat; `/bandingkan` tidak lagi
   memakai default fake atau matrix skor contoh. Builder baru bernama
   `ComparisonSelectionBuilder`; UI memakai autocomplete real dan chip pilihan.
@@ -88,7 +89,7 @@
   credit profil, dan error per saham. Increment 3 menambahkan section harga,
   keuangan, dan valuasi on-demand. Increment 4 menambahkan snapshot manual
   privat, daftar snapshot, detail read-only, dan versioning. Increment 5
-  didokumentasikan sebagai consumer hasil Intelligence, bukan kalkulator di
+  diimplementasikan sebagai consumer hasil Intelligence, bukan kalkulator di
   Comparison.
 - Verifikasi: source compare fake, frontend compare, test compare, route, dan
   dokumen keputusan/data/scoring sudah dibaca. RED test gagal pada builder lama,
@@ -100,8 +101,8 @@
   dan focused compare route test. Increment 4 diverifikasi dengan
   `tests\Feature\Comparison\ComparisonSnapshotTest.php`, focused compare/profile
   analytics tests, typecheck, lint scoped, dan build.
-- Risiko: scoring real belum masuk dan masih tergantung gate peer/scoring,
-  contract Intelligence, serta estimasi credit. Browser QA belum dijalankan bila
-  tool browser tidak tersedia.
+- Status terbaru: Increment5 terimplementasi melalui Penuntasan MVP; risiko sumber
+  momentum/kalender dan smoke valuasi lengkap tetap eksplisit. Browser real/cache
+  menguji score, snapshot, versi, rename/delete dan mobile, tanpa console error.
 
 Jangan menambah scope baru ke checklist tanpa instruksi user.

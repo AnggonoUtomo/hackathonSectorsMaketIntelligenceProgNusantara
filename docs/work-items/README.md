@@ -20,18 +20,20 @@ satu module, gunakan `docs/modules/{Module}/work-items/{nama-pekerjaan}/`.
 
 ## Indeks
 
+- [Kesiapan Publish](kesiapan-publish/README.md): hardening, dependency, preflight,
+  CI dan runbook rilis; pengujian host publik masih menunggu hosting.
+- [Penuntasan MVP](penuntasan-mvp/README.md): hasil alur riset end-to-end,
+  bukti immutable, snapshot privat, verifikasi dan batas sumber yang eksplisit.
 - [Kesiapan Peer dan Scoring](kesiapan-peer-scoring/README.md): dokumentasi
-  increment 3B, audit data/biaya yang direncanakan, ownership bukti dan task;
-  belum ada audit live atau implementasi.
+  increment 3B dan arsip audit; implementasi diteruskan Penuntasan MVP.
 - [Ruang Riset Berbukti](ruang-riset-berbukti/README.md): kajian pembeda terhadap
   tool Sectors dan implementasi Ringkasan Riset real 3A; UX-1 menghilangkan
-  menu pencarian duplikat dengan alias URL kompatibel. Tahap berikutnya menunggu.
+  menu pencarian duplikat dengan alias URL kompatibel. Lanjutan di Penuntasan MVP.
 - [Redesain riset terpandu](redesain-riset-terpandu/README.md): desain alur UX,
   autocomplete/profil real pada increment 1 dan grafik real pada increment 2;
   increment berikutnya perlu review bersama proposal Ruang Riset Berbukti.
-- [Compare Real Bertahap](compare-real-bertahap/README.md): proposal mengganti
-  `/bandingkan` dari matrix fake menjadi compare real hemat credit dengan
-  autocomplete, profil awal, dan section data on-demand.
+- [Compare Real Bertahap](compare-real-bertahap/README.md): compare real hemat
+  credit, autocomplete, section on-demand, bukti nilai dan snapshot privat.
 - [Fondasi akses dan ULID](fondasi-akses-ulid/README.md): ULID users fresh
   install, akses dashboard wajib verified, Redis, dan Mailpit lokal selesai
   untuk CLI/dev.

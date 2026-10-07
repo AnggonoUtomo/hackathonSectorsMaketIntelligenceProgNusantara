@@ -1,9 +1,14 @@
 # Work Item: Compare Real Bertahap
 
+Catatan revisi 6 Oktober 2026: acuan 70% di rencana ini bersifat historis.
+Consumer mengikuti Intelligence v1.1.0 dengan ambang 60%; snapshot lama tetap
+immutable. Lihat [Scoring](../../SCORING.md).
+
 ## Status dan owner
 
 - Status: increment 0 selesai; increment 1 selesai; increment 2 selesai;
-  increment 3 selesai; increment 4 selesai; increment 5 proposal.
+  increment 3 selesai; increment 4 selesai; increment 5 terimplementasi pada
+  [Penuntasan MVP](../penuntasan-mvp/README.md), 3 Oktober 2026.
 - Owner: lintas module Comparison, Company, MarketData, Intelligence, dan frontend.
 - Target: route `/bandingkan`, kontrak payload compare, dan UI compare real.
 

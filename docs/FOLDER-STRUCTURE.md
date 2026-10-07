@@ -1,7 +1,7 @@
 # Struktur Folder Canonical
 
 Struktur module mengikuti target arsitektur NusaLens. Starter Laravel/Inertia
-sudah ada, tetapi `app/Modules` belum dibuat. Buat folder saat ada concern nyata.
+sudah ada bersama enam module di `app/Modules`. Buat folder saat ada concern nyata.
 
 ## Module backend
 
@@ -57,18 +57,12 @@ mapping, dan cache tetap berada di Infrastructure MarketData.
 
 ## Mesin penilaian
 
-Contoh class dari blueprint, dibuat ketika use case membutuhkannya:
+Class yang terimplementasi pada penuntasan MVP:
 
 ```text
 app/Modules/Intelligence/Domain/
-|-- Score.php
-|-- ScoreComponent.php
-|-- Percentile.php
-|-- QualityScoreCalculator.php
-|-- GrowthScoreCalculator.php
-|-- ValueScoreCalculator.php
-|-- RiskScoreCalculator.php
-|-- MarketScoreCalculator.php
+|-- MetricNormalizer.php
+|-- ValuationPeerPlanner.php
 `-- ResearchPriorityCalculator.php
 ```
 

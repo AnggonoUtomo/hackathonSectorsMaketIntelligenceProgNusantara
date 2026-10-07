@@ -1,5 +1,8 @@
 # Plan: Redesain Riset Terpandu
 
+Catatan revisi 6 Oktober 2026: acuan 70% di rencana ini bersifat historis.
+Ambang aktif 60% pada formula v1.1.0; lihat [Scoring](../../SCORING.md).
+
 ## Scope
 
 Rancangan selesai dan user menginstruksikan kelanjutan implementasi increment 1.

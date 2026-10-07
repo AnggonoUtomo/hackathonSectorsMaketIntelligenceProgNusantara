@@ -1,5 +1,8 @@
 # PRD: Riset Terpandu NusaLens
 
+Catatan revisi 6 Oktober 2026: acuan 70% di rancangan ini bersifat historis.
+Ambang aktif 60% pada formula v1.1.0; lihat [Scoring](../../SCORING.md).
+
 ## Status
 
 Rancangan 2026-09-24; user memberi instruksi lanjutan "ok, lakukan bro".

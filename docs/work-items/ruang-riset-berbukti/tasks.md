@@ -77,10 +77,15 @@ dan file LSP user tetap tidak disentuh. Belum commit/push.
 - [x] 3A: unit/feature, typecheck, lint, Pint, dan build.
 - [x] 3A: tutup pemeriksaan browser desktop/mobile.
 - [ ] 3A: uji pemahaman bersama pengguna; tidak digantikan oleh automated test.
-- [ ] 3B: review struktur Intelligence, entitlement, data lengkap, dan biaya peer.
-- [ ] 3B: implementasi kalkulator v1, bukti peer, dan unavailable yang benar.
-- [ ] 4: migrasi compare ke real dan bandingkan alasan maksimal tiga perusahaan.
+- [x] 3B: struktur/entitlement fundamental/biaya dibuktikan melalui Penuntasan MVP;
+  gap momentum/kalender dan smoke valuasi penuh tetap terbuka di work item itu.
+- [x] 3B: kalkulator v1, bukti peer, dan unavailable yang benar.
+- [x] 4: compare real dan alasan maksimal tiga perusahaan.
 - [ ] 5: review schema, implementasi simpan manual privat, versi, dan delta.
+
+Simpan privat dan versi telah selesai pada Comparison; delta antar-versi otomatis
+belum dibuat dan tidak dianggap selesai. Gate persetujuan historis di bawah
+digantikan otorisasi Penuntasan MVP; review pemahaman pengguna tetap terpisah.
 
 Setiap increment berhenti pada handoff; checkbox ini bukan otorisasi menjalankan
 seluruh roadmap sekaligus. Rincian task implementasi diperbarui saat gate disetujui.

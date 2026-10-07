@@ -53,14 +53,14 @@
 ## Increment 5: Score comparison
 
 - [x] Dokumentasikan proposal dan gate sebelum coding.
-- [ ] Selesaikan atau setujui gate peer/scoring 3B.0.
-- [ ] Definisikan contract/payload hasil Intelligence untuk compare.
-- [ ] Tampilkan state "Nilai belum tersedia" tanpa angka fake.
-- [ ] Baca hasil Intelligence tersimpan yang masih fresh.
-- [ ] Tampilkan bukti peer, kelengkapan, periode, bobot, dan formula version.
-- [ ] Trigger hitung score on-demand hanya setelah estimasi credit dan populasi
+- [x] Selesaikan atau setujui gate peer/scoring 3B.0.
+- [x] Definisikan contract/payload hasil Intelligence untuk compare.
+- [x] Tampilkan state "Nilai belum tersedia" tanpa angka fake.
+- [x] Baca hasil Intelligence tersimpan yang masih fresh.
+- [x] Tampilkan bukti peer, kelengkapan, periode, bobot, dan formula version.
+- [x] Trigger hitung score on-demand hanya setelah estimasi credit dan populasi
       peer valid disetujui.
-- [ ] Simpan score yang sudah dimuat ke snapshot compare tanpa menghitung ulang
+- [x] Simpan score yang sudah dimuat ke snapshot compare tanpa menghitung ulang
       saat detail snapshot dibuka.
 
 ## Verifikasi terakhir yang relevan
@@ -76,7 +76,5 @@
 
 ## Risiko terbuka
 
-- Scoring real belum masuk dan masih tergantung gate peer/scoring, contract
-  Intelligence, persistence bukti, serta estimasi credit peer lengkap.
-- Browser QA manual belum dicatat untuk snapshot/compare terbaru bila tool
-  browser tidak tersedia.
+- Momentum/kalender dan smoke valuasi populasi penuh masih membutuhkan bukti sumber.
+- Verifikasi/browser terbaru dicatat pada Penuntasan MVP; bukan lagi gate contract.

@@ -3,9 +3,11 @@
 ## Status
 
 Ownership, ULID, dan kebijakan snapshot disetujui pada 2026-09-20. MySQL adalah
-database target. Nama tabel berikut tetap konseptual, bukan migration atau tabel
-bisnis yang sudah tersedia. Persetujuan dokumentasi tidak mengizinkan migrasi
-data atau perubahan source pada pekerjaan ini.
+database operasional. Tabel pada bagian Ownership adalah konsep blueprint, bukan
+daftar DDL. Implementasi memakai `market_data_credit_reservations`,
+`comparison_snapshots`, serta `intelligence_evidence`.
+Company menggunakan cache/read model dan receipt fakta, bukan tabel placeholder.
+Migration terbaru bersifat additive; tidak mereset data.
 
 ## Ownership
 
@@ -34,8 +36,7 @@ Domain tidak bergantung Eloquent. Migration dimiliki module pemilik data.
 
 - Entitas internal termasuk users memakai ULID; FK terkait harus sesuai,
   termasuk `sessions.user_id`.
-- Saat inspeksi, migration starter memakai `users.id` integer dan
-  `sessions.user_id` foreignId; model User belum memakai ULID. Migrasi belum dilakukan.
+- User memakai `HasUlids`; migration users dan sesi telah memakai tipe ULID.
 - ULID entitas tidak berarti semua key teknis framework harus diganti: session
   ID, reset token, dan tabel infrastruktur mengikuti kebutuhan kontraknya.
 - Inventarisasi data aktual dan seluruh consumer ID sebelum perubahan; rencana
@@ -58,6 +59,14 @@ Domain tidak bergantung Eloquent. Migration dimiliki module pemilik data.
   bukan masa retensi atau tanggal kalkulasi.
 - Simpan periode laporan, waktu observasi pasar, fetched_at, asal data, alasan
   unavailable/fallback, dan versi mapping yang relevan secara terpisah.
+
+`intelligence_evidence` menyimpan ULID, fingerprint SHA-256 unik, symbol,
+formula_version, input/result JSON berpresisi penuh dan created_at. Fingerprint
+mencakup seluruh input serta formula. Tidak ada update terhadap bukti yang sama.
+Snapshot comparison menyalin bukti lengkap, bukan sekadar FK, sehingga penghapusan
+bukti bersama tidak menghilangkan riwayat privat. Command `nusalens:prune-evidence`
+membersihkan bukti bersama >30 hari yang sudah kedaluwarsa, dijadwalkan 01.00 WIB.
+Scheduler Laravel harus diaktifkan pada deployment. Ledger credit tidak dibersihkan.
 
 ## Perbandingan pribadi
 

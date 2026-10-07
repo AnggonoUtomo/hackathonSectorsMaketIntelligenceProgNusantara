@@ -10,10 +10,11 @@ metrik, kelompok pembanding, kelengkapan, dan tanggal sumbernya.
 Bukan daftar saham yang harus dibeli. Tujuannya membantu menjawab:
 **"Perusahaan mana yang layak saya teliti lebih lanjut, dan mengapa?"**
 
-> Status 3 Oktober 2026: alur pencarian, cockpit, analisis peer, kandidat sejenis,
+> Status 7 Oktober 2026: alur pencarian, cockpit, analisis peer, kandidat sejenis,
 > perbandingan, dan riset tersimpan sudah terhubung ke backend/data real.
 > Grafik memakai Recharts. Total nilai hanya muncul jika syarat data terpenuhi;
 > data yang belum terverifikasi tidak diganti angka contoh.
+> Persiapan rilis tersedia; aplikasi belum dipasang pada hosting publik.
 
 ## Yang sudah bisa dicoba
 
@@ -26,6 +27,7 @@ Panduan langkah demi langkah tersedia di [User Guide](docs/USER-GUIDE.md).
    menampilkan angka lengkap; tooltip grafik menampilkan nilai per periode.
 5. Tekan **Analisis perusahaan sejenis**, lalu buka komponen untuk melihat
    nilai mentah, periode, peer, percentile, dan bobotnya.
+   Tautan bukti membuka halaman berisi grafik, input dan rumus, bukan JSON mentah.
 6. **Lihat kandidat sejenis** untuk menjelajahi bukti fundamental yang sama,
    atau **Bandingkan** untuk memilih maksimal tiga perusahaan.
 7. Muat bagian yang diperlukan dan pilih **Simpan Snapshot**. Buka kembali
@@ -135,7 +137,7 @@ metrik tersedia disesuaikan di dalam komponen; bila seluruh komponen kosong,
 bobot antar-komponen yang tersisa dinormalisasi.
 
 Kelengkapan dihitung dari **bobot awal sebelum penyesuaian**, bukan jumlah field.
-Total hanya ditampilkan bila kelengkapan **minimal 70%**. Contohnya, komponen
+Total hanya ditampilkan bila kelengkapan **minimal 60%**. Contohnya, komponen
 risiko 10% kosong dan komponen lainnya lengkap berarti kelengkapan 90%.
 Di bawah ambang, tampilkan **Data belum cukup** dan data yang tersedia.
 
@@ -161,8 +163,11 @@ Spesifikasi lengkap: [Perhitungan v1](docs/SCORING.md).
 **Keterbatasan yang terlihat dalam aplikasi:** momentum 20 sesi belum diaktifkan
 pada sumber real karena konsistensi aksi korporasi belum terbukti. Valuasi peer
 memerlukan data pasar seluruh kelompok; jika kuota tidak cukup, fundamental
-tetap tersedia tanpa memotong sampel. Pada smoke AADI, kelengkapan fundamental
-65,00% sehingga total ditahan. Ini bukan kegagalan menghitung atau skor nol.
+tetap tersedia tanpa memotong sampel. Pada smoke lama AADI, kelengkapan fundamental
+65,00% membuat total ditahan oleh formula v1.0.0. Sejak 6 Oktober 2026, formula
+v1.1.0 memakai ambang 60% sehingga analisis baru dengan kelengkapan 65,00%
+memenuhi syarat total. Snapshot lama tetap utuh; jalankan analisis baru untuk
+memakai aturan terbaru. Penurunan ambang tidak membuat data yang hilang menjadi lengkap.
 Tab Valuasi historis juga tidak otomatis menjadi input PE TTM/PB MRQ.
 
 ## Pengembangan berikutnya
@@ -192,6 +197,9 @@ NusaLens, tanpa menganggap seluruh target sudah tersedia di source.
 
 Hasil pekerjaan, batas data, dan verifikasi tersedia di
 [Penuntasan MVP](docs/work-items/penuntasan-mvp/README.md).
+Untuk publikasi, gunakan [Panduan Deployment](docs/DEPLOYMENT.md) dan
+[Kesiapan Publish](docs/work-items/kesiapan-publish/README.md). Domain, HTTPS,
+SMTP nyata dan pemeriksaan server masih harus diselesaikan setelah hosting ada.
 
 ## Disclaimer
 

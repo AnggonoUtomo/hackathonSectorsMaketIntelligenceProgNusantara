@@ -3,7 +3,7 @@
 ## Status dan owner
 
 - Status: Done; superseded by
-  [Compare Real Bertahap](../../../work-items/compare-real-bertahap/README.md).
+  [Compare Real Bertahap](../../../../work-items/compare-real-bertahap/README.md).
 - Owner: Comparison.
 - Target: `app/Modules/Comparison`, route `/bandingkan`, dan UI Inertia
   placeholder NusaLens.

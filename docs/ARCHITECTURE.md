@@ -176,9 +176,11 @@ kontribusi, peer group, dan waktu pengambilan agar alasan nilai dapat ditelusuri
 
 ## Keputusan dan gap conformance
 
-- Starter Laravel/Inertia tersedia; `app/Modules` dan validator module belum ada.
+- Enam module tersedia di `app/Modules`; binding melalui `AppServiceProvider`,
+  route melalui `routes/web.php`, migration melalui `database/migrations`.
+  Validator/generator module terpisah tidak dibuat.
 - ULID termasuk users, login + verifikasi email untuk riset, dan ownership
-  persistence sudah disetujui, tetapi belum diterapkan pada starter.
+  persistence sudah diterapkan dan diuji.
 - MarketData menyimpan ledger permanen di MySQL; Redis hanya cache/queue.
 - Company menyimpan fakta; Intelligence menyimpan bukti fakta yang dipakai untuk
   hasil tertentu. Ownership/retensi/reuse ada di [DATA-MODEL.md](DATA-MODEL.md).
@@ -186,3 +188,9 @@ kontribusi, peer group, dan waktu pengambilan agar alasan nilai dapat ditelusuri
   provider, precision dan DDL tetap gate implementasi, bukan keputusan produk kosong.
 - [ADR-003](decisions/ADR-003-AKSES-ULID-PERSISTENCE-MVP.md) mencatat keputusan
   mahal ini; jangan menganggap persetujuan dokumentasi sebagai izin coding.
+
+Implementasi terbaru dicatat pada [Intelligence](modules/Intelligence/README.md).
+`CalculateResearchPriority` memakai public contract `PeerFinancialData`,
+`PeerMarketData`, dan `ScoreEvidence`; Domain tetap pure PHP. Comparison membaca
+`ScoreEvidence` dan `FactAttestation`, tidak mengimpor adapter module lain.
+Penuntasan MVP diotorisasi user; formula dan arah dependency tidak diubah.

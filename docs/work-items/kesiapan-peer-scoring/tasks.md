@@ -1,6 +1,15 @@
 # Tasks: Kesiapan Peer dan Scoring
 
-## Dokumentasi aktif, 2026-09-26
+Catatan revisi 6 Oktober 2026: matriks 70% di bawah mencatat baseline lama.
+Regresi ambang 60% dan formula v1.1.0 dicatat pada
+[work item revisi](../../modules/Intelligence/work-items/ambang-kelengkapan-60/README.md).
+
+Status3 Oktober 2026: implementasi diteruskan melalui
+[Penuntasan MVP](../penuntasan-mvp/README.md) atas otorisasi menyeluruh user.
+Audit historis tetap disimpan. Checklist di bawah membedakan implementasi yang
+selesai, bukti live terbatas, dan validasi sumber yang belum selesai.
+
+## Dokumentasi aktif, 2026-09-26 sampai 2026-09-27
 
 - [x] Baca baseline scoring, data-flow, model data, arsitektur dan struktur.
 - [x] Inventaris data source lokal dan gap; pisahkan dari validasi live.
@@ -8,35 +17,40 @@
 - [x] Tetapkan gate, ownership, credit/cache, acceptance dan increment end-to-end.
 - [x] Pisahkan proposal UX-1 dari kesiapan peer/scoring.
 - [x] Verifikasi tautan lokal, whitespace, dan scope diff sebelum handoff.
+- [x] Catat audit awal dokumentasi resmi Sectors dan source lokal pada
+  [Audit 3B.0](audit-3b0.md).
 
 ## 3B.0: Audit setelah persetujuan
 
-- [ ] Verifikasi dokumentasi resmi terbaru, entitlement, field, unit dan periode.
-- [ ] Buktikan klasifikasi lengkap, kompatibilitas bisnis dan pagination peer.
-- [ ] Audit annual ROE/ROA, quarterly YoY, P/E TTM dan P/B MRQ.
-- [ ] Audit CAR/NPL, DER utang berbunga/current ratio, dan kasus keuangan nonbank.
+- [x] Verifikasi dokumentasi resmi terbaru untuk endpoint kandidat dan biaya.
+- [x] Verifikasi entitlement/projection/unit/periode pada probe AADI dan BBCA.
+- [x] Klasifikasi dan populasi lengkap sektor AADI; pagination/partial diuji fake HTTP.
+- [x] Audit annual ROE/ROA, quarterly YoY dan mapping risiko bank/nonbank.
+- [x] Implementasi TTM/MRQ dari denominator eksplisit; test fake HTTP.
+- [ ] Smoke live valuasi seluruh peer; tidak disamakan dengan valuasi historis.
 - [ ] Audit basis harga/aksi korporasi dan tanggal 20 sesi antar-peer.
-- [ ] Hitung union request cold/warm/fallback serta biaya aktual dan retry.
-- [ ] Periksa sisa ledger/budget; minta persetujuan scope smoke real terarah.
-- [ ] Catat hasil smoke sanitasi atau gap; jangan menyebut audit live sudah lulus.
-- [ ] Ajukan contract, struktur Intelligence, schema bukti dan precision untuk review.
-- [ ] Dapatkan persetujuan implementasi 3B.1; jika tidak layak, laporkan hambatan.
+- [x] Hitung estimasi awal union request cold untuk kandidat endpoint resmi.
+- [x] Cold fundamental AADI2 credit, warm0; retry/quota diuji fake HTTP.
+- [x] Periksa ledger/budget; probe awal dibatasi6 credit dalam otorisasi user.
+- [x] Catat hasil smoke sanitasi dan gap di work item Penuntasan MVP.
+- [x] Contract, struktur, schema bukti dan precision dicatat sebelum implementasi.
+- [x] Otorisasi penyelesaian user menggantikan gate persetujuan3B.1.
 
-## 3B.1: Satu komponen end-to-end, belum diotorisasi
+## 3B.1: Komponen end-to-end, selesai
 
-- [ ] Tetapkan komponen berdasarkan hasil audit dan consumer contract nyata.
-- [ ] Buat test gagal dahulu untuk input, eligibility, peer dan hasil komponen.
-- [ ] Implementasi adapter/contract yang diperlukan, tanpa placeholder module lain.
-- [ ] Implementasi kalkulator pure PHP dan persistence immutable non-destruktif.
-- [ ] Hubungkan bukti komponen ke Ringkasan Riset; total ditahan bila belum cukup.
-- [ ] Verifikasi unit/feature, lint, typecheck/build, dan browser responsif/keyboard.
-- [ ] Handoff bukti, biaya, gap dan hasil uji pengguna sebelum increment berikutnya.
+- [x] Tetapkan komponen berdasarkan audit dan consumer contract nyata.
+- [x] Test input, eligibility, peer dan hasil komponen.
+- [x] Adapter/contract yang diperlukan, tanpa placeholder module lain.
+- [x] Kalkulator pure PHP dan persistence immutable non-destruktif.
+- [x] Bukti komponen pada cockpit; total ditahan bila belum cukup.
+- [x] Unit/feature, lint, typecheck/build dan browser desktop/mobile.
+- [x] Handoff bukti, biaya dan gap di Penuntasan MVP; review user terpisah.
 
-## 3B.2: Paket v1, belum diotorisasi
+## 3B.2: Paket v1, implementasi tersedia dengan gap sumber
 
-- [ ] Lengkapi komponen yang terverifikasi; catat alasan unavailable sisanya.
-- [ ] Implementasi kelengkapan sebelum reweighting, total dan versi formula.
-- [ ] Uji seluruh matriks di bawah dan reproduksi hasil dari snapshot MySQL.
+- [x] Lengkapi komponen terverifikasi; alasan unavailable untuk sisanya.
+- [x] Kelengkapan sebelum reweighting, total dan versi formula.
+- [x] Uji rumus/peer/cache/kuota/replay; snapshot real tersimpan di MySQL.
 - [ ] Uji pemahaman bukti/kelengkapan bersama user; handoff tanpa lanjut otomatis.
 
 ## Matriks pengujian wajib saat implementasi
@@ -57,7 +71,7 @@ Automated test memakai fake HTTP terisolasi; bukan panggilan API berbayar.
 | Bukti | Snapshot immutable, input/config/peer berubah membuat versi baru, replay tanpa API, freshness pada reuse terkini. |
 | Akses/UX | Login/verified, isolation data privat, loading/error/retry, bukti/tabel/grafik terbaca desktop/mobile dan keyboard. |
 
-## Handoff tahap dokumentasi
+## Handoff tahap dokumentasi 27 September (arsip, bukan status terkini)
 
 - Verifikasi: 57 tautan lokal pada sembilan dokumen valid; pemeriksaan whitespace
   lulus. Perubahan hanya dokumentasi; test aplikasi tidak dijalankan ulang.

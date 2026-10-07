@@ -6,6 +6,7 @@ use App\Modules\Intelligence\Application\CalculateResearchPriority;
 use App\Modules\Intelligence\Application\Contracts\ScoreEvidence;
 use App\Modules\MarketData\Application\Exception\MarketDataUnavailable;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 final class ResearchPriorityController
 {
@@ -19,11 +20,17 @@ final class ResearchPriorityController
         }
     }
 
-    public function evidence(string $evidence, ScoreEvidence $store)
+    public function evidence(Request $request, string $evidence, ScoreEvidence $store)
     {
         $record = $store->find($evidence);
-        abort_if($record === null, 404);
+        abort_if($record === null && $request->wantsJson(), 404);
 
-        return response()->json($record);
+        $response = $request->wantsJson()
+            ? response()->json($record)
+            : Inertia::render('nusalens/research-evidence', ['evidence' => $record])
+                ->toResponse($request)->setStatusCode($record === null ? 404 : 200);
+        $response->headers->set('Cache-Control', 'private, no-store');
+
+        return $response;
     }
 }

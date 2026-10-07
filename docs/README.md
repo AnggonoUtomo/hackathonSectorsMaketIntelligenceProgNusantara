@@ -20,18 +20,28 @@ rekomendasi BUY/HOLD/SELL.
 6. Pilih pemeriksaan dari [Quality](QUALITY.md) sesuai risiko.
 7. Baca [Keputusan](DECISIONS.md) saat menyentuh keputusan aktif.
 8. Baca [API](API.md) saat mengubah endpoint publik atau integrasi.
-9. Baca [User Guide Sementara](USER-GUIDE.md) untuk memahami alur penggunaan
-   aplikasi yang sudah tersedia dan gap UX berikutnya.
+9. Baca [User Guide](USER-GUIDE.md) untuk alur penggunaan dan batas data aktual.
 
 ## Acuan pekerjaan khusus
 
+- [Tampilan Bukti](modules/Intelligence/work-items/tampilan-bukti/README.md):
+  halaman evidence historis dengan grafik, input/rumus dan peer; JSON tetap tersedia.
+- [Ambang Kelengkapan 60%](modules/Intelligence/work-items/ambang-kelengkapan-60/README.md):
+  revisi formula v1.1.0 atas instruksi user 6 Oktober 2026; snapshot lama tetap utuh.
+- [Kesiapan Publish](work-items/kesiapan-publish/README.md): hardening, audit,
+  preflight, CI dan verifikasi rilis 6 Oktober 2026. Hosting belum tersedia.
+- [Deployment](DEPLOYMENT.md): environment produksi, pemasangan, email,
+  worker/scheduler, pemindahan ledger, backup/rollback dan gate sebelum publikasi.
+- [Penuntasan MVP](work-items/penuntasan-mvp/README.md): acuan hasil fitur
+  3 Oktober 2026; analisis peer, kandidat fundamental, compare, bukti immutable,
+  snapshot privat server-authoritative, retensi, dan verifikasi akhir.
 - [Kesiapan Peer dan Scoring](work-items/kesiapan-peer-scoring/README.md):
   dokumentasi 3B, gap sumber, gate data/credit, bukti immutable dan task increment.
-  Audit live dan coding belum diotorisasi.
+  Rencana awal diambil alih Penuntasan MVP atas otorisasi user; audit lama tetap arsip.
 - [Ruang Riset Berbukti](work-items/ruang-riset-berbukti/README.md): kajian tool
   Sectors dan Ringkasan Riset real satu perusahaan (3A selesai). Temuan,
-  bukti, grafik, dan keterbatasan tersedia; scoring/peer serta versi manual
-  tetap menunggu gate berikutnya. UX-1 selesai: satu menu Temukan Saham,
+  bukti, grafik, dan keterbatasan tersedia. Scoring/peer serta versi manual kini
+  diteruskan di Penuntasan MVP. UX-1 selesai: satu menu Temukan Saham,
   alias `/perusahaan` mengalihkan ke pencarian, detail tetap tersedia.
   Keputusan formula MVP tidak berubah.
 - [Redesain riset terpandu](work-items/redesain-riset-terpandu/README.md):
@@ -42,7 +52,7 @@ rekomendasi BUY/HOLD/SELL.
 - [Compare Real Bertahap](work-items/compare-real-bertahap/README.md):
   `/bandingkan` sudah memakai compare real hemat credit dengan autocomplete,
   profil awal, section harga/keuangan/valuasi on-demand, snapshot manual privat,
-  dan proposal Increment 5 untuk consumer hasil Intelligence.
+  dan Increment 5 consumer Intelligence dengan bukti tersimpan.
 - [Scoring](SCORING.md): metrik, bobot, peer group, data hilang, dan penjelasan nilai.
 - [Alur Data](DATA-FLOW.md): pengambilan bertahap, cache, dan anggaran credit.
 - [Model Data](DATA-MODEL.md): konsep penyimpanan dari blueprint dan batas keputusan schema.

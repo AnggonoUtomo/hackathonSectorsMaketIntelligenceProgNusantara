@@ -51,7 +51,36 @@ Input overview dan empat laporan quarterly berbagi cache existing. Tidak ada
 query provider bebas, AI, nilai v1, atau penyimpanan laporan baru. Lihat
 [Research](modules/Research/README.md) untuk batas interpretasi dan biaya.
 
-## Sectors API v2
+## Endpoint Intelligence dan kandidat terimplementasi
+
+- `GET /nusalens/companies/{symbol}/score?include_market=0|1`: auth/verified,
+  throttle 10/menit. Fundamental dari seluruh halaman sektor; valuasi optional
+  dengan preflight credit kelompok. Respons berisi components, score nullable,
+  completeness, formulaVersion, evidenceId, fetchedAt dan expiresAt. Di bawah 60%
+  adalah 200 dengan total null, bukan error. Provider gagal menghasilkan error
+  eksplisit; kegagalan valuasi opsional menjadi marketNotice bersama fundamental.
+  Formula aktif nusalens-v1.1.0; evidence/snapshot lama tidak ditimpa dan tetap
+  mencantumkan versi/hasil aslinya.
+- `GET /nusalens/evidence/{ULID}`: auth/verified, throttle 60/menit, input/hasil
+  immutable tanpa metadata user. Bukti pasar bersama bukan snapshot privat.
+  Browser/kunjungan Inertia mendapat halaman Bukti Perhitungan; request dengan
+  `Accept: application/json` mempertahankan JSON lengkap `{id,input,result}`.
+  Hasil tidak dihitung ulang dan tidak memanggil provider; respons tidak disimpan
+  oleh HTTP cache. Bukti hilang memberi halaman 404 pada browser dan JSON 404
+  pada pemakai JSON.
+- `GET /kandidat-menarik?evidence={ULID}&component=quality|growth|risk&q=&page=1`:
+  auth/verified, throttle 30/menit. Memakai bukti tersimpan tanpa API. Pagination
+  15, urut nilai penuh lalu symbol, null terakhir. Tanpa evidence redirect pencarian.
+- `POST /bandingkan/snapshots`: maksimal tiga saham, receipt profil/section asli
+  backend dan ID bukti skor. Angka mentah browser tidak menjadi sumber kebenaran.
+- `GET /bandingkan/snapshots?q=&page=1`: daftar privat, 15 per halaman.
+- `GET|PATCH|DELETE /bandingkan/snapshots/{ULID}`: pemilik saja; PATCH nama,
+  DELETE satu versi. Menyimpan dengan base_snapshot_id menghasilkan versi baru.
+
+Simpan/buka/ubah nama/hapus snapshot tidak memanggil Sectors. Snapshot menyimpan
+salinan lengkap bukti skor, sehingga retensi bukti bersama tidak merusak riwayat.
+
+## Integrasi provider
 
 Sectors Financial API v2 adalah sumber data inti NusaLens.
 
@@ -72,7 +101,7 @@ API key hanya boleh berada di backend. Jangan pernah mengirim API key ke
 frontend, log, source, test output, atau dokumentasi.
 Header Sectors memakai `Authorization: <api-key>` tanpa prefix Bearer, sesuai
 [overview v2](https://docs.sectors.app/get-started/v2/overview).
-Variabel contoh ini belum berarti wiring konfigurasi Sectors sudah tersedia.
+Konfigurasi dipakai adapter backend; mode real dipilih lewat `MARKETDATA_PROVIDER_MODE=real`.
 
 ## Prioritas endpoint
 

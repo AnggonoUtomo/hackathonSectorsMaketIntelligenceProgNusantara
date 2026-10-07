@@ -1,6 +1,6 @@
 # Panduan Penggunaan NusaLens
 
-Status: 3 Oktober 2026. Panduan ini mengikuti alur yang tersedia, bukan mockup.
+Status: 6 Oktober 2026. Panduan ini mengikuti alur yang tersedia, bukan mockup.
 NusaLens membantu riset, bukan memberi keputusan beli/jual/tahan.
 
 ## 1. Masuk dan cari perusahaan
@@ -35,7 +35,7 @@ Tab di cockpit memisahkan pertanyaan riset:
    Tooltip membantu membaca periode. Kosong berarti tidak tersedia, bukan nol.
 
 Ringkasan memakai `research-facts-v1`, misalnya margin `laba / pendapatan x 100`.
-Ini berbeda dari formula peringkat peer `nusalens-v1.0.0` pada langkah berikutnya.
+Ini berbeda dari formula peringkat peer `nusalens-v1.1.0` pada langkah berikutnya.
 Hubungan laba dan kas tetap perlu diperiksa karena kesamaan basis arus kas belum
 terverifikasi. Daftar keterbatasan bukan angka tambahan dari API.
 
@@ -48,8 +48,12 @@ terverifikasi. Daftar keterbatasan bukan angka tambahan dari API.
 3. Baca kelengkapan berbobot, jumlah populasi sumber, grafik dan lima komponen.
 4. Buka satu komponen. Periksa nilai mentah, periode, kelompok, jumlah peer,
    rank/percentile, bobot efektif dan alasan perusahaan dikeluarkan.
-5. **Buka seluruh bukti perhitungan** membuka JSON input/hasil immutable untuk
-   penelusuran rinci. Bukti ini tidak memuat API key atau data pribadi pengguna.
+5. **Buka seluruh bukti perhitungan** membuka halaman Bukti Perhitungan:
+   identitas/sumber, versi, waktu, grafik, dan komponen. Buka komponen untuk
+   membaca input, rumus, kontribusi, peer dan alasan eksklusi. Bukti historis
+   tidak dihitung ulang; tidak memuat API key atau data pribadi pengguna.
+   Tombol **Perusahaan** kembali ke cockpit dan **Kandidat sejenis** membuka
+   populasi dari bukti yang sama. Membuka bukti tidak memakai credit baru.
 
 | Komponen | Bobot | Inti perhitungan |
 | --- | --- | --- |
@@ -66,9 +70,12 @@ di tengah. Rincian ada di [SCORING](SCORING.md).
 
 ### Mengapa total belum muncul?
 
-Total memerlukan **kelengkapan berbobot minimal 70% sebelum penyesuaian bobot**.
-Quality + Growth + Risk lengkap baru 65%. Contoh smoke AADI menghasilkan 65,00%:
-tiga komponen dapat dibaca tetapi total memang harus ditahan. Ini bukan skor nol.
+Total memerlukan **kelengkapan berbobot minimal 60% sebelum penyesuaian bobot**.
+Quality + Growth + Risk lengkap menghasilkan 65%, sehingga memenuhi ambang baru.
+Pada smoke lama AADI, 65,00% belum cukup untuk formula v1.0.0 (ambang 70%).
+Snapshot lama tetap menampilkan hasil tersebut. Tekan **Perbarui analisis** pada
+analisis aktif, atau buat versi perbandingan baru, untuk memakai v1.1.0.
+Di bawah 60% total tetap ditahan, bukan diisi nol; komponen yang valid tetap terlihat.
 Keuangan nonbank tidak dipaksa memakai rasio risiko industri.
 
 **Lengkapi valuasi peer** mencoba mengambil harga seluruh kelompok yang memenuhi

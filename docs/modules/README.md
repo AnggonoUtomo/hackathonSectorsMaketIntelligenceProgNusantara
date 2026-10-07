@@ -33,3 +33,8 @@ item implementasinya dimulai.
 
 - [MarketData](MarketData/README.md): provider Sectors, mapping, cache,
   freshness, dan ledger/reservasi credit.
+- [Company](Company/README.md): profil, analytics dan attestasi fakta backend.
+- [Screening](Screening/README.md): pencarian dan kandidat riset.
+- [Intelligence](Intelligence/README.md): formula, peer, bukti dan retensi.
+- [Comparison](Comparison/README.md): compare real dan snapshot privat.
+- [Research](Research/README.md): ringkasan temuan berbukti.
