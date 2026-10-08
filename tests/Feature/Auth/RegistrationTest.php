@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
@@ -41,10 +40,10 @@ class RegistrationTest extends TestCase
         $this->assertTrue(Str::isUlid($user->id));
         $this->assertFalse($user->hasVerifiedEmail());
 
-        Notification::assertSentTo($user, VerifyEmail::class);
+        Notification::assertNothingSent();
     }
 
-    public function test_new_users_are_sent_to_the_verification_notice_after_registration()
+    public function test_new_users_can_open_the_dashboard_without_verifying_email()
     {
         Notification::fake();
 
@@ -62,7 +61,7 @@ class RegistrationTest extends TestCase
             ->get(route('dashboard', absolute: false))
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('auth/verify-email')
+                ->component('dashboard')
             );
     }
 }

@@ -11,7 +11,7 @@ export default function Dashboard() {
         <AppLayout breadcrumbs={[{ title: 'Ruang Riset', href: '/dashboard' }]}>
             <Head title="Ruang Riset" />
             <main className="flex min-w-0 flex-1 flex-col gap-8 p-4 md:p-6">
-                <header className="border-b pb-5">
+                <header className="border-t-primary bg-primary/5 border-t-2 border-b px-4 py-5">
                     <p className="text-sm font-medium text-teal-700 dark:text-teal-300">NusaLens</p>
                     <h1 className="mt-2 text-2xl font-semibold">Ruang Riset Saham Indonesia</h1>
                 </header>
@@ -33,7 +33,9 @@ export default function Dashboard() {
                 </section>
                 <section className="grid gap-6 border-y py-6 sm:grid-cols-2">
                     <div className="space-y-3">
-                        <GitCompare className="size-6 text-sky-600" />
+                        <div className="inline-flex size-10 items-center justify-center rounded-md border border-sky-500/20 bg-sky-500/10">
+                            <GitCompare className="size-5 text-sky-700 dark:text-sky-300" />
+                        </div>
                         <h2 className="font-semibold">Bandingkan perusahaan</h2>
                         <p className="text-muted-foreground max-w-md text-sm leading-6">
                             Harga, kinerja keuangan, dan bukti analisis untuk maksimal tiga perusahaan.
@@ -46,7 +48,9 @@ export default function Dashboard() {
                         </Button>
                     </div>
                     <div className="space-y-3">
-                        <Bookmark className="size-6 text-amber-600" />
+                        <div className="inline-flex size-10 items-center justify-center rounded-md border border-amber-500/20 bg-amber-500/10">
+                            <Bookmark className="size-5 text-amber-700 dark:text-amber-300" />
+                        </div>
                         <h2 className="font-semibold">Riset tersimpan</h2>
                         <p className="text-muted-foreground max-w-md text-sm leading-6">
                             Kembali ke bukti yang sudah disimpan atau mulai versi perbandingan terbaru.

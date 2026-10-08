@@ -65,14 +65,17 @@ class NusaLensNavigationTest extends TestCase
     }
 
     #[DataProvider('protectedPages')]
-    public function test_unverified_users_are_redirected_from_nusalens_pages(string $path): void
+    public function test_unverified_users_can_access_nusalens_pages(string $path): void
     {
         $user = User::factory()->unverified()->create();
 
-        $this
-            ->actingAs($user)
-            ->get($path)
-            ->assertRedirect(route('verification.notice', absolute: false));
+        $this->actingAs($user);
+        if (in_array($path, ['/perusahaan', '/jelaskan-nilai', '/kandidat-menarik'], true)) {
+            $this->get($path)->assertRedirect('/temukan-saham');
+
+            return;
+        }
+        $this->get($path)->assertOk();
     }
 
     public function test_discover_shows_real_directory(): void

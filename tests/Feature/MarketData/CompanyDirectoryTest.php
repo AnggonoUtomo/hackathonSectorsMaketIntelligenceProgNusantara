@@ -84,11 +84,12 @@ class CompanyDirectoryTest extends TestCase
         $this->assertDatabaseCount('market_data_credit_reservations', 1);
     }
 
-    public function test_search_requires_verification(): void
+    public function test_search_does_not_require_email_verification(): void
     {
+        Http::fake(['*' => Http::response($this->searchPayload())]);
         $this->actingAs(User::factory()->unverified()->create());
-        $this->getJson('/nusalens/companies/search?q=bank')->assertForbidden();
-        Http::assertNothingSent();
+        $this->getJson('/nusalens/companies/search?q=bank')->assertOk();
+        Http::assertSentCount(1);
     }
 
     public function test_company_not_found_is_explicit(): void

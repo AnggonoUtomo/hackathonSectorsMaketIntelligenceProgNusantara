@@ -85,7 +85,7 @@ class ProfileUpdateTest extends TestCase
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
 
-        $this->actingAs($user)->get($oldVerificationUrl)->assertForbidden();
+        $this->actingAs($user)->get($oldVerificationUrl)->assertRedirect(route('dashboard'));
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }

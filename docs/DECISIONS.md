@@ -7,7 +7,7 @@ Dokumen ini menjadi indeks keputusan aktif. ADR lengkap berada di
 | --- | ------ | --------- |
 | [ADR-001](decisions/ADR-001-DDD-LITE-MODULAR-MONOLITH-HEXAGONAL.md) | Accepted | Gunakan DDD-lite Modular Monolith dengan Hexagonal Architecture. |
 | [ADR-002](decisions/ADR-002-BASELINE-LARAVEL-12-MYSQL-NUSALENS.md) | Accepted | Laravel 12, MySQL, dan module langsung mengikuti rancangan NusaLens. |
-| [ADR-003](decisions/ADR-003-AKSES-ULID-PERSISTENCE-MVP.md) | Accepted | Akses riset terverifikasi, ULID, ownership persistence dan snapshot immutable. |
+| [ADR-003](decisions/ADR-003-AKSES-ULID-PERSISTENCE-MVP.md) | Accepted; syarat email direvisi 8 Oktober 2026 | Login tanpa verifikasi email, ULID, ownership persistence dan snapshot immutable. |
 
 ADR-002 memperjelas baseline sesuai instruksi user tanggal 2026-09-19 dan
 melengkapi ADR-001. ADR-003 dan keputusan wawancara 2026-09-20 menutup keputusan
@@ -21,7 +21,7 @@ versi saat disimpan. Rincian: [Ambang 60%](modules/Intelligence/work-items/amban
 
 | Area | Keputusan | Acuan |
 | --- | --- | --- |
-| Akses dan identitas | Registrasi umum; login + email verified untuk riset; ULID termasuk users/FK. | [Security](SECURITY.md), [Model Data](DATA-MODEL.md) |
+| Akses dan identitas | Registrasi umum; login tanpa verifikasi email untuk riset (revisi user, 8 Oktober 2026); ULID termasuk users/FK. | [Security](SECURITY.md), [Akses dan Identitas](work-items/akses-dan-identitas/README.md) |
 | Tampilan dan compare | Recharts; maksimal 3 saham; simpan manual privat dan berversi. | [Project](PROJECT.md) |
 | Scoring v1.1 | Bank/nonbank, bobot 30/25/20/15/10, metrik setara per komponen, peer minimal 5 lainnya, average rank, threshold 60%, 2 desimal tanpa kategori. | [Scoring](SCORING.md) |
 | Periode dan data invalid | Periode/basis kompatibel, fallback maksimal satu periode; hilang bukan nol, outlier valid dipertahankan. | [Scoring](SCORING.md) |

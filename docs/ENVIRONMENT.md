@@ -2,7 +2,7 @@
 
 ## Status
 
-Laravel 12/Inertia React beserta enam module bisnis, ULID users, email verified,
+Laravel 12/Inertia React beserta enam module bisnis, ULID users, login tanpa verifikasi email,
 ledger/snapshot/bukti dan adapter Sectors real sudah tersedia. MySQL lokal dan
 build telah dipakai pada pengujian MVP. Hosting publik belum tersedia; gunakan
 [Deployment](DEPLOYMENT.md) dan `.env.production.example` untuk menyiapkannya,
@@ -110,5 +110,5 @@ hasil build. Jangan menyisakan `public/hot` yang menunjuk dev server mati.
 Aktifkan scheduler Laravel pada deployment (`php artisan schedule:run` setiap
 menit, atau `php artisan schedule:work` untuk lokal). Retensi bukti berjalan
 01.00 WIB melalui `nusalens:prune-evidence`; hanya bukti bersama kedaluwarsa >30
-hari dihapus, bukan snapshot privat atau ledger. SMTP/verifikasi email publik,
+hari dihapus, bukan snapshot privat atau ledger. SMTP untuk reset password,
 HTTPS, queue/cache produksi dan backup database tetap perlu konfigurasi deployment.

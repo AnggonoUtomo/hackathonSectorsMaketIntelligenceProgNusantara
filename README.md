@@ -20,7 +20,7 @@ Bukan daftar saham yang harus dibeli. Tujuannya membantu menjawab:
 
 Panduan langkah demi langkah tersedia di [User Guide](docs/USER-GUIDE.md).
 
-1. Login dengan email terverifikasi, lalu buka **Temukan Saham**.
+1. Daftar atau login, lalu buka **Temukan Saham**. Verifikasi email tidak diperlukan.
 2. Ketik nama atau kode perusahaan, lalu pilih hasil pencarian.
 3. Pada detail, buka **Harga**, **Keuangan**, atau **Valuasi** sesuai kebutuhan.
 4. Pilih rentang harga 30/90 hari atau kelompok angka keuangan. Tombol tabel
@@ -56,7 +56,7 @@ Cakupan MVP meliputi perusahaan bank dan nonbank di Indonesia.
 
 ## Alur Riset
 
-1. Daftar secara publik, verifikasi email, lalu login untuk mengakses fitur riset.
+1. Daftar secara publik atau login untuk mengakses fitur riset, tanpa verifikasi email.
 2. Buka **Temukan Saham**, pilih kelompok perusahaan dan kriteria pencarian.
 3. Buka **Detail Perusahaan** untuk memeriksa angka, periode laporan, dan freshness.
 4. Baca bukti pada **Analisis perusahaan sejenis**; jangan melihat total tanpa kelengkapannya.

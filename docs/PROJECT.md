@@ -35,8 +35,8 @@ yang terfokus, bukan menggantikan platform trading intelligence yang lebih luas.
 
 ## Scope aktif MVP
 
-- Registrasi terbuka untuk umum. Semua fitur riset memerlukan login dan email
-  terverifikasi; halaman auth/verifikasi tetap dapat digunakan sesuai alurnya.
+- Registrasi terbuka untuk umum. Semua fitur riset memerlukan login, tanpa
+  verifikasi email. Tautan verifikasi lama mengalihkan ke dashboard setelah login.
 - Bank dan nonbank tercakup sesuai kelayakan metrik pada [SCORING.md](SCORING.md).
 - Temukan Saham: screener/filter berdasarkan sektor, ukuran, kesehatan bisnis,
   pertumbuhan, harga saham, utang, dan Nilai Prioritas Riset.
@@ -57,7 +57,7 @@ yang terfokus, bukan menggantikan platform trading intelligence yang lebih luas.
 
 ## Alur pengguna dan istilah
 
-1. Login dengan email terverifikasi, lalu buka Temukan Saham dan pilih kriteria.
+1. Login tanpa perlu verifikasi email, lalu buka Temukan Saham dan pilih kriteria.
 2. Telusuri shortlist dengan pagination; filter tersimpan di URL.
 3. Urutkan berdasarkan Nilai Prioritas Riset setelah scoring tersedia.
 4. Buka Detail Perusahaan untuk profil, nilai, data pendukung, dan peer context.

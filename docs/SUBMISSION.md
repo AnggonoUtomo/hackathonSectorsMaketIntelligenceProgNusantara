@@ -7,7 +7,7 @@
 - [x] Sectors benar-benar menjadi sumber data inti.
 - [x] Tidak ada trading otomatis atau rekomendasi BUY/HOLD/SELL.
 - [x] Disclaimer tersedia.
-- [x] Registrasi umum, login dan verifikasi email membatasi akses fitur riset.
+- [x] Registrasi umum dan login membatasi akses fitur riset; verifikasi email tidak wajib.
 - [x] Compare maksimal3 saham; simpan privat dan versi pembaruan teruji.
 - [x] Skor2 desimal, kelengkapan minimal60%, dan alasan unavailable terlihat.
 - [x] Penjelasan aturan tersedia tanpa AI; AI bukan syarat demo.
@@ -37,7 +37,23 @@ Persiapan rilis dilanjutkan di [Kesiapan Publish](work-items/kesiapan-publish/RE
 dan [Deployment](DEPLOYMENT.md). Jangan memakai SHA lama sebagai release final
 sebelum perubahan lanjutan dicommit atas instruksi user.
 
-## Storyboard tiga menit
+## Video final 8 Oktober 2026
+
+Teaser 60 detik dan judging 180 detik selesai: H.264, 1080p, 30 fps,
+caption Bahasa Indonesia tanpa audio. File, pemutar lokal, subtitle dan panduan
+upload ada di `storage/app/private/submission-videos/final/` (tidak ikut Git).
+Durasi dan full decode lulus; frame sampel diperiksa. Tidak memakai credit API.
+
+Alur yang direkam: bukti AADI, rumus dan peer, kandidat beserta pengurutan,
+kemudian membuka salinan snapshot historis tiga bank. Bukan pengambilan data
+baru atau rekaman aksi menyimpan baru. Data sumber dan keterbatasan ditampilkan.
+Detail: [Paket Video](work-items/paket-video/README.md).
+
+- [x] Dua file video lokal selesai dan diverifikasi.
+- [ ] Teaser diunggah publik dan judging dapat diakses juri.
+- [ ] Social post dan formulir submission dikirim.
+
+## Storyboard awal (referensi, bukan urutan video final)
 
 | Waktu | Adegan |
 | --- | --- |
@@ -56,23 +72,23 @@ memalsukan data.
 Periksa kelengkapan dan versi aktual saat demo; smoke lama bukan jaminan data
 terkini. Jangan menampilkan AI yang belum tersedia. Diferensiasi: alur riset terpandu, perhitungan
 transparan dan bukti yang dapat dibuka kembali, bukan meniru screener umum.
-Siapkan akun demo terverifikasi secara privat; jangan menaruh password di README.
+Siapkan akun demo secara privat; jangan menaruh password di README.
 
-## Prioritas dua hari terakhir
+## Prioritas sebelum pengumpulan
 
-1. Sediakan hosting sesuai Deployment, isi secret secara privat dan jalankan
-   seluruh gate server. Source rilis sudah di-push 7 Oktober 2026 atas instruksi
-   user; ini belum berarti aplikasi sudah terpasang pada hosting publik.
-2. Review satu alur nyata lengkap, rekam demo dengan tanggal sumber terlihat,
-   periksa aturan resmi, URL akses dan persyaratan video sebelum submission.
+1. Review video final dan unggah; pastikan source terbaru dicommit/push atas
+   instruksi user, repo publik tanpa secret, serta tautan dapat diakses juri.
+2. Lengkapi social post, problem statement, track dan anggota tim di portal.
+   Hosting live tidak wajib menurut aturan resmi yang diperiksa 8 Oktober 2026.
+   Deployment tetap pekerjaan terpisah bila nanti diperlukan.
 
 Jika belum ada hosting saat rekaman, demo lokal tetap bisa direkam dengan
-jujur; jangan menyatakan sudah publik atau memenuhi syarat URL penyelenggara.
+jujur; jangan menyatakan aplikasinya sudah dihosting publik.
 URL demo/video dan formulir submission belum tersedia/diisi oleh pekerjaan ini.
 
 ## Final freeze
 
-- [ ] Periksa aturan resmi hackathon yang berlaku saat akan submit.
+- [x] Periksa aturan resmi hackathon pada 8 Oktober 2026.
 - [ ] Jalankan verifikasi terakhir, cek deployment demo dan README.
 - [ ] Periksa link video serta syarat social post yang berlaku.
 - [ ] Siapkan backup repository dan tag commit final jika diminta user.
@@ -81,5 +97,6 @@ URL demo/video dan formulir submission belum tersedia/diisi oleh pekerjaan ini.
 Referensi dari dokumen asal:
 [Official Rules](https://hackathon.sectors.app/rules) dan
 [Market Intelligence Track](https://hackathon.sectors.app/tracks/market-intelligence).
-Aturan eksternal tersebut belum diverifikasi ulang dalam pekerjaan dokumentasi
-ini; checklist internal bukan pernyataan bahwa semua syarat resmi telah dipenuhi.
+Aturan diperiksa 8 Oktober 2026. Deadline 8 Oktober 2026 pukul 23.59 WIB;
+freeze berlaku saat submit atau deadline, mana yang lebih dahulu. Checklist
+internal bukan pernyataan bahwa semua syarat resmi telah dipenuhi.

@@ -96,8 +96,8 @@ class CompanyAnalyticsTest extends TestCase
         $this->getJson($this->url('all'))->assertUnprocessable();
         config(['marketdata.credits.daily_user_quota' => 3]);
         $this->getJson($this->url('financials'))->assertStatus(429)->assertJsonPath('reason', 'credit_limit');
-        $this->actingAs(User::factory()->unverified()->create());
-        $this->getJson($this->url('prices'))->assertForbidden();
+        auth()->logout();
+        $this->getJson($this->url('prices'))->assertUnauthorized();
         Http::assertNothingSent();
     }
 

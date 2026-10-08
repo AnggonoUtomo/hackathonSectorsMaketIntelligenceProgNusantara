@@ -26,7 +26,7 @@ class EvidencePageTest extends TestCase
     {
         $record = $this->record();
         $this->mock(ScoreEvidence::class)->shouldReceive('find')->twice()->with($record['id'])->andReturn($record);
-        $this->actingAs(User::factory()->create());
+        $this->actingAs(User::factory()->unverified()->create());
         $url = '/nusalens/evidence/'.$record['id'];
         $this->get($url)->assertOk()->assertInertia(fn (AssertableInertia $page) => $page
             ->component('nusalens/research-evidence')->where('evidence', $record));
@@ -62,15 +62,12 @@ class EvidencePageTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_guests_and_unverified_accounts_cannot_read_evidence(): void
+    public function test_guests_cannot_read_evidence(): void
     {
         $this->mock(ScoreEvidence::class)->shouldNotReceive('find');
         $url = '/nusalens/evidence/'.Str::ulid();
         $this->get($url)->assertRedirect('/login');
         $this->getJson($url)->assertUnauthorized();
-        $this->actingAs(User::factory()->unverified()->create());
-        $this->get($url)->assertRedirect('/verify-email');
-        $this->getJson($url)->assertForbidden();
         Http::assertNothingSent();
     }
 

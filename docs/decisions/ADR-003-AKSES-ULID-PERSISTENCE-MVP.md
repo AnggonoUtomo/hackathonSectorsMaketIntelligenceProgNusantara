@@ -2,6 +2,10 @@
 
 ## Status
 
+Revisi 8 Oktober 2026: kewajiban verifikasi email di bawah ini telah diganti
+oleh [Akses dan Identitas](../work-items/akses-dan-identitas/README.md). Login
+tetap wajib; keputusan ULID, persistence dan snapshot tidak berubah.
+
 Accepted berdasarkan wawancara dan konfirmasi akhir user. Melengkapi ADR-001
 dan ADR-002; bukan izin implementasi otomatis.
 

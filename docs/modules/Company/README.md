@@ -16,7 +16,7 @@ Tidak ada snapshot persistence baru pada increment ini.
 
 `GetCompanyAnalytics` memakai public contract `MarketData/CompanyAnalytics`.
 Endpoint `/nusalens/companies/{symbol}/analysis?section=prices|financials|valuation`
-memuat satu tab sesuai permintaan, dengan auth, verifikasi email dan throttle.
+memuat satu tab sesuai permintaan, dengan auth dan throttle tanpa verifikasi email.
 Frontend menyediakan Recharts dan tabel angka lengkap, periode/satuan serta
 loading, error/retry dan empty state. Tidak menghitung rekomendasi investasi.
 

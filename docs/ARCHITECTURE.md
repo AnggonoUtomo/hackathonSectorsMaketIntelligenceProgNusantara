@@ -179,7 +179,7 @@ kontribusi, peer group, dan waktu pengambilan agar alasan nilai dapat ditelusuri
 - Enam module tersedia di `app/Modules`; binding melalui `AppServiceProvider`,
   route melalui `routes/web.php`, migration melalui `database/migrations`.
   Validator/generator module terpisah tidak dibuat.
-- ULID termasuk users, login + verifikasi email untuk riset, dan ownership
+- ULID termasuk users, login tanpa verifikasi email untuk riset, dan ownership
   persistence sudah diterapkan dan diuji.
 - MarketData menyimpan ledger permanen di MySQL; Redis hanya cache/queue.
 - Company menyimpan fakta; Intelligence menyimpan bukti fakta yang dipakai untuk

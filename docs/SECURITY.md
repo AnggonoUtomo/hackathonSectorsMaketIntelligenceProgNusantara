@@ -12,16 +12,22 @@
   Jangan meneruskan expression mentah user atau menjadikan aplikasi proxy
   bebas ke Sectors.
 
-Registrasi terbuka untuk umum. Semua fitur riset wajib login dan email
-terverifikasi, ditegakkan di backend. Gunakan auth session starter; jangan
+Registrasi terbuka untuk umum. Semua fitur riset wajib login tanpa verifikasi
+email, sesuai revisi user 8 Oktober 2026. Gunakan auth session starter; jangan
 mengganti dengan token/JWT tanpa kebutuhan baru. Auth/reset/verifikasi tetap
 dapat diakses sesuai state pengguna agar tidak terjadi redirect loop.
 
-User sudah mengimplementasikan MustVerifyEmail. Route riset memakai middleware
-auth dan verified; pengujian mencakup guest, akun belum terverifikasi, serta
-ownership snapshot. Registrasi dibatasi 5 request/jam/IP. Login/reset berbagi
+User tidak lagi mengimplementasikan MustVerifyEmail. Route riset memakai
+middleware auth; akun belum terverifikasi dapat masuk. Registrasi tidak mengirim
+email verifikasi; endpoint verifikasi lama hanya redirect ke dashboard tanpa
+mengubah email_verified_at. Snapshot tetap privat per pemilik. Registrasi
+dibatasi 5 request/jam/IP. Login/reset berbagi
 batas 10 request/menit/IP, ditambah limiter kegagalan login starter. Penulisan
 snapshot dibatasi 30 request/menit/akun; baca compare/snapshot 60/menit.
+
+Kepemilikan alamat email tidak dibuktikan pada registrasi. Pengguna harus mengisi
+alamat yang dapat diakses untuk reset password. Rate limit dan budget global
+tetap berlaku; kuota per akun bukan pengaman tunggal terhadap pembuatan banyak akun.
 
 Header nosniff, SAMEORIGIN, referrer/permissions policy dan CSP dasar diterapkan
 di middleware. CSP membatasi base/object/frame, belum berupa allowlist script

@@ -76,10 +76,9 @@ class ResearchPriorityTest extends TestCase
             && ! str_contains($request['order_by'], 'roe[2024]'));
     }
 
-    public function test_guest_and_unverified_requests_make_no_provider_calls(): void
+    public function test_guest_requests_make_no_provider_calls(): void
     {
         $this->getJson('/nusalens/companies/TARG/score')->assertUnauthorized();
-        $this->actingAs(User::factory()->unverified()->create())->getJson('/nusalens/companies/TARG/score')->assertForbidden();
         Http::assertNothingSent();
     }
 

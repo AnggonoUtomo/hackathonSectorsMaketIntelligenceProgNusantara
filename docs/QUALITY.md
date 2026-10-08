@@ -69,7 +69,7 @@ dengan fixture, bukan menganggap contoh dokumentasi sebagai data live lengkap.
 
 ## Kasus akses, persistence, dan credit
 
-- Guest/unverified tidak dapat mengakses riset; registrasi/verifikasi tetap berfungsi.
+- Guest tidak dapat mengakses riset; akun belum terverifikasi dapat masuk tanpa email verifikasi.
 - Migrasi ULID users dan FK, tanpa reset data; ULID bukan pengganti authorization.
 - Perbandingan maksimal 3 saham, privat, rename/delete, update sebagai versi baru.
 - Snapshot immutable/reproducible, reuse lintas akun tanpa bocor metadata privat,
@@ -82,7 +82,7 @@ dengan fixture, bukan menganggap contoh dokumentasi sebagai data live lengkap.
 
 ## Skenario manual end-to-end
 
-1. Login dengan email terverifikasi, buka Temukan Saham dan pilih sektor Financials.
+1. Login, buka Temukan Saham dan pilih sektor Financials; verifikasi email tidak wajib.
 2. Periksa shortlist, pagination, dan filter di URL.
 3. Buka BBCA atau kandidat lain yang datanya tersedia.
 4. Lihat lima nilai, Nilai Prioritas Riset, data, freshness, dan penjelasannya.

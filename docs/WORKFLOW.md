@@ -61,8 +61,8 @@ ketika user memintanya.
 
 Fase 1 selesai ketika aplikasi berjalan, migration MySQL berhasil, Redis dapat
 diakses, dan test dasar berjalan. Setup dirinci pada [ENVIRONMENT.md](ENVIRONMENT.md).
-Starter sudah tersedia, tetapi ULID users, kewajiban email terverifikasi untuk
-riset, dan kesiapan MySQL/Redis target perlu diverifikasi pada increment fondasi.
+Starter, ULID users dan login sudah tersedia. Verifikasi email tidak wajib
+sesuai revisi 8 Oktober 2026; kesiapan MySQL/Redis target diperiksa saat deployment.
 Keputusan MVP di [DECISIONS.md](DECISIONS.md) adalah input plan, bukan izin otomatis
 memulai implementasi setelah pekerjaan dokumentasi selesai.
 Fase 3 boleh menampilkan hasil screener sebelum scoring; pengurutan berdasarkan

@@ -5,7 +5,7 @@ NusaLens membantu riset, bukan memberi keputusan beli/jual/tahan.
 
 ## 1. Masuk dan cari perusahaan
 
-1. Buka aplikasi, daftar bila belum memiliki akun, lalu verifikasi email.
+1. Buka aplikasi dan daftar bila belum memiliki akun. Verifikasi email tidak diperlukan.
 2. Login. Dashboard menyediakan pencarian nama/kode dan akses riset tersimpan.
 3. Ketik nama, misalnya `Adaro`, tanpa perlu mengetahui ticker. Pilih hasil
    autocomplete dengan nama/logo yang sesuai, atau buka **Temukan Saham**.

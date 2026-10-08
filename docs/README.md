@@ -24,6 +24,12 @@ rekomendasi BUY/HOLD/SELL.
 
 ## Acuan pekerjaan khusus
 
+- [Paket Video](work-items/paket-video/README.md): teaser 60 detik dan judging
+  180 detik selesai, caption Bahasa Indonesia; upload/submission masih terpisah.
+- [Akses dan Identitas](work-items/akses-dan-identitas/README.md): login tanpa
+  verifikasi email, logo NusaLens dan default dark dengan aksen warna tipis.
+  Menggantikan syarat email verified pada catatan pekerjaan historis sebelumnya.
+
 - [Tampilan Bukti](modules/Intelligence/work-items/tampilan-bukti/README.md):
   halaman evidence historis dengan grafik, input/rumus dan peer; JSON tetap tersedia.
 - [Ambang Kelengkapan 60%](modules/Intelligence/work-items/ambang-kelengkapan-60/README.md):

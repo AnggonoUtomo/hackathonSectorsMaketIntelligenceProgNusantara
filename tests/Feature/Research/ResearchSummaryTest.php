@@ -33,11 +33,10 @@ class ResearchSummaryTest extends TestCase
         ]);
     }
 
-    public function test_auth_and_verification_are_required_before_loading_sources(): void
+    public function test_auth_is_required_before_loading_sources(): void
     {
         $url = '/nusalens/companies/ADES/research';
         $this->getJson($url)->assertUnauthorized();
-        $this->actingAs(User::factory()->unverified()->create())->getJson($url)->assertForbidden();
         Http::assertNothingSent();
     }
 

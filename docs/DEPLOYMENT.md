@@ -241,8 +241,8 @@ atau menganggap budget tersedia hanya karena angka backup lebih kecil.
 - [ ] HTTP redirect ke HTTPS; sertifikat valid dan cookie secure bekerja.
 - [ ] `/.env`, `/.git/config`, `/composer.json`, `/storage/logs/laravel.log`
   tidak membocorkan isi berkas; `public/hot` tidak ada; debug/error generik.
-- [ ] Registrasi, inbox verifikasi, login/logout dan reset password diuji nyata.
-- [ ] Pengguna belum terverifikasi tidak dapat mengakses riset; snapshot tidak
+- [ ] Registrasi tanpa verifikasi email, login/logout dan inbox reset password diuji nyata.
+- [ ] Tamu tidak dapat mengakses riset; akun belum terverifikasi dapat masuk; snapshot tidak
   dapat dibuka akun lain. Console browser dan request asset tidak error.
 - [ ] Worker/scheduler, backup/restore terisolasi dan rollback kode teruji.
 - [ ] Periksa saldo provider dan ledger; jalankan satu smoke perusahaan real

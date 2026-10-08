@@ -8,7 +8,7 @@ di bawah tetap rancangan kecuali disebut terimplementasi.
 
 `GET /temukan-saham` (nama route `discover`) adalah daftar pencarian canonical.
 `GET /perusahaan` (nama `companies`) menjadi redirect 302 ke daftar tersebut,
-bukan halaman daftar kedua. Keduanya wajib login/verified dan throttle 60/menit.
+bukan halaman daftar kedua. Keduanya wajib login dan throttle 60/menit.
 Alias hanya meneruskan keyword/page/limit yang lolos validasi yang sama dengan
 daftar; query lainnya diabaikan. Alias tidak memanggil provider atau membuat
 reservasi credit. Pengambilan data hanya terjadi pada halaman tujuan sesuai cache.
@@ -21,7 +21,7 @@ Perusahaan yang duplikat. Hover link pencarian tidak melakukan prefetch berbiaya
 ## Endpoint analytics terimplementasi
 
 `GET /nusalens/companies/{symbol}/analysis?section=prices|financials|valuation`
-memerlukan login dan verifikasi email, throttle 60/menit. Simbol empat karakter
+memerlukan login tanpa verifikasi email, throttle 60/menit. Simbol empat karakter
 alfanumerik, section wajib dari whitelist; parameter provider tidak diteruskan
 dari input bebas. Respons 200 berisi symbol, section, rows dan fetchedAt.
 Harga juga menyertakan range start/end (tanggal WIB); cache lama tanpa range
@@ -29,14 +29,14 @@ masih didukung frontend menggunakan tanggal fetchedAt dalam WIB.
 Setiap row memiliki date (tanggal laporan/harga atau tahun valuasi), metrik
 numerik nullable. Seri diurutkan naik; periode duplikat ditolak.
 
-Error: 401 tanpa sesi, 403 belum verified, 422 input invalid, 404 emiten tidak
+Error: 401 tanpa sesi, 422 input invalid, 404 emiten tidak
 tersedia, 429 kuota/rate limit, 502 provider/payload bermasalah, 503 lock timeout.
 Pesan provider mentah dan API key tidak dikirim. Empty list sah dibedakan dari
 JSON rusak. Detail endpoint/cache/biaya: [MarketData](modules/MarketData/README.md).
 
 ## Endpoint ringkasan riset terimplementasi
 
-`GET /nusalens/companies/{symbol}/research` wajib login/verified, throttle
+`GET /nusalens/companies/{symbol}/research` wajib login, throttle
 60/menit, simbol empat karakter alfanumerik. Respons 200 memiliki symbol,
 ruleVersion, companyKind, classification, period, state (`ready`, `empty`,
 `unavailable`), sources, findings, checks, chartRows, dan score null.
@@ -53,7 +53,7 @@ query provider bebas, AI, nilai v1, atau penyimpanan laporan baru. Lihat
 
 ## Endpoint Intelligence dan kandidat terimplementasi
 
-- `GET /nusalens/companies/{symbol}/score?include_market=0|1`: auth/verified,
+- `GET /nusalens/companies/{symbol}/score?include_market=0|1`: auth,
   throttle 10/menit. Fundamental dari seluruh halaman sektor; valuasi optional
   dengan preflight credit kelompok. Respons berisi components, score nullable,
   completeness, formulaVersion, evidenceId, fetchedAt dan expiresAt. Di bawah 60%
@@ -61,7 +61,7 @@ query provider bebas, AI, nilai v1, atau penyimpanan laporan baru. Lihat
   eksplisit; kegagalan valuasi opsional menjadi marketNotice bersama fundamental.
   Formula aktif nusalens-v1.1.0; evidence/snapshot lama tidak ditimpa dan tetap
   mencantumkan versi/hasil aslinya.
-- `GET /nusalens/evidence/{ULID}`: auth/verified, throttle 60/menit, input/hasil
+- `GET /nusalens/evidence/{ULID}`: auth, throttle 60/menit, input/hasil
   immutable tanpa metadata user. Bukti pasar bersama bukan snapshot privat.
   Browser/kunjungan Inertia mendapat halaman Bukti Perhitungan; request dengan
   `Accept: application/json` mempertahankan JSON lengkap `{id,input,result}`.
@@ -69,7 +69,7 @@ query provider bebas, AI, nilai v1, atau penyimpanan laporan baru. Lihat
   oleh HTTP cache. Bukti hilang memberi halaman 404 pada browser dan JSON 404
   pada pemakai JSON.
 - `GET /kandidat-menarik?evidence={ULID}&component=quality|growth|risk&q=&page=1`:
-  auth/verified, throttle 30/menit. Memakai bukti tersimpan tanpa API. Pagination
+  auth, throttle 30/menit. Memakai bukti tersimpan tanpa API. Pagination
   15, urut nilai penuh lalu symbol, null terakhir. Tanpa evidence redirect pencarian.
 - `POST /bandingkan/snapshots`: maksimal tiga saham, receipt profil/section asli
   backend dan ID bukti skor. Angka mentah browser tidak menjadi sumber kebenaran.
@@ -181,8 +181,8 @@ tidak tersedia, dan rate limit pada response aplikasi/UI.
 
 Input screener divalidasi dari allowlist field/operator yang didukung.
 Expression mentah user tidak langsung diteruskan ke Sectors. Endpoint publik
-aplikasi memakai rate limit; seluruh endpoint riset memerlukan login dan email
-verified. Aplikasi tidak menjadi proxy bebas ke provider.
+aplikasi memakai rate limit; seluruh endpoint riset memerlukan login tanpa
+verifikasi email. Aplikasi tidak menjadi proxy bebas ke provider.
 Detail aturan ada pada [SECURITY.md](SECURITY.md).
 
 ## Cache dan credit

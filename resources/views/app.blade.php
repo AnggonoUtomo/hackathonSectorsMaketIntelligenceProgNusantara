@@ -1,8 +1,17 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="/nusalens-logo.png">
+        <link rel="apple-touch-icon" href="/nusalens-logo.png">
+        <script>
+            try {
+                const appearance = localStorage.getItem('appearance');
+                const light = appearance === 'light' || (appearance === 'system' && !matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', !light);
+            } catch {}
+        </script>
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 

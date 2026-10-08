@@ -55,8 +55,12 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
 
 ## Aturan UI tabel
 
+Folder contoh `ContohUI` telah dihapus atas instruksi user. Pola UX yang sudah
+diadopsi tetap berlaku; gunakan implementasi aktif di `resources/js/` dan gaya
+`dashboard-*` di `resources/css/app.css` sebagai acuan, bukan path contoh lama.
+
 - Untuk UI module yang memiliki tabel atau daftar operasional, gunakan pola
-  `ContohUI` sebagai baseline UX: summary cards, shortcut bar, filter/search
+  tabel yang telah diadopsi: summary cards, shortcut bar, filter/search
   bar, tabel padat, empty state, loading state, reset filter, pagination, dan
   aksi berbasis ikon dengan tooltip.
 - Search/filter tabel harus mempertahankan state lewat query URL/Inertia,
@@ -67,7 +71,7 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
   dan aksi kanan berbasis ikon familiar.
 - Halaman tabel tidak dibuat sebagai hero/landing page. Utamakan workflow kerja
   pengguna: ringkasan, filter, daftar, aksi, dan status data.
-- Gunakan gaya `dashboard-*` yang sudah ada atau pola setara dari `ContohUI`;
+- Gunakan gaya `dashboard-*` yang sudah ada atau komponen tabel aktif yang setara;
   jangan membuat variasi visual baru yang tidak konsisten tanpa alasan domain.
 
 ## Arsitektur dan keamanan
@@ -98,7 +102,7 @@ requirement atau keputusan penting belum jelas, tanyakan langsung kepada user.
 
 - Keputusan MVP telah disetujui; baca `docs/DECISIONS.md`. Status accepted
   bukan bukti implementasi. Perubahan terhadap keputusan tetap perlu persetujuan.
-- Registrasi publik; semua fitur riset wajib login dan verifikasi email.
+- Registrasi publik; semua fitur riset wajib login, tanpa kewajiban verifikasi email.
 - Compare maksimal 3 saham. Riwayat MVP hanya perbandingan tersimpan manual,
   privat, berbasis snapshot, dan pembaruan sebagai versi baru.
 - Scoring mencakup bank dan nonbank sesuai metrik v1 di `docs/SCORING.md`.

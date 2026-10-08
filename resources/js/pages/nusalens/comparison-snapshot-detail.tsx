@@ -72,13 +72,14 @@ function formatDate(value: string | null) {
     const date = new Date(value);
 
     if (Number.isNaN(date.getTime())) {
-        return value;
+        return 'Tanggal belum tersedia';
     }
 
-    return new Intl.DateTimeFormat('id-ID', {
-        dateStyle: 'medium',
+    return `${new Intl.DateTimeFormat('id-ID', {
+        dateStyle: 'long',
         timeStyle: 'short',
-    }).format(date);
+        timeZone: 'Asia/Jakarta',
+    }).format(date)} WIB`;
 }
 
 function formatCurrency(value: number | null) {
@@ -207,9 +208,11 @@ export default function ComparisonSnapshotDetail({ snapshot }: Props) {
                                         <dd className="text-muted-foreground mt-1 text-xs">{company.priceDate ?? 'Tanggal belum tersedia'}</dd>
                                     </div>
                                     <div className="rounded-md border p-3">
-                                        <dt className="text-muted-foreground text-xs">Freshness</dt>
-                                        <dd className="mt-1 font-semibold">{formatDate(company.fetchedAt)}</dd>
-                                        <dd className="text-muted-foreground mt-1 text-xs">{company.freshness}</dd>
+                                        <dt className="text-muted-foreground text-xs">Data diambil</dt>
+                                        <dd className="mt-1 font-semibold">{formatDate(company.fetchedAt ?? company.freshness)}</dd>
+                                        {company.freshness && Number.isNaN(Date.parse(company.freshness)) && (
+                                            <dd className="text-muted-foreground mt-1 text-xs">{company.freshness}</dd>
+                                        )}
                                     </div>
                                 </div>
                             </dl>

@@ -31,9 +31,12 @@ Dependency aktif:
 
 ## Operasi dan authorization
 
-Semua halaman Bandingkan berada di balik login dan email verified. Snapshot
+Semua halaman Bandingkan berada di balik login tanpa verifikasi email. Snapshot
 manual bersifat privat per user. Membuka snapshot user lain menghasilkan 404.
 Update snapshot lama membuat versi baru, bukan menimpa data lama.
+Koreksi UI 8 Oktober 2026: waktu pada detail snapshot ditampilkan dalam tanggal
+Indonesia dan jam WIB. Timestamp freshness yang mengulang waktu pengambilan
+tidak ditampilkan lagi; status teks tetap dipertahankan. Data snapshot tidak diubah.
 Rename/delete memeriksa owner; daftar memiliki pencarian dan pagination15 item.
 Fakta profil/section memakai `FactAttestation` Company, receipt terenkripsi backend.
 Angka kiriman browser tidak dipercaya. Skor tersimpan berikut input peer lengkap.
